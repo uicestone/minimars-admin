@@ -99,7 +99,7 @@ export default {
     },
     logo: {
       type: String,
-      default: "./img/logo-384.png"
+      default: "./img/logo-w.png"
     },
     sidebarLinks: {
       type: Array,

@@ -305,7 +305,7 @@
     }
 
     .logo{
-        padding: 5px 0;
+        padding: 0 0;
         margin: 0;
         display: block;
         position: relative;
@@ -372,19 +372,19 @@
               display: flex;
               align-items: center;
               justify-content: center;
-              height: 70px;
+              height: auto;
               width: auto;
               background: $white-color;
               border-radius: 50%;
               text-align: center;
               overflow: hidden;
-
+              border-radius: 0;
 
                 img{
-                  width: 75%;
+                  // width: 75%;
                   vertical-align: unset;
                   position: relative;
-                  top: 2px;
+                  // top: 2px;
                 }
             }
         }
