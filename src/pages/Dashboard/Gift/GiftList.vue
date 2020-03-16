@@ -4,11 +4,24 @@
       <md-card>
         <md-card-header class="md-card-header-icon md-card-header-primary">
           <div class="card-icon">
-            <md-icon>store</md-icon>
+            <md-icon>card_giftcard</md-icon>
           </div>
-          <h4 class="title">门店列表</h4>
+          <h4 class="title">礼品列表</h4>
         </md-card-header>
-        <md-card-content>
+        <md-card-content class="paginated-table">
+          <div
+            class="md-toolbar md-table-toolbar md-transparent md-theme-default md-elevation-0 md-layout mb-2"
+          >
+            <div class="md-layout"></div>
+            <div class="toolbar-actions">
+              <md-button class="md-primary" @click="showCreate">
+                添加礼品
+              </md-button>
+              <md-button class="md-just-icon md-simple" @click="queryData">
+                <md-icon>refresh</md-icon>
+              </md-button>
+            </div>
+          </div>
           <md-table
             :value="queriedData"
             :md-sort.sync="currentSort"
@@ -16,52 +29,27 @@
             :md-sort-fn="noop"
             class="paginated-table table-striped table-hover"
           >
-            <md-table-toolbar class="md-layout mb-2">
-              <md-field
-                class="md-layout md-layout-item md-size-20 md-xsmall-size-100"
-              >
-                <md-input
-                  type="search"
-                  clearable
-                  placeholder="搜索"
-                  style="width: 200px;"
-                  v-model="searchQuery.keyword"
-                >
-                </md-input>
-              </md-field>
-
-              <div class="toolbar-actions">
-                <!-- <md-button class="md-primary" @click="showCreate">
-                  添加门店
-                </md-button> -->
-              </div>
-            </md-table-toolbar>
-
             <md-table-row
               slot="md-table-row"
               md-selectable="single"
               slot-scope="{ item }"
               @click="showDetail(item)"
             >
-              <md-table-cell md-label="名称" md-sort-by="name">{{
-                item.name
+              <md-table-cell md-label="名称" md-sort-by="title">{{
+                item.title
               }}</md-table-cell>
-              <md-table-cell md-label="电话" md-sort-by="phone">{{
-                item.phone
+              <md-table-cell md-label="库存" md-sort-by="quantity">{{
+                item.quantity
               }}</md-table-cell>
-              <md-table-cell md-label="地址" md-sort-by="address">{{
-                item.address
+              <md-table-cell md-label="门店" md-sort-by="store.name">{{
+                item.store.name
               }}</md-table-cell>
-              <md-table-cell md-label="服务器状态" md-sort-by="address">{{
-                item.localServer | localServer
+              <md-table-cell md-label="积分售价" md-sort-by="priceInCredit">{{
+                item.priceInCredit
               }}</md-table-cell>
-              <!-- <md-table-cell md-label="操作">
-                <md-button
-                  class="md-just-icon md-danger md-simple"
-                  @click="">
-                  <md-icon>close</md-icon>
-                </md-button>
-              </md-table-cell> -->
+              <md-table-cell md-label="收款售价" md-sort-by="priceInCny">{{
+                item.priceInCny
+              }}</md-table-cell>
             </md-table-row>
           </md-table>
         </md-card-content>
@@ -84,15 +72,17 @@
 
 <script>
 import { Pagination } from "@/components";
-import { Store } from "@/resources";
+import { Gift } from "@/resources";
+import moment from "moment";
 
 export default {
   components: {
     Pagination
   },
   data() {
+    const customer = this.$route.query.customer;
     return {
-      currentSort: "name",
+      currentSort: "title",
       currentSortOrder: "asc",
       pagination: {
         perPage: 10,
@@ -104,18 +94,34 @@ export default {
       queriedData: []
     };
   },
-  mounted() {
+  activated() {
     this.queryData();
   },
   computed: {
     query() {
-      return Object.assign({}, this.searchQuery, {
+      const searchQuery = {
+        ...this.searchQuery,
         limit: this.pagination.perPage,
         skip: (this.pagination.currentPage - 1) * this.pagination.perPage,
         order: this.currentSort
           ? `${this.currentSortOrder === "desc" ? "-" : ""}${this.currentSort}`
           : undefined
-      });
+      };
+
+      if (
+        searchQuery.customerKeyword &&
+        searchQuery.customerKeyword.length < 4
+      ) {
+        delete searchQuery.customerKeyword;
+      }
+
+      for (let field in searchQuery) {
+        if (Array.isArray(searchQuery[field])) {
+          searchQuery[field] = searchQuery[field].join(",");
+        }
+      }
+
+      return searchQuery;
     },
     from() {
       return Math.min(
@@ -132,35 +138,17 @@ export default {
   },
   methods: {
     async queryData() {
-      const response = await Store.get(this.query);
+      const response = await Gift.get(this.query);
       this.queriedData = response.body;
       this.pagination.total = Number(response.headers.map["items-total"][0]);
     },
     showDetail(item) {
-      // this.$router.push(`/store/${item.id}`);
+      this.$router.push(`/gift/${item.id}`);
     },
     showCreate() {
-      this.$router.push("/store/add");
+      this.$router.push("/gift/add");
     },
     noop() {}
-  },
-  filters: {
-    localServer(input) {
-      if (!input) return;
-      const statusLabel = {
-        disconnected: "已断开",
-        connected: "已连接",
-        died: "连接异常"
-      };
-      let text = "";
-      if (input.status && statusLabel[input.status]) {
-        text = statusLabel[input.status];
-      }
-      if (input.ip) {
-        text += ` ${input.ip.replace("::ffff:", "")}`;
-      }
-      return text;
-    }
   },
   watch: {
     "pagination.currentPage"() {
@@ -171,7 +159,7 @@ export default {
         clearTimeout(this.searchDelayTimeout);
         this.searchDelayTimeout = setTimeout(() => {
           this.queryData();
-        }, 1000);
+        }, 200);
       },
       deep: true
     },
@@ -185,10 +173,23 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
 .md-card .md-card-actions {
   border: 0;
   margin-left: 20px;
   margin-right: 20px;
+}
+* >>> .md-datepicker .md-date-icon {
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+.md-icon.mini {
+  height: 16px;
+  width: 16px;
+  min-width: 16px;
+  font-size: 16px !important;
+}
+.md-input {
+  max-width: 100%;
 }
 </style>

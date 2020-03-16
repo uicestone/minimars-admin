@@ -84,7 +84,6 @@
             <div class="copyright text-center">
               &copy; {{ new Date().getFullYear() }}
               <a href="https://codeispoetry.tech" target="_blank">诗序软件</a>
-              倾力打造
             </div>
           </div>
         </footer>

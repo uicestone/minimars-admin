@@ -56,7 +56,7 @@
                   :md-options="getStores(storeSearchTerm)"
                   @md-selected="selectStore"
                 >
-                  <label>场馆</label>
+                  <label>门店</label>
                   <template slot="md-autocomplete-item" slot-scope="{ item }">
                     {{ item.name }}
                   </template>
@@ -283,19 +283,23 @@ export default {
   methods: {
     async save() {
       if (this.$route.params.id === "add") {
-        this.booking = (await Booking.save(this.booking, {
-          bypassBandIdsCheck: true,
-          authBands: false
-        })).body;
-      } else {
-        this.booking = (await Booking.update(
-          {
-            id: this.$route.params.id,
+        this.booking = (
+          await Booking.save(this.booking, {
             bypassBandIdsCheck: true,
             authBands: false
-          },
-          this.booking
-        )).body;
+          })
+        ).body;
+      } else {
+        this.booking = (
+          await Booking.update(
+            {
+              id: this.$route.params.id,
+              bypassBandIdsCheck: true,
+              authBands: false
+            },
+            this.booking
+          )
+        ).body;
       }
       this.$notify({
         message: "保存成功",
@@ -310,17 +314,19 @@ export default {
     },
     async remove() {
       if (
-        !(await Swal.fire({
-          title: "确定要删除这个预约？",
-          text: `这个操作不可撤销，并且将删除这个预约和他的所有支付记录`,
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonClass: "md-button md-danger",
-          cancelButtonClass: "md-button",
-          confirmButtonText: "确定删除",
-          cancelButtonText: "取消",
-          buttonsStyling: false
-        })).value
+        !(
+          await Swal.fire({
+            title: "确定要删除这个预约？",
+            text: `这个操作不可撤销，并且将删除这个预约和他的所有支付记录`,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "md-button md-danger",
+            cancelButtonClass: "md-button",
+            confirmButtonText: "确定删除",
+            cancelButtonText: "取消",
+            buttonsStyling: false
+          })
+        ).value
       )
         return;
       await Booking.delete({ id: this.booking.id });

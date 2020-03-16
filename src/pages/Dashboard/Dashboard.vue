@@ -41,7 +41,10 @@
           </div>
           <p class="category">当日门票收入</p>
           <h3 class="title">
-            ¥ <animated-number :value="stats.paidAmount - stats.socksAmount"></animated-number>
+            ¥
+            <animated-number
+              :value="stats.paidAmount - stats.socksAmount"
+            ></animated-number>
           </h3>
         </template>
 
@@ -101,7 +104,7 @@
           <div class="card-icon">
             <i class="fas fa-socks"></i>
           </div>
-          <p class="category">当日蹦床袜发放</p>
+          <p class="category">当日袜子发放</p>
           <h3 class="title">
             <animated-number :value="stats.socksCount"></animated-number> 双
           </h3>
@@ -110,7 +113,7 @@
         <template slot="footer">
           <div class="stats">
             <md-icon>bookmark_border</md-icon>
-            当日累计蹦床袜发放量
+            当日累计袜子发放量
           </div>
         </template>
       </stats-card>

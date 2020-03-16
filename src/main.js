@@ -78,8 +78,8 @@ Object.defineProperty(Vue.prototype, "$user", {
 Object.defineProperty(Vue.prototype, "$bookingTypeNames", {
   get() {
     return {
-      play: "计时自由探险",
-      party: "派对和聚会"
+      play: "游乐",
+      event: "活动"
     };
   }
 });
@@ -93,6 +93,16 @@ Object.defineProperty(Vue.prototype, "$bookingStatusNames", {
       PENDING_REFUND: "待退款",
       FINISHED: "已完成",
       CANCELED: "已取消"
+    };
+  }
+});
+
+Object.defineProperty(Vue.prototype, "$cardTypeNames", {
+  get() {
+    return {
+      times: "次卡",
+      period: "时效卡",
+      credit: "充值卡"
     };
   }
 });
@@ -137,6 +147,10 @@ Vue.filter("bookingTypeName", value => {
 
 Vue.filter("bookingStatusName", value => {
   return Vue.prototype.$bookingStatusNames[value];
+});
+
+Vue.filter("cardTypeName", value => {
+  return Vue.prototype.$cardTypeNames[value];
 });
 
 Vue.filter("currency", value => {

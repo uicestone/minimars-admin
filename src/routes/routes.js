@@ -9,10 +9,19 @@ const User = () => import("@/pages/Dashboard/User/UserProfile.vue");
 const UserList = () => import("@/pages/Dashboard/User/UserList.vue");
 const Booking = () => import("@/pages/Dashboard/Booking/BookingDetail.vue");
 const BookingList = () => import("@/pages/Dashboard/Booking/BookingList.vue");
+const CardType = () => import("@/pages/Dashboard/CardType/CardTypeDetail.vue");
+const CardTypeList = () =>
+  import("@/pages/Dashboard/CardType/CardTypeList.vue");
 // const Code = () => import("@/pages/Dashboard/Code/CodeDetail.vue");
 const CodeList = () => import("@/pages/Dashboard/Code/CodeList.vue");
+const Event = () => import("@/pages/Dashboard/Event/EventDetail.vue");
+const EventList = () => import("@/pages/Dashboard/Event/EventList.vue");
+const Gift = () => import("@/pages/Dashboard/Gift/GiftDetail.vue");
+const GiftList = () => import("@/pages/Dashboard/Gift/GiftList.vue");
 // const Payment = () => import("@/pages/Dashboard/Payment/PaymentDetail.vue");
 const PaymentList = () => import("@/pages/Dashboard/Payment/PaymentList.vue");
+const Post = () => import("@/pages/Dashboard/Post/PostDetail.vue");
+const PostList = () => import("@/pages/Dashboard/Post/PostList.vue");
 // const Store = () => import("@/pages/Dashboard/Store/StoreDetail.vue");
 const StoreList = () => import("@/pages/Dashboard/Store/StoreList.vue");
 const ConfigList = () => import("@/pages/Dashboard/Config/ConfigList.vue");
@@ -233,6 +242,27 @@ let bookingMenu = {
   ]
 };
 
+let cardTypeMenu = {
+  path: "/card-type",
+  component: DashboardLayout,
+  redirect: "/card-type/index",
+  children: [
+    {
+      path: "index",
+      name: "卡片种类",
+      component: CardTypeList,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: ":id",
+      name: "卡种详情",
+      component: CardType
+    }
+  ]
+};
+
 let codeMenu = {
   path: "/code",
   component: DashboardLayout,
@@ -251,6 +281,48 @@ let codeMenu = {
     //   name: "券码详情",
     //   component: Code
     // }
+  ]
+};
+
+let eventMenu = {
+  path: "/event",
+  component: DashboardLayout,
+  redirect: "/event/index",
+  children: [
+    {
+      path: "index",
+      name: "活动列表",
+      component: EventList,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: ":id",
+      name: "活动详情",
+      component: Event
+    }
+  ]
+};
+
+let giftMenu = {
+  path: "/gift",
+  component: DashboardLayout,
+  redirect: "/gift/index",
+  children: [
+    {
+      path: "index",
+      name: "礼品列表",
+      component: GiftList,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: ":id",
+      name: "礼品详情",
+      component: Gift
+    }
   ]
 };
 
@@ -275,6 +347,27 @@ let paymentMenu = {
   ]
 };
 
+let postMenu = {
+  path: "/post",
+  component: DashboardLayout,
+  redirect: "/post/index",
+  children: [
+    {
+      path: "index",
+      name: "文章列表",
+      component: PostList,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: ":id",
+      name: "文章详情",
+      component: Post
+    }
+  ]
+};
+
 let storeMenu = {
   path: "/store",
   component: DashboardLayout,
@@ -282,7 +375,7 @@ let storeMenu = {
   children: [
     {
       path: "index",
-      name: "场馆明细",
+      name: "门店明细",
       component: StoreList,
       meta: {
         keepAlive: true
@@ -290,7 +383,7 @@ let storeMenu = {
     }
     // {
     //   path: ":id",
-    //   name: "场馆详情",
+    //   name: "门店详情",
     //   component: Store
     // }
   ]
@@ -378,8 +471,12 @@ const routes = [
   mapsMenu,
   pagesMenu,
   bookingMenu,
+  cardTypeMenu,
   codeMenu,
+  eventMenu,
+  giftMenu,
   paymentMenu,
+  postMenu,
   storeMenu,
   configMenu,
   userMenu,

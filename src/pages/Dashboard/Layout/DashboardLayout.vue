@@ -32,11 +32,35 @@
         >
         </sidebar-item> -->
         <sidebar-item
+          :link="{
+            name: '卡片种类',
+            icon: 'card_membership',
+            path: '/card-type'
+          }"
+        >
+        </sidebar-item>
+        <sidebar-item
+          :link="{
+            name: '内容管理',
+            icon: 'chrome_reader_mode',
+            path: '/post'
+          }"
+        >
+        </sidebar-item>
+        <sidebar-item
+          :link="{ name: '活动管理', icon: 'event', path: '/event' }"
+        >
+        </sidebar-item>
+        <sidebar-item
+          :link="{ name: '礼品管理', icon: 'card_giftcard', path: '/gift' }"
+        >
+        </sidebar-item>
+        <sidebar-item
           :link="{ name: '流水明细', icon: 'payment', path: '/payment' }"
         >
         </sidebar-item>
         <sidebar-item
-          :link="{ name: '场馆管理', icon: 'store', path: '/store' }"
+          :link="{ name: '门店管理', icon: 'store', path: '/store' }"
         >
         </sidebar-item>
         <sidebar-item
