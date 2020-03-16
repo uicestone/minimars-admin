@@ -37,8 +37,8 @@
                 <md-table-cell md-label="时长" md-sort-by="hours">{{
                   booking.hours ? `${booking.hours}小时` : "畅玩"
                 }}</md-table-cell>
-                <md-table-cell md-label="人数/袜子" md-sort-by="membersCount"
-                  >{{ booking.membersCount }} /
+                <md-table-cell md-label="人数/袜子" md-sort-by="adultsCount"
+                  >{{ booking.adultsCount }} /
                   {{ booking.socksCount }}</md-table-cell
                 >
                 <md-table-cell
@@ -148,10 +148,9 @@ export default {
       if (this.$route.params.id === "add") {
         this.user = (await User.save(this.user)).body;
       } else {
-        this.user = (await User.update(
-          { id: this.$route.params.id },
-          this.user
-        )).body;
+        this.user = (
+          await User.update({ id: this.$route.params.id }, this.user)
+        ).body;
       }
       this.$notify({
         message: "保存成功",
@@ -175,10 +174,12 @@ export default {
       } else {
         this.user = (await User.get({ id: this.$route.params.id })).body;
       }
-      this.depositPayments = (await Payment.get({
-        customer: this.user.id,
-        attach: "deposit"
-      })).body;
+      this.depositPayments = (
+        await Payment.get({
+          customer: this.user.id,
+          attach: "deposit"
+        })
+      ).body;
       this.userBookings = (await Booking.get({ customer: this.user.id })).body;
     }
   }

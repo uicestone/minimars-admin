@@ -13,6 +13,30 @@
 
             <md-card-content class="md-layout">
               <div class="md-layout-item md-small-size-100 md-size-25">
+                <md-autocomplete
+                  v-model="customerSearchTerm"
+                  :md-options="getCustomers(customerSearchTerm)"
+                  @md-selected="selectCustomer"
+                >
+                  <label>客户</label>
+                  <template slot="md-autocomplete-item" slot-scope="{ item }">
+                    {{ item.name }}
+                  </template>
+                </md-autocomplete>
+              </div>
+              <div class="md-layout-item md-small-size-100 md-size-25">
+                <md-autocomplete
+                  v-model="storeSearchTerm"
+                  :md-options="getStores(storeSearchTerm)"
+                  @md-selected="selectStore"
+                >
+                  <label>门店</label>
+                  <template slot="md-autocomplete-item" slot-scope="{ item }">
+                    {{ item.name }}
+                  </template>
+                </md-autocomplete>
+              </div>
+              <div class="md-layout-item md-small-size-100 md-size-25">
                 <md-field>
                   <label>类型</label>
                   <md-select v-model="booking.type" @keydown.enter.prevent="">
@@ -37,30 +61,6 @@
                     >
                   </md-select>
                 </md-field>
-              </div>
-              <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-autocomplete
-                  v-model="customerSearchTerm"
-                  :md-options="getCustomers(customerSearchTerm)"
-                  @md-selected="selectCustomer"
-                >
-                  <label>客户</label>
-                  <template slot="md-autocomplete-item" slot-scope="{ item }">
-                    {{ item.name }}
-                  </template>
-                </md-autocomplete>
-              </div>
-              <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-autocomplete
-                  v-model="storeSearchTerm"
-                  :md-options="getStores(storeSearchTerm)"
-                  @md-selected="selectStore"
-                >
-                  <label>门店</label>
-                  <template slot="md-autocomplete-item" slot-scope="{ item }">
-                    {{ item.name }}
-                  </template>
-                </md-autocomplete>
               </div>
               <div
                 class="md-layout-item md-layout md-small-size-100 md-size-50 p-0"
@@ -94,29 +94,18 @@
               <div
                 class="md-layout-item md-layout md-small-size-100 md-size-50 p-0"
               >
-                <div class="md-layout-item md-small-size-100 md-size-25">
-                  <md-field>
-                    <label>时长</label>
-                    <md-input
-                      v-model="booking.hours"
-                      type="number"
-                      min="0"
-                      max="3"
-                    ></md-input>
-                  </md-field>
-                </div>
-                <div class="md-layout-item md-small-size-100 md-size-25">
+                <div class="md-layout-item md-small-size-100 md-size-33">
                   <md-field>
                     <label>成人</label>
                     <md-input
-                      v-model="booking.membersCount"
+                      v-model="booking.adultsCount"
                       type="number"
                       min="0"
                     ></md-input>
                     <span class="md-suffix">位</span>
                   </md-field>
                 </div>
-                <div class="md-layout-item md-small-size-100 md-size-25">
+                <div class="md-layout-item md-small-size-100 md-size-33">
                   <md-field>
                     <label>儿童</label>
                     <md-input
@@ -127,7 +116,7 @@
                     <span class="md-suffix">位</span>
                   </md-field>
                 </div>
-                <div class="md-layout-item md-small-size-100 md-size-25">
+                <div class="md-layout-item md-small-size-100 md-size-33">
                   <md-field>
                     <label>袜子</label>
                     <md-input
@@ -162,6 +151,7 @@
                   type="button"
                   class="mt-4 ml-2 md-simple md-info"
                   @click="goCustomerDetail"
+                  v-if="booking.customer"
                   >客户：{{ booking.customer.name }}
                   <span v-if="booking.customer.mobile"
                     >({{ booking.customer.mobile.substr(-4) }})</span
@@ -208,57 +198,6 @@
           </md-card>
         </form>
       </div>
-      <div class="md-layout-item md-size-33 md-small-size-100 mx-auto">
-        <md-card class="band-card">
-          <md-card-header class="md-card-header-icon md-card-header-warning">
-            <div class="card-icon">
-              <md-icon>toll</md-icon>
-            </div>
-            <h4 class="title">绑定手环</h4>
-          </md-card-header>
-
-          <md-card-content class="md-layout">
-            <md-table>
-              <md-table-row
-                v-for="(bandId, index) in booking.bandIds"
-                :key="bandId"
-              >
-                <md-table-cell md-label="手环编号">{{ bandId }}</md-table-cell>
-                <md-table-cell md-label="手环编号8位">
-                  {{ booking.bandIds8[index] }}
-                </md-table-cell>
-              </md-table-row>
-            </md-table>
-          </md-card-content>
-        </md-card>
-        <md-card class="passlog-card">
-          <md-card-header class="md-card-header-icon md-card-header-green">
-            <div class="card-icon">
-              <md-icon>beenhere</md-icon>
-            </div>
-            <h4 class="title">通行记录</h4>
-          </md-card-header>
-
-          <md-card-content class="md-layout">
-            <md-table>
-              <md-table-row
-                v-for="passLog in booking.passLogs"
-                :key="passLog.id"
-              >
-                <md-table-cell md-label="时间">{{
-                  passLog.time | date("HH:mm:ss")
-                }}</md-table-cell>
-                <md-table-cell md-label="通道">{{
-                  passLog.gate
-                }}</md-table-cell>
-                <md-table-cell md-label="允许">{{
-                  passLog.allow ? "允许" : "拦截"
-                }}</md-table-cell>
-              </md-table-row>
-            </md-table>
-          </md-card-content>
-        </md-card>
-      </div>
     </div>
   </div>
 </template>
@@ -268,12 +207,23 @@
 // import "vue-datetime/dist/vue-datetime.css";
 import { Booking, Store, User } from "@/resources";
 import Swal from "sweetalert2";
+import moment from "moment";
 
 export default {
   // components: { Datetime },
   data() {
     return {
-      booking: { id: "", customer: {} },
+      booking: {
+        id: "",
+        type: "play",
+        status: "PENDING",
+        customer: null,
+        date: moment().format("YYYY-MM-DD"),
+        checkInAt: moment().format("HH:mm:ss"),
+        adultsCount: 1,
+        kidsCount: 1,
+        socksCount: 1
+      },
       customers: [],
       customerSearchTerm: "",
       stores: [],

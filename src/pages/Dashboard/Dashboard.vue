@@ -409,7 +409,7 @@ export default {
     // },
     dailyCustomersChart() {
       const values = this.stats.dailyCustomers.map(
-        d => d.membersCount + d.kidsCount
+        d => d.adultsCount + d.kidsCount
       );
       const labels = this.stats.dailyCustomers.map(
         d => this.weekdayMapping[d.day]

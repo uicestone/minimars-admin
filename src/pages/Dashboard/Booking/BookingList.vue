@@ -82,8 +82,8 @@
               </md-field>
             </div>
             <div class="toolbar-actions">
-              <md-button class="md-simple" @click="showCreate">
-                手动添加预约
+              <md-button class="md-primary" @click="showCreate">
+                添加预约
               </md-button>
               <md-button class="md-just-icon md-simple" @click="queryData">
                 <md-icon>refresh</md-icon>
@@ -134,8 +134,8 @@
               <md-table-cell md-label="时长" md-sort-by="hours">{{
                 item.hours ? `${item.hours}小时` : "畅玩"
               }}</md-table-cell>
-              <md-table-cell md-label="人 / 袜" md-sort-by="membersCount"
-                >{{ item.membersCount }} / {{ item.kidsCount }} /
+              <md-table-cell md-label="人 / 袜" md-sort-by="adultsCount"
+                >{{ item.adultsCount }} / {{ item.kidsCount }} /
                 {{ item.socksCount }}</md-table-cell
               >
               <md-table-cell md-label="价格/已付" md-sort-by="socksCount"
