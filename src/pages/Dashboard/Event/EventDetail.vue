@@ -63,13 +63,7 @@
                 </md-field>
               </div>
               <div class="md-layout-item md-small-size-100">
-                <md-field>
-                  <label>内容详情</label>
-                  <md-textarea
-                    v-model="event.content"
-                    class="no-padding"
-                  ></md-textarea>
-                </md-field>
+                <editor v-model="event.content" />
               </div>
               <div class="md-layout-item md-size-100 text-right">
                 <md-button type="submit" class="md-raised md-primary mt-4"
@@ -128,10 +122,13 @@
 // import { Datetime } from "vue-datetime";
 // import "vue-datetime/dist/vue-datetime.css";
 import { Event, Store, User } from "@/resources";
+import { Editor } from "@/components";
 import Swal from "sweetalert2";
 
 export default {
-  // components: { Datetime },
+  components: {
+    Editor
+  },
   data() {
     return {
       event: { id: "", store: null },

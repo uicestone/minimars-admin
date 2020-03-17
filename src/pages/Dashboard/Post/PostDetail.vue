@@ -26,100 +26,7 @@
                 </md-field>
               </div>
               <div class="md-layout-item md-size-100">
-                <editor-menu-bar
-                  :editor="editor"
-                  v-slot="{ commands, isActive }"
-                >
-                  <div>
-                    <md-button
-                      class="md-simple md-sm md-just-icon"
-                      :class="{ 'md-primary': isActive.bold() }"
-                      @click="commands.bold"
-                    >
-                      <md-icon>format_bold</md-icon>
-                    </md-button>
-                    <md-button
-                      class="md-simple md-sm md-just-icon"
-                      :class="{ 'md-primary': isActive.italic() }"
-                      @click="commands.italic"
-                    >
-                      <md-icon>format_italic</md-icon>
-                    </md-button>
-                    <md-button
-                      class="md-simple md-sm md-just-icon"
-                      :class="{ 'md-primary': isActive.underline() }"
-                      @click="commands.underline"
-                    >
-                      <md-icon>format_underline</md-icon>
-                    </md-button>
-                    <md-button
-                      class="md-simple md-sm md-just-icon"
-                      :class="{ 'md-primary': isActive.strike() }"
-                      @click="commands.strike"
-                    >
-                      <md-icon>format_clear</md-icon>
-                    </md-button>
-                    <md-menu style="margin:.3125rem 1px">
-                      <md-button
-                        class="md-simple md-sm md-just-icon"
-                        md-menu-trigger
-                      >
-                        <md-icon>format_size</md-icon>
-                      </md-button>
-                      <md-menu-content>
-                        <md-button
-                          class="md-simple md-sm md-just-icon"
-                          :class="{
-                            'md-primary': isActive.heading({ level: 1 })
-                          }"
-                          @click="commands.heading({ level: 1 })"
-                        >
-                          <span>H1</span>
-                        </md-button>
-                        <md-button
-                          class="md-simple md-sm md-just-icon"
-                          :class="{
-                            'md-primary': isActive.heading({ level: 2 })
-                          }"
-                          @click="commands.heading({ level: 2 })"
-                        >
-                          <span>H2</span>
-                        </md-button>
-                        <md-button
-                          class="md-simple md-sm md-just-icon"
-                          :class="{
-                            'md-primary': isActive.heading({ level: 3 })
-                          }"
-                          @click="commands.heading({ level: 3 })"
-                        >
-                          <span>H3</span>
-                        </md-button>
-                      </md-menu-content>
-                    </md-menu>
-                    <md-button
-                      class="md-simple md-sm md-just-icon"
-                      :class="{ 'md-primary': isActive.bullet_list() }"
-                      @click="commands.bullet_list"
-                    >
-                      <md-icon>format_list_bulleted</md-icon>
-                    </md-button>
-                    <md-button
-                      class="md-simple md-sm md-just-icon"
-                      :class="{ 'md-primary': isActive.ordered_list() }"
-                      @click="commands.ordered_list"
-                    >
-                      <md-icon>format_list_numbered</md-icon>
-                    </md-button>
-                    <md-button
-                      class="md-simple md-sm md-just-icon"
-                      :class="{ 'md-primary': isActive.blockquote() }"
-                      @click="commands.blockquote"
-                    >
-                      <md-icon>format_quote</md-icon>
-                    </md-button>
-                  </div>
-                </editor-menu-bar>
-                <editor-content :editor="editor" :content="post.content" />
+                <editor v-model="post.content" />
               </div>
               <div class="md-layout-item md-size-100 text-right">
                 <md-button type="submit" class="md-raised md-primary mt-4"
@@ -129,7 +36,7 @@
                   type="button"
                   class="mt-4 ml-2 md-simple md-danger"
                   @click="remove"
-                  v-if="this.post.id"
+                  v-if="post.id"
                   >删除</md-button
                 >
               </div>
@@ -178,40 +85,18 @@
 // import { Datetime } from "vue-datetime";
 // import "vue-datetime/dist/vue-datetime.css";
 import { Post } from "@/resources";
+import { Editor } from "@/components";
 import Swal from "sweetalert2";
-import { Editor, EditorContent, EditorMenuBar } from "tiptap";
-import {
-  Blockquote,
-  CodeBlock,
-  HardBreak,
-  Heading,
-  HorizontalRule,
-  OrderedList,
-  BulletList,
-  ListItem,
-  TodoItem,
-  TodoList,
-  Bold,
-  Code,
-  Italic,
-  Link,
-  Strike,
-  Underline,
-  History,
-  Image
-} from "tiptap-extensions";
 
 export default {
   components: {
     // Datetime
-    EditorContent,
-    EditorMenuBar
+    Editor
   },
   data() {
     return {
       post: { id: "" },
-      posterImage: "",
-      editor: null
+      posterImage: ""
     };
   },
   methods: {
@@ -295,36 +180,6 @@ export default {
     if (this.$route.params.id !== "add") {
       this.post = (await Post.get({ id: this.$route.params.id })).body;
     }
-    this.editor = new Editor({
-      extensions: [
-        new Blockquote(),
-        new BulletList(),
-        new CodeBlock(),
-        new HardBreak(),
-        new Heading({ levels: [1, 2, 3] }),
-        new HorizontalRule(),
-        new ListItem(),
-        new OrderedList(),
-        new TodoItem(),
-        new TodoList(),
-        new Link(),
-        new Bold(),
-        new Code(),
-        new Italic(),
-        new Strike(),
-        new Underline(),
-        new History(),
-        new Image()
-      ],
-      content: this.post.content || "",
-      onUpdate: ({ getHTML }) => {
-        // get new content on update
-        this.post.content = getHTML();
-      }
-    });
-  },
-  beforeDestroy() {
-    this.editor.destroy();
   }
 };
 </script>

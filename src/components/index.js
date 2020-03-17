@@ -31,6 +31,8 @@ import AsyncWorldMap from "./WorldMap/AsyncWorldMap.vue";
 
 import Pagination from "./Pagination.vue";
 
+import Editor from "./Editor.vue";
+
 import SidebarPlugin from "./SidebarPlugin";
 
 import AnimatedNumber from "./AnimatedNumber";
@@ -61,5 +63,6 @@ export {
   WizardTab,
   AnimatedNumber,
   Collapse,
-  AsyncWorldMap
+  AsyncWorldMap,
+  Editor
 };
