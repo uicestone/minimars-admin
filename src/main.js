@@ -78,7 +78,7 @@ Object.defineProperty(Vue.prototype, "$user", {
 Object.defineProperty(Vue.prototype, "$bookingTypeNames", {
   get() {
     return {
-      play: "游乐",
+      play: "门票",
       event: "活动"
     };
   }

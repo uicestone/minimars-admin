@@ -68,6 +68,7 @@
                   type="button"
                   class="mt-4 ml-2 md-simple md-danger"
                   @click="remove"
+                  v-if="this.gift.id"
                   >删除</md-button
                 >
               </div>
