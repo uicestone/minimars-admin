@@ -232,3 +232,9 @@ small,
   font-size: 80%;
   font-weight: 400;
 }
+
+blockquote {
+  border-left: 4px $brand-primary solid;
+  margin-left: 0;
+  padding-left: 7px;
+}
