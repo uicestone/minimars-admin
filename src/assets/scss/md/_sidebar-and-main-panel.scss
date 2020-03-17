@@ -372,7 +372,7 @@
               display: flex;
               align-items: center;
               justify-content: center;
-              height: auto;
+              height: 80px;
               width: auto;
               background: $white-color;
               border-radius: 50%;
@@ -381,7 +381,7 @@
               border-radius: 0;
 
                 img{
-                  // width: 75%;
+                  width: 70%;
                   vertical-align: unset;
                   position: relative;
                   // top: 2px;

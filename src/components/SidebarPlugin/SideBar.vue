@@ -63,7 +63,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: "Kanga Zone"
+      default: "MINI MARS"
     },
     rtlTitle: {
       type: String,
@@ -99,7 +99,7 @@ export default {
     },
     logo: {
       type: String,
-      default: "./img/logo-w.png"
+      default: "./img/logo-name.png"
     },
     sidebarLinks: {
       type: Array,
