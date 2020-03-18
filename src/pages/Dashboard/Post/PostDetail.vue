@@ -26,7 +26,10 @@
                 </md-field>
               </div>
               <div class="md-layout-item md-size-100">
-                <editor v-model="post.content" />
+                <md-field class="md-has-value mt-4">
+                  <label>内容</label>
+                  <editor v-model="post.content" />
+                </md-field>
               </div>
               <div class="md-layout-item md-size-100 text-right">
                 <md-button type="submit" class="md-raised md-primary mt-4"
