@@ -12,7 +12,12 @@
           <div
             class="md-toolbar md-table-toolbar md-transparent md-theme-default md-elevation-0 md-layout mb-2"
           >
-            <div class="md-layout"></div>
+            <div class="md-layout">
+              <md-field class="md-layout-item md-size-15 md-xsmall-size-100">
+                <label>标签</label>
+                <md-input clearable v-model="searchQuery.tag"> </md-input>
+              </md-field>
+            </div>
             <div class="toolbar-actions">
               <md-button class="md-primary" @click="showCreate">
                 添加文章

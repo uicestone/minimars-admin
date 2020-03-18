@@ -26,6 +26,16 @@
                 </md-field>
               </div>
               <div class="md-layout-item md-size-100">
+                <md-chips
+                  @keypress.native.enter.prevent
+                  v-model="post.tags"
+                  class="md-primary shake-on-error"
+                  md-placeholder="添加标签"
+                  md-check-duplicated
+                >
+                </md-chips>
+              </div>
+              <div class="md-layout-item md-size-100">
                 <md-field class="md-has-value mt-4">
                   <label>内容</label>
                   <editor v-model="post.content" />
@@ -98,7 +108,7 @@ export default {
   },
   data() {
     return {
-      post: { id: "" },
+      post: { id: "", tags: [] },
       posterImage: ""
     };
   },
@@ -201,5 +211,9 @@ export default {
 }
 .md-card .md-table {
   width: 100%;
+}
+.shake-on-error /deep/ .md-duplicated {
+  animation-name: shake;
+  animation-duration: 0.5s;
 }
 </style>
