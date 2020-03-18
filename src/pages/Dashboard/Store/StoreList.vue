@@ -52,9 +52,9 @@
               <md-table-cell md-label="地址" md-sort-by="address">{{
                 item.address
               }}</md-table-cell>
-              <md-table-cell md-label="服务器状态" md-sort-by="address">{{
+              <!-- <md-table-cell md-label="服务器状态" md-sort-by="address">{{
                 item.localServer | localServer
-              }}</md-table-cell>
+              }}</md-table-cell> -->
               <!-- <md-table-cell md-label="操作">
                 <md-button
                   class="md-just-icon md-danger md-simple"

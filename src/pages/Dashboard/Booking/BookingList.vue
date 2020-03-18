@@ -63,12 +63,6 @@
               </md-field>
 
               <md-field class="md-layout-item md-size-15 md-xsmall-size-100">
-                <label>手环编号</label>
-                <md-input type="number" clearable v-model="searchQuery.bandId">
-                </md-input>
-              </md-field>
-
-              <md-field class="md-layout-item md-size-15 md-xsmall-size-100">
                 <label>优惠</label>
                 <md-select v-model="searchQuery.coupon">
                   <md-option value="">不指定</md-option>
