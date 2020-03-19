@@ -1,6 +1,11 @@
 import Vue from "vue";
 
 const Booking = new Vue.resource("booking{/id}");
+const BookingPrice = new Vue.resource(
+  "booking-price",
+  {},
+  { update: { method: "POST" } }
+);
 const CardType = new Vue.resource("card-type{/id}");
 const Code = new Vue.resource("code{/id}");
 const Config = new Vue.resource("config{/key}");
@@ -13,6 +18,7 @@ const User = new Vue.resource("user{/id}");
 
 export {
   Booking,
+  BookingPrice,
   CardType,
   Code,
   Config,

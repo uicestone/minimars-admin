@@ -29,6 +29,7 @@
                   v-model="storeSearchTerm"
                   :md-options="getStores(storeSearchTerm)"
                   @md-selected="selectStore"
+                  :disabled="$user.role === 'manager'"
                 >
                   <label>门店</label>
                   <template slot="md-autocomplete-item" slot-scope="{ item }">
@@ -52,7 +53,11 @@
               <div class="md-layout-item md-small-size-100 md-size-25">
                 <md-field>
                   <label>状态</label>
-                  <md-select v-model="booking.status" @keydown.enter.prevent="">
+                  <md-select
+                    v-model="booking.status"
+                    @keydown.enter.prevent
+                    :disabled="$user.role === 'manager'"
+                  >
                     <md-option
                       v-for="(name, status) in $bookingStatusNames"
                       :key="status"
@@ -158,6 +163,11 @@
                     >({{ booking.customer.mobile.substr(-4) }})</span
                   ></md-button
                 >
+                <md-button
+                  class="md-raised md-warning mt-4 pull-right"
+                  v-if="price"
+                  >收款 {{ price | currency }}</md-button
+                >
               </div>
             </md-card-content>
           </md-card>
@@ -206,14 +216,14 @@
 <script>
 // import { Datetime } from "vue-datetime";
 // import "vue-datetime/dist/vue-datetime.css";
-import { Booking, Store, User } from "@/resources";
+import { Booking, BookingPrice, Store, User } from "@/resources";
 import Swal from "sweetalert2";
 import moment from "moment";
 
 export default {
   // components: { Datetime },
-
   data() {
+    const currentUserStore = this.$user.store;
     return {
       booking: {
         id: "",
@@ -225,12 +235,13 @@ export default {
         adultsCount: 1,
         kidsCount: 1,
         socksCount: 1,
-        store: this.$user.store || null
+        store: currentUserStore
       },
+      price: null,
       customers: [],
       customerSearchTerm: "",
       stores: [],
-      storeSearchTerm: ""
+      storeSearchTerm: currentUserStore ? currentUserStore.name : ""
     };
   },
   methods: {
@@ -303,6 +314,18 @@ export default {
     },
     goCustomerDetail() {
       this.$router.push(`/user/${this.booking.customer.id}`);
+    },
+    async updateBookingPrice() {
+      const { price } = (await BookingPrice.update(this.booking)).body;
+      this.price = price;
+    }
+  },
+  watch: {
+    booking: {
+      handler(b) {
+        this.updateBookingPrice();
+      },
+      deep: true
     }
   },
   async mounted() {
