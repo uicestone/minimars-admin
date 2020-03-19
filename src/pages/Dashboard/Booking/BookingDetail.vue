@@ -212,6 +212,7 @@ import moment from "moment";
 
 export default {
   // components: { Datetime },
+
   data() {
     return {
       booking: {
@@ -223,7 +224,8 @@ export default {
         checkInAt: moment().format("HH:mm:ss"),
         adultsCount: 1,
         kidsCount: 1,
-        socksCount: 1
+        socksCount: 1,
+        store: this.$user.store || null
       },
       customers: [],
       customerSearchTerm: "",
