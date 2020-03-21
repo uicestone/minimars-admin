@@ -228,7 +228,7 @@ export default {
       booking: {
         id: "",
         type: "play",
-        status: "PENDING",
+        status: "pending",
         customer: null,
         date: moment().format("YYYY-MM-DD"),
         checkInAt: moment().format("HH:mm:ss"),

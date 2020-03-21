@@ -87,12 +87,12 @@ Object.defineProperty(Vue.prototype, "$bookingTypeNames", {
 Object.defineProperty(Vue.prototype, "$bookingStatusNames", {
   get() {
     return {
-      PENDING: "待付款",
-      BOOKED: "已确认",
-      IN_SERVICE: "已入场",
-      PENDING_REFUND: "待退款",
-      FINISHED: "已完成",
-      CANCELED: "已取消"
+      pending: "待付款",
+      booked: "已确认",
+      in_service: "已入场",
+      pending_refund: "待退款",
+      finished: "已完成",
+      canceled: "已取消"
     };
   }
 });
