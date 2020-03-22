@@ -29,7 +29,7 @@
                   <label>积分售价</label>
                   <md-input
                     type="number"
-                    v-model="gift.priceInCredit"
+                    v-model="gift.priceInPoints"
                   ></md-input>
                 </md-field>
               </div>

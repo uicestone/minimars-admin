@@ -41,8 +41,8 @@
               <md-table-cell md-label="日期" md-sort-by="date">{{
                 item.date | date("YYYY-MM-DD")
               }}</md-table-cell>
-              <md-table-cell md-label="积分售价" md-sort-by="priceInCredit">{{
-                item.priceInCredit
+              <md-table-cell md-label="积分售价" md-sort-by="priceInPoints">{{
+                item.priceInPoints
               }}</md-table-cell>
               <md-table-cell md-label="收款售价" md-sort-by="priceInCny">{{
                 item.priceInCny | currency

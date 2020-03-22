@@ -60,11 +60,11 @@
               </div>
               <div
                 class="md-layout-item md-small-size-100 md-size-33"
-                v-if="cardType.type === 'credit'"
+                v-if="cardType.type === 'balance'"
               >
                 <md-field>
                   <label>面值</label>
-                  <md-input type="number" v-model="cardType.credit"></md-input>
+                  <md-input type="number" v-model="cardType.balance"></md-input>
                 </md-field>
               </div>
               <div
@@ -214,6 +214,26 @@ export default {
     selectStore(item) {
       this.cardType.store = item;
       this.storeSearchTerm = item.name;
+    }
+  },
+  watch: {
+    "cardType.type"(type, typeWas) {
+      if (typeWas && type && type !== typeWas) {
+        delete this.cardType.start;
+        delete this.cardType.end;
+        delete this.cardType.balance;
+        delete this.cardType.times;
+      }
+    },
+    "cardType.start"(v) {
+      if (v && (!v.constructor || v.constructor.name !== "Date")) {
+        this.cardType.start = new Date(this.cardType.start);
+      }
+    },
+    "cardType.end"(v) {
+      if (v && (!v.constructor || v.constructor.name !== "Date")) {
+        this.cardType.end = new Date(this.cardType.end);
+      }
     }
   },
   async mounted() {

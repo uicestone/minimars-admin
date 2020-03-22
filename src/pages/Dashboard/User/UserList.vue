@@ -17,7 +17,7 @@
               class="md-layout-item"
               style="flex:0;flex-basis:200px"
             >
-              总余额：{{ totalCredit | currency }}
+              总余额：{{ totalBalance | currency }}
             </div>
             <div
               class="md-layout md-layout-item md-alignment-center-right search-query"
@@ -111,13 +111,13 @@
               >
               <md-table-cell
                 md-label="余额"
-                md-sort-by="creditDeposit"
+                md-sort-by="balanceDeposit"
                 v-if="searchQuery.role === 'customer'"
-                ><div v-if="item.credit">
-                  {{ item.creditDeposit }} 赠{{ item.creditReward }}
+                ><div v-if="item.balance">
+                  {{ item.balanceDeposit }} 赠{{ item.balanceReward }}
                 </div>
                 <div v-if="item.codeAmount">券值：{{ item.codeAmount }}</div>
-                <div v-if="!item.credit && !item.codeAmount">
+                <div v-if="!item.balance && !item.codeAmount">
                   -
                 </div></md-table-cell
               >
@@ -171,7 +171,7 @@ export default {
       searchQuery: { role: "customer" },
       searchDelayTimeout: null,
       queriedData: [],
-      totalCredit: null
+      totalBalance: null
     };
   },
   mounted() {
@@ -212,7 +212,7 @@ export default {
       const response = await User.get(this.query);
       this.queriedData = response.body;
       this.pagination.total = Number(response.headers.map["items-total"][0]);
-      this.totalCredit = Number(response.headers.map["total-credit"][0]);
+      this.totalBalance = Number(response.headers.map["total-balance"][0]);
     },
     showDetail(item) {
       this.$router.push(`/user/${item.id}`);

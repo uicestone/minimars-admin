@@ -15,7 +15,7 @@
             </md-card-header>
 
             <md-card-content class="md-layout">
-              <div class="file-input img-circle md-layout-item md-size-25">
+              <div class="file-input img-circle md-layout-item md-size-25 pt-4">
                 <div v-if="!user.avatarUrl">
                   <div class="image-container">
                     <img src="/img/placeholder.jpg" title="" />
@@ -105,15 +105,6 @@
                   </md-field>
                 </div>
                 <!-- <div
-            v-if="user.role === 'customer'"
-            class="md-layout-item md-small-size-100 md-size-50"
-          >
-            <md-field>
-              <label>等级</label>
-              <md-input v-model="user.cardType" type="text" disabled></md-input>
-            </md-field>
-          </div> -->
-                <div
                   v-if="user.role === 'customer'"
                   class="md-layout-item md-small-size-100 md-size-50"
                 >
@@ -125,7 +116,7 @@
                       :disabled="!$user.can('edit-user')"
                     ></md-input>
                   </md-field>
-                </div>
+                </div> -->
                 <div
                   v-if="user.role === 'customer'"
                   class="md-layout-item md-small-size-100 md-size-50"
@@ -133,7 +124,7 @@
                   <md-field>
                     <label>余额</label>
                     <md-input
-                      v-model="user.credit"
+                      v-model="user.balance"
                       type="text"
                       disabled
                     ></md-input>
@@ -156,7 +147,7 @@
                     </md-select>
                   </md-field>
                 </div>
-                <div
+                <!-- <div
                   v-if="user.role === 'customer'"
                   class="md-layout-item md-small-size-100 md-size-50"
                 >
@@ -168,7 +159,7 @@
                       disabled
                     ></md-input>
                   </md-field>
-                </div>
+                </div> -->
                 <div
                   v-if="user.role !== 'customer'"
                   class="md-layout-item md-small-size-100 md-size-50"
@@ -276,7 +267,7 @@
             <div class="card-icon">
               <md-icon>code</md-icon>
             </div>
-            <h4 class="title">券码</h4>
+            <h4 class="title">会员卡</h4>
           </md-card-header>
           <md-card-content class="md-layout">
             <md-table>

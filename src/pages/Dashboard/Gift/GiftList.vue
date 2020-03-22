@@ -44,8 +44,8 @@
               <md-table-cell md-label="门店" md-sort-by="store.name">{{
                 item.store.name
               }}</md-table-cell>
-              <md-table-cell md-label="积分售价" md-sort-by="priceInCredit">{{
-                item.priceInCredit
+              <md-table-cell md-label="积分售价" md-sort-by="priceInPoints">{{
+                item.priceInPoints
               }}</md-table-cell>
               <md-table-cell md-label="收款售价" md-sort-by="priceInCny">{{
                 item.priceInCny

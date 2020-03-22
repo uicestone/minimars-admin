@@ -79,7 +79,9 @@ Object.defineProperty(Vue.prototype, "$bookingTypeNames", {
   get() {
     return {
       play: "门票",
-      event: "活动"
+      // party: "派对",
+      event: "活动",
+      gift: "礼品兑换"
     };
   }
 });
@@ -102,7 +104,7 @@ Object.defineProperty(Vue.prototype, "$cardTypeNames", {
     return {
       times: "次卡",
       period: "时效卡",
-      credit: "充值卡"
+      balance: "充值卡"
     };
   }
 });
@@ -110,7 +112,7 @@ Object.defineProperty(Vue.prototype, "$cardTypeNames", {
 Object.defineProperty(Vue.prototype, "$gatewayNames", {
   get() {
     return {
-      credit: "充值余额",
+      balance: "充值余额",
       code: "次卡券码",
       coupon: "团购优惠券",
       scan: "现场扫码",

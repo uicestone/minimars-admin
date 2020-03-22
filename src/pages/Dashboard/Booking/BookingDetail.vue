@@ -68,6 +68,21 @@
                 </md-field>
               </div>
               <div
+                class="md-layout-item md-small-size-100 md-size-100"
+                v-if="booking.type === 'event'"
+              >
+                <md-autocomplete
+                  v-model="eventSearchTerm"
+                  :md-options="getEvents(eventSearchTerm)"
+                  @md-selected="selectEvent"
+                >
+                  <label>活动</label>
+                  <template slot="md-autocomplete-item" slot-scope="{ item }">
+                    {{ item.title }}
+                  </template>
+                </md-autocomplete>
+              </div>
+              <div
                 class="md-layout-item md-layout md-small-size-100 md-size-50 p-0"
               >
                 <div class="md-layout-item md-small-size-100 md-size-66">
@@ -166,6 +181,7 @@
                 <md-button
                   class="md-raised md-warning mt-4 pull-right"
                   v-if="price"
+                  :disabled="!booking.customer"
                   >收款 {{ price | currency }}</md-button
                 >
               </div>
@@ -216,7 +232,7 @@
 <script>
 // import { Datetime } from "vue-datetime";
 // import "vue-datetime/dist/vue-datetime.css";
-import { Booking, BookingPrice, Store, User } from "@/resources";
+import { Booking, BookingPrice, Store, User, Event } from "@/resources";
 import Swal from "sweetalert2";
 import moment from "moment";
 
@@ -241,7 +257,9 @@ export default {
       customers: [],
       customerSearchTerm: "",
       stores: [],
-      storeSearchTerm: currentUserStore ? currentUserStore.name : ""
+      storeSearchTerm: currentUserStore ? currentUserStore.name : "",
+      events: [],
+      eventSearchTerm: ""
     };
   },
   methods: {
@@ -312,6 +330,14 @@ export default {
       this.booking.store = item;
       this.storeSearchTerm = item.name;
     },
+    async getEvents(q) {
+      this.stores = (await Event.get({ keyword: q })).body;
+      return this.stores;
+    },
+    selectEvent(item) {
+      this.booking.event = item;
+      this.eventSearchTerm = item.title;
+    },
     goCustomerDetail() {
       this.$router.push(`/user/${this.booking.customer.id}`);
     },
@@ -323,7 +349,9 @@ export default {
   watch: {
     booking: {
       handler(b) {
-        this.updateBookingPrice();
+        if (!b.id) {
+          this.updateBookingPrice();
+        }
       },
       deep: true
     }
@@ -334,6 +362,9 @@ export default {
       if (this.booking.customer)
         this.customerSearchTerm = this.booking.customer.name;
       if (this.booking.store) this.storeSearchTerm = this.booking.store.name;
+      if (this.booking.event) this.eventSearchTerm = this.booking.event.title;
+    } else {
+      this.updateBookingPrice();
     }
   }
 };
