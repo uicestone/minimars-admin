@@ -168,9 +168,7 @@ export default {
         this.cardType = (
           await CardType.update(
             {
-              id: this.$route.params.id,
-              bypassBandIdsCheck: true,
-              authBands: false
+              id: this.$route.params.id
             },
             this.cardType
           )

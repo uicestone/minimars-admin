@@ -108,7 +108,6 @@ export default {
         this.$isLoading = false;
         if (response.status >= 500) {
           const message = "服务器内部错误";
-
           this.$notify({
             message,
             icon: "add_alert",
@@ -116,8 +115,7 @@ export default {
             verticalAlign: "bottom",
             type: "danger"
           });
-
-          return Promise.reject(message);
+          return Promise.reject(new Error(message));
         } else if (response.status >= 400) {
           // redirect to login page on any 401 response
           if (response.status === 401) {
@@ -134,7 +132,7 @@ export default {
             type: "warning"
           });
 
-          return Promise.reject(message);
+          return Promise.reject(new Error(message));
         }
         return response;
       };

@@ -137,9 +137,7 @@ export default {
         this.gift = (
           await Gift.update(
             {
-              id: this.$route.params.id,
-              bypassBandIdsCheck: true,
-              authBands: false
+              id: this.$route.params.id
             },
             this.gift
           )

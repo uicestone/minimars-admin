@@ -2,7 +2,7 @@
   <div class="content">
     <div class="md-layout">
       <div class="md-layout-item md-size-66 md-small-size-100 mx-auto">
-        <form @submit.prevent="save">
+        <form @submit.prevent="save" ref="form">
           <md-card>
             <md-card-header class="md-card-header-icon md-card-header-primary">
               <div class="card-icon">
@@ -158,9 +158,41 @@
                 </md-field>
               </div>
               <div class="md-layout-item md-size-100 text-right">
-                <md-button type="submit" class="md-raised md-primary mt-4"
+                <md-button
+                  type="submit"
+                  class="md-raised md-primary mt-4"
+                  v-if="booking.payments && booking.payments.length"
                   >保存</md-button
                 >
+                <md-menu md-direction="bottom-end" v-else>
+                  <md-button md-menu-trigger class="md-raised md-primary mt-4"
+                    >保存并生成支付</md-button
+                  >
+                  <md-menu-content>
+                    <md-menu-item
+                      @click="
+                        paymentGateway = 'cash';
+                        save();
+                      "
+                      >次卡权益支付</md-menu-item
+                    >
+                    <md-menu-item
+                      @click="
+                        paymentGateway = 'balance';
+                        save();
+                      "
+                      >账户余额支付</md-menu-item
+                    >
+                    <md-menu-item
+                      @click="
+                        paymentGateway = 'cash';
+                        save();
+                      "
+                      >现金刷卡支付</md-menu-item
+                    >
+                    <!-- <md-menu-item @click="paymentGateway='scan'">扫码支付</md-menu-item> -->
+                  </md-menu-content>
+                </md-menu>
                 <md-button
                   type="button"
                   class="mt-4 ml-2 md-simple md-danger"
@@ -265,19 +297,15 @@ export default {
   methods: {
     async save() {
       if (this.$route.params.id === "add") {
+        const { paymentGateway } = this;
         this.booking = (
-          await Booking.save(this.booking, {
-            bypassBandIdsCheck: true,
-            authBands: false
-          })
+          await Booking.save({ paymentGateway }, this.booking)
         ).body;
       } else {
         this.booking = (
           await Booking.update(
             {
-              id: this.$route.params.id,
-              bypassBandIdsCheck: true,
-              authBands: false
+              id: this.$route.params.id
             },
             this.booking
           )
