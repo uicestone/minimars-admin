@@ -211,10 +211,9 @@
                   ></md-button
                 >
                 <md-button
-                  class="md-raised md-warning mt-4 pull-right"
+                  class="md-simple md-warning mt-4 pull-right"
                   v-if="price"
-                  :disabled="!booking.customer"
-                  >收款 {{ price | currency }}</md-button
+                  >{{ price | currency }}</md-button
                 >
               </div>
             </md-card-content>
@@ -236,13 +235,10 @@
                   <md-table-cell md-label="金额" md-sort-by="amount"
                     >¥{{ payment.amount }}</md-table-cell
                   >
-                  <md-table-cell md-label="完成" md-sort-by="paid">{{
-                    payment.paid ? "是" : "否"
-                  }}</md-table-cell>
                   <md-table-cell
                     md-label="描述"
                     md-sort-by="title"
-                    style="width:35%"
+                    style="width:40%"
                     >{{ payment.title }}</md-table-cell
                   >
                   <md-table-cell md-label="通道" md-sort-by="gateway">{{
@@ -251,6 +247,20 @@
                   <md-table-cell md-label="创建时间" md-sort-by="createdAt">{{
                     payment.createdAt | date
                   }}</md-table-cell>
+                  <md-table-cell md-label="收款">
+                    <md-button
+                      class="md-success md-normal"
+                      disabled
+                      v-if="payment.paid"
+                      >已收款</md-button
+                    >
+                    <md-button
+                      v-else
+                      class="md-normal md-warning"
+                      @click="pay(payment)"
+                      >收款</md-button
+                    >
+                  </md-table-cell>
                 </md-table-row>
               </md-table>
             </md-card-content>
@@ -264,7 +274,7 @@
 <script>
 // import { Datetime } from "vue-datetime";
 // import "vue-datetime/dist/vue-datetime.css";
-import { Booking, BookingPrice, User, Event } from "@/resources";
+import { Booking, BookingPrice, User, Event, Payment } from "@/resources";
 import Swal from "sweetalert2";
 import moment from "moment";
 
@@ -371,6 +381,35 @@ export default {
     async updateBookingPrice() {
       const { price } = (await BookingPrice.update(this.booking)).body;
       this.price = price;
+    },
+    async pay(payment) {
+      if (
+        !(
+          await Swal.fire({
+            title: `确定已收款 ¥${payment.amount.toFixed(2)}？`,
+            // text: `这个操作`,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "md-button md-warning",
+            cancelButtonClass: "md-button",
+            confirmButtonText: "确定已收款",
+            cancelButtonText: "取消",
+            buttonsStyling: false
+          })
+        ).value
+      )
+        return;
+      await Payment.update({ id: payment.id }, { paid: true });
+      this.booking = (await Booking.get({ id: this.booking.id })).body;
+      this.$notify({
+        message:
+          "收款成功，预约状态现在是：" +
+          this.$bookingStatusNames[this.booking.status],
+        icon: "add_alert",
+        horizontalAlign: "center",
+        verticalAlign: "bottom",
+        type: "success"
+      });
     }
   },
   watch: {

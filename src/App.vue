@@ -156,4 +156,10 @@ export default {
 .mapboxgl-ctrl-logo {
   display: none !important;
 }
+.md-button.md-normal {
+  width: 70px !important;
+  .md-ripple {
+    padding-top: 9px !important;
+  }
+}
 </style>

@@ -107,7 +107,7 @@
                 md-label="客户"
                 md-sort-by="customer.name"
                 @click.native.stop="goToCustomer(item.customer)"
-                style="min-width:100px"
+                style="min-width:150px"
                 >{{ item.customer.name }}
                 <span v-if="item.customer.mobile">{{
                   item.customer.mobile.substr(-4)
