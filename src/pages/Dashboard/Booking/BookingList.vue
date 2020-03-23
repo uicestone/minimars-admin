@@ -126,9 +126,6 @@
               <!-- <md-table-cell md-label="类型" md-sort-by="type">{{
                 item.type | bookingTypeName
               }}</md-table-cell> -->
-              <md-table-cell md-label="时长" md-sort-by="hours">{{
-                item.hours ? `${item.hours}小时` : "畅玩"
-              }}</md-table-cell>
               <md-table-cell md-label="人 / 袜" md-sort-by="adultsCount"
                 >{{ item.adultsCount }} / {{ item.kidsCount }} /
                 {{ item.socksCount }}</md-table-cell

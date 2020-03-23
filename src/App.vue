@@ -79,6 +79,7 @@ export default {
       this.$config = (await this.$http.get("config")).body;
       this.$stores = (await this.$http.get("store")).body;
       this.$user = (await this.$http.get("auth/user")).body;
+      this.$cardTypes = (await this.$http.get("card-type")).body;
     } catch (e) {
       console.warn(e);
     }

@@ -12,13 +12,32 @@
             </md-card-header>
 
             <md-card-content class="md-layout">
-              <div class="md-layout-item md-size-100">
+              <div class="md-layout-item md-size-50">
                 <md-field>
                   <label>名称</label>
                   <md-input v-model="cardType.title"></md-input>
                 </md-field>
               </div>
-              <div class="md-layout-item md-small-size-100 md-size-33">
+              <div class="md-layout-item md-size-25">
+                <md-field>
+                  <label>代号</label>
+                  <md-input v-model="cardType.slug"></md-input>
+                </md-field>
+              </div>
+              <div class="md-layout-item md-small-size-100 md-size-25">
+                <md-field>
+                  <label>门店</label>
+                  <md-select v-model="cardType.store">
+                    <md-option
+                      v-for="store in $stores"
+                      :key="store.id"
+                      :value="store.id"
+                      >{{ store.name }}</md-option
+                    >
+                  </md-select>
+                </md-field>
+              </div>
+              <div class="md-layout-item md-small-size-100 md-size-25">
                 <md-field>
                   <label>类型</label>
                   <md-select v-model="cardType.type" @keydown.enter.prevent="">
@@ -31,26 +50,29 @@
                   </md-select>
                 </md-field>
               </div>
-              <div class="md-layout-item md-small-size-100 md-size-33">
+              <div class="md-layout-item md-small-size-100 md-size-25">
                 <md-field>
                   <label>售价</label>
                   <md-input type="number" v-model="cardType.price"></md-input>
                 </md-field>
               </div>
-              <div class="md-layout-item md-small-size-100 md-size-33">
-                <md-autocomplete
-                  v-model="storeSearchTerm"
-                  :md-options="$stores"
-                  @md-selected="selectStore"
-                >
-                  <label>门店</label>
-                  <template slot="md-autocomplete-item" slot-scope="{ item }">
-                    {{ item.name }}
-                  </template>
-                </md-autocomplete>
+              <div class="md-layout-item md-small-size-100 md-size-25">
+                <md-field>
+                  <label>单次最多儿童数</label>
+                  <md-input type="number" v-model="cardType.maxKids"></md-input>
+                </md-field>
+              </div>
+              <div class="md-layout-item md-small-size-100 md-size-25">
+                <md-field>
+                  <label>每儿童免费陪同成人</label>
+                  <md-input
+                    type="number"
+                    v-model="cardType.freeParentsPerKid"
+                  ></md-input>
+                </md-field>
               </div>
               <div
-                class="md-layout-item md-small-size-100 md-size-33"
+                class="md-layout-item md-small-size-100 md-size-100"
                 v-if="cardType.type === 'times'"
               >
                 <md-field>
@@ -59,7 +81,7 @@
                 </md-field>
               </div>
               <div
-                class="md-layout-item md-small-size-100 md-size-33"
+                class="md-layout-item md-small-size-100 md-size-100"
                 v-if="cardType.type === 'balance'"
               >
                 <md-field>
@@ -68,7 +90,7 @@
                 </md-field>
               </div>
               <div
-                class="md-layout-item md-small-size-100 md-size-33"
+                class="md-layout-item md-small-size-100 md-size-50"
                 v-if="cardType.type === 'period'"
               >
                 <!-- <md-field :class="{ 'md-has-value': cardType.date }">
@@ -93,7 +115,7 @@
                 </md-datepicker>
               </div>
               <div
-                class="md-layout-item md-small-size-100 md-size-33"
+                class="md-layout-item md-small-size-100 md-size-50"
                 v-if="cardType.type === 'period'"
               >
                 <!-- <md-field :class="{ 'md-has-value': cardType.date }">
@@ -155,8 +177,7 @@ export default {
   // components: { Datetime },
   data() {
     return {
-      cardType: { id: "", store: null },
-      storeSearchTerm: ""
+      cardType: { id: "", store: null, freeParentsPerKid: 2, maxKids: 2 }
     };
   },
   methods: {
@@ -189,7 +210,7 @@ export default {
         !(
           await Swal.fire({
             title: "确定要删除这个卡片种类？",
-            text: `这个操作不可撤销，已够该卡客户将不会受影响`,
+            text: `这个操作不可撤销，已购该卡客户将不会受影响`,
             type: "warning",
             showCancelButton: true,
             confirmButtonClass: "md-button md-danger",
@@ -203,10 +224,6 @@ export default {
         return;
       await CardType.delete({ id: this.cardType.id });
       this.$router.go(-1);
-    },
-    selectStore(item) {
-      this.cardType.store = item;
-      this.storeSearchTerm = item.name;
     }
   },
   watch: {
@@ -227,7 +244,18 @@ export default {
       if (v && (!v.constructor || v.constructor.name !== "Date")) {
         this.cardType.end = new Date(this.cardType.end);
       }
+    },
+    "cardType.store"(v) {
+      // if (v) {
+      //   this.cardType.storeId = v.id;
+      // }
+      if (typeof v === "object") {
+        this.cardType.store = this.cardType.store.id;
+      }
     }
+    // "cardType.storeId"(v) {
+    //   this.cardType.store = this.$store.find(s => s.id === v);
+    // }
   },
   async mounted() {
     if (this.$route.params.id !== "add") {

@@ -6,6 +6,7 @@ const BookingPrice = new Vue.resource(
   {},
   { update: { method: "POST" } }
 );
+const Card = new Vue.resource("card{/id}");
 const CardType = new Vue.resource("card-type{/id}");
 const Code = new Vue.resource("code{/id}");
 const Config = new Vue.resource("config{/key}");
@@ -19,6 +20,7 @@ const User = new Vue.resource("user{/id}");
 export {
   Booking,
   BookingPrice,
+  Card,
   CardType,
   Code,
   Config,

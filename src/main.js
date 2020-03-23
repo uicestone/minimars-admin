@@ -84,6 +84,15 @@ Object.defineProperty(Vue.prototype, "$stores", {
   }
 });
 
+Object.defineProperty(Vue.prototype, "$cardTypes", {
+  get() {
+    return this.$root.cardTypes || [];
+  },
+  set(val) {
+    this.$root.cardTypes = val;
+  }
+});
+
 Object.defineProperty(Vue.prototype, "$bookingTypeNames", {
   get() {
     return {
@@ -114,6 +123,17 @@ Object.defineProperty(Vue.prototype, "$cardTypeNames", {
       times: "次卡",
       period: "时效卡",
       balance: "充值卡"
+    };
+  }
+});
+
+Object.defineProperty(Vue.prototype, "$cardStatusNames", {
+  get() {
+    return {
+      pending: "待付款",
+      valid: "待激活",
+      activated: "已激活",
+      expired: "已失效"
     };
   }
 });
@@ -162,6 +182,10 @@ Vue.filter("bookingStatusName", value => {
 
 Vue.filter("cardTypeName", value => {
   return Vue.prototype.$cardTypeNames[value];
+});
+
+Vue.filter("cardStatusName", value => {
+  return Vue.prototype.$cardStatusNames[value];
 });
 
 Vue.filter("currency", value => {

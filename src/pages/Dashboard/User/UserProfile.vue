@@ -4,10 +4,7 @@
       <div class="md-layout-item md-medium-size-100 md-size-66 mx-auto">
         <form @submit.prevent="save">
           <md-card>
-            <md-card-header
-              class="md-card-header-icon"
-              :class="getClass(headerColor)"
-            >
+            <md-card-header class="md-card-header-icon md-card-header-green">
               <div class="card-icon">
                 <md-icon>perm_identity</md-icon>
               </div>
@@ -169,7 +166,7 @@
                     <md-input v-model="user.passNo" />
                   </md-field>
                 </div>
-                <div class="md-layout-item md-size-100">
+                <div class="md-layout-item md-small-size-100 md-size-50">
                   <md-field>
                     <label>身份证号</label>
                     <md-input v-model="user.idCardNo" />
@@ -265,20 +262,48 @@
         <md-card class="codes-card">
           <md-card-header class="md-card-header-icon md-card-header-blue">
             <div class="card-icon">
-              <md-icon>code</md-icon>
+              <md-icon>card_membership</md-icon>
             </div>
-            <h4 class="title">会员卡</h4>
+            <h4 class="title">
+              会员卡
+              <md-menu class="pull-right">
+                <md-button md-menu-trigger class="md-info md-sm"
+                  >购卡</md-button
+                >
+                <md-menu-content>
+                  <md-menu-item
+                    v-for="cardType in $cardTypes"
+                    :key="cardType.id"
+                    @click="createCard(cardType)"
+                    >{{ cardType.title }}</md-menu-item
+                  >
+                </md-menu-content>
+              </md-menu>
+            </h4>
           </md-card-header>
           <md-card-content class="md-layout">
-            <md-table>
-              <md-table-row v-for="code in user.codes" :key="code.id">
-                <md-table-cell md-label="描述">{{ code.title }}</md-table-cell>
-                <md-table-cell md-label="券号">{{
-                  code.id.substr(-6).toUpperCase()
+            <md-table class="table-full-width">
+              <md-table-row
+                v-for="card in cards"
+                :key="card.id"
+                :class="{ 'table-warning': card.status === 'pending' }"
+              >
+                <md-table-cell md-label="卡名">{{ card.title }}</md-table-cell>
+                <md-table-cell md-label="状态">{{
+                  card.status | cardStatusName
                 }}</md-table-cell>
-                <md-table-cell md-label="已使用">{{
-                  code.used ? "已使用" : "未使用"
+                <md-table-cell md-label="购卡日期">{{
+                  card.createdAt | date("YYYY-MM-DD")
                 }}</md-table-cell>
+                <md-table-cell
+                  md-label="剩余次数"
+                  v-if="card.type === 'times'"
+                  >{{ card.timesLeft }}</md-table-cell
+                >
+                <md-table-cell md-label="日期区间" v-if="card.type === 'period'"
+                  >{{ card.start | date("MM-DD") }} -<br />
+                  {{ card.end | date("MM-DD") }}</md-table-cell
+                >
               </md-table-row>
             </md-table>
           </md-card-content>
@@ -288,15 +313,12 @@
             <div class="card-icon">
               <md-icon>payment</md-icon>
             </div>
-            <h4 class="title">充值记录</h4>
+            <h4 class="title">购卡充值记录</h4>
           </md-card-header>
 
           <md-card-content class="md-layout">
             <md-table>
-              <md-table-row
-                v-for="payment in depositPayments"
-                :key="payment.id"
-              >
+              <md-table-row v-for="payment in cardPayments" :key="payment.id">
                 <md-table-cell md-label="创建时间" md-sort-by="createdAt">{{
                   payment.createdAt | date("MM/DD")
                 }}</md-table-cell>
@@ -309,12 +331,20 @@
                   style="width:35%"
                   >{{ payment.title }}</md-table-cell
                 >
-                <md-table-cell md-label="完成" md-sort-by="paid">{{
-                  payment.paid ? "付款成功" : "待付款"
-                }}</md-table-cell>
-                <!-- <md-table-cell md-label="通道" md-sort-by="gateway">{{
-                  payment.gateway | paymentGatewayName
-                }}</md-table-cell> -->
+                <md-table-cell md-label="收款">
+                  <md-button
+                    class="md-success md-normal"
+                    disabled
+                    v-if="payment.paid"
+                    >已收款</md-button
+                  >
+                  <md-button
+                    v-else
+                    class="md-normal md-warning"
+                    @click="pay(payment)"
+                    >收款</md-button
+                  >
+                </md-table-cell>
               </md-table-row>
             </md-table>
           </md-card-content>
@@ -328,7 +358,8 @@
 </template>
 
 <script>
-import { Booking, User, Payment, Store } from "@/resources";
+import { Booking, User, Payment, Store, Card } from "@/resources";
+import Swal from "sweetalert2";
 
 export default {
   data() {
@@ -337,10 +368,10 @@ export default {
         name: "",
         roles: []
       },
-      depositPayments: [],
+      cards: [],
+      cardPayments: [],
       userBookings: [],
-      storeSearchTerm: "",
-      headerColor: ""
+      storeSearchTerm: ""
     };
   },
   methods: {
@@ -407,6 +438,67 @@ export default {
     selectStore(item) {
       this.user.store = item;
       this.storeSearchTerm = item.name;
+    },
+    async getCardPayments() {
+      this.cardPayments = (
+        await Payment.get({
+          customer: this.user.id,
+          attach: "card"
+        })
+      ).body;
+    },
+    async createCard(cardType) {
+      const paymentGateway = (
+        await Swal.fire({
+          title: "购买" + cardType.title,
+          text: `请选择支付方式`,
+          type: "success",
+          input: "select",
+          inputOptions: {
+            cash: "现金刷卡",
+            scan: "现场扫码"
+          },
+          showCancelButton: true,
+          confirmButtonClass: "md-button md-success",
+          cancelButtonClass: "md-button",
+          confirmButtonText: "确定购买",
+          cancelButtonText: "取消",
+          buttonsStyling: false
+        })
+      ).value;
+      if (!paymentGateway) return;
+      const card = (
+        await Card.save(
+          { paymentGateway },
+          { customer: this.user.id, ...cardType }
+        )
+      ).body;
+      this.cards.push(card);
+      this.getCardPayments();
+    },
+    async getCards() {
+      this.cards = (await Card.get({ customer: this.user.id })).body;
+    },
+    async pay(payment) {
+      if (
+        !(
+          await Swal.fire({
+            title: `确定已收款 ¥${payment.amount.toFixed(2)}？`,
+            // text: `这个操作`,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "md-button md-warning",
+            cancelButtonClass: "md-button",
+            confirmButtonText: "确定已收款",
+            cancelButtonText: "取消",
+            buttonsStyling: false
+          })
+        ).value
+      )
+        return;
+      await Payment.update({ id: payment.id }, { paid: true });
+      this.getCardPayments();
+      this.getCards();
     }
   },
   async mounted() {
@@ -416,13 +508,9 @@ export default {
       } else {
         this.user = (await User.get({ id: this.$route.params.id })).body;
       }
-      this.depositPayments = (
-        await Payment.get({
-          customer: this.user.id,
-          attach: "deposit"
-        })
-      ).body;
+      this.getCardPayments();
       this.userBookings = (await Booking.get({ customer: this.user.id })).body;
+      this.getCards();
       if (this.user.store) this.storeSearchTerm = this.user.store.name;
     }
   }
@@ -439,5 +527,8 @@ export default {
 .bookings-card,
 .payments-card {
   margin-top: 50px;
+}
+.md-table.table-full-width {
+  width: calc(100% + 40px);
 }
 </style>
