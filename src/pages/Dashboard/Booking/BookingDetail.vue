@@ -17,6 +17,8 @@
                   v-model="customerSearchTerm"
                   :md-options="getCustomers(customerSearchTerm)"
                   @md-selected="selectCustomer"
+                  @md-changed="updateCustomer"
+                  :disabled="booking.status && booking.status !== 'pending'"
                 >
                   <label>客户</label>
                   <template slot="md-autocomplete-item" slot-scope="{ item }">
@@ -157,64 +159,62 @@
                   ></md-textarea>
                 </md-field>
               </div>
-              <div class="md-layout-item md-size-100 text-right">
-                <md-button
-                  type="submit"
-                  class="md-raised md-primary mt-4"
-                  v-if="booking.payments && booking.payments.length"
-                  >保存</md-button
+              <div
+                class="md-layout-item md-layout md-alignment-bottom-space-between md-size-100 text-right mt-2"
+              >
+                <div
+                  class="md-layout md-alignment-bottom-left pl-0"
+                  style="flex:1;flex-wrap:nowrap"
                 >
-                <md-menu md-direction="bottom-end" v-else>
-                  <md-button md-menu-trigger class="md-raised md-primary mt-4"
-                    >保存并生成支付</md-button
+                  <div style="padding-left:0;width:150px" v-if="!booking.id">
+                    <md-field>
+                      <label>支付方式</label>
+                      <md-select v-model="paymentGateway">
+                        <md-option
+                          v-for="card in customerCards"
+                          :key="card.id"
+                          :value="card.id"
+                          @click.native="useCard(card)"
+                          >{{ card.title }}</md-option
+                        >
+                        <md-option value="balance" @click="useCard(false)"
+                          >账户余额支付</md-option
+                        >
+                        <md-option value="cash" @click="useCard(false)"
+                          >现金刷卡支付</md-option
+                        >
+                      </md-select>
+                    </md-field>
+                  </div>
+                  <md-button
+                    type="button"
+                    class="mt-2 md-simple md-info md-btn-link"
+                    @click="goCustomerDetail"
+                    v-if="booking.customer"
+                    >客户：{{ booking.customer.name }}
+                    <span v-if="booking.customer.mobile"
+                      >({{ booking.customer.mobile.substr(-4) }})</span
+                    ></md-button
                   >
-                  <md-menu-content>
-                    <md-menu-item
-                      @click="
-                        paymentGateway = 'cash';
-                        save();
-                      "
-                      >次卡权益支付</md-menu-item
-                    >
-                    <md-menu-item
-                      @click="
-                        paymentGateway = 'balance';
-                        save();
-                      "
-                      >账户余额支付</md-menu-item
-                    >
-                    <md-menu-item
-                      @click="
-                        paymentGateway = 'cash';
-                        save();
-                      "
-                      >现金刷卡支付</md-menu-item
-                    >
-                    <!-- <md-menu-item @click="paymentGateway='scan'">扫码支付</md-menu-item> -->
-                  </md-menu-content>
-                </md-menu>
-                <md-button
-                  type="button"
-                  class="mt-4 ml-2 md-simple md-danger"
-                  @click="remove"
-                  v-if="this.booking.id"
-                  >删除</md-button
-                >
-                <md-button
-                  type="button"
-                  class="mt-4 ml-2 md-simple md-info"
-                  @click="goCustomerDetail"
-                  v-if="booking.customer"
-                  >客户：{{ booking.customer.name }}
-                  <span v-if="booking.customer.mobile"
-                    >({{ booking.customer.mobile.substr(-4) }})</span
-                  ></md-button
-                >
-                <md-button
-                  class="md-simple md-warning mt-4 pull-right"
-                  v-if="price"
-                  >{{ price | currency }}</md-button
-                >
+                  <md-button
+                    class="md-simple md-warning mt-2 md-btn-link"
+                    v-if="price !== null"
+                    >{{ price | currency }}</md-button
+                  >
+                </div>
+                <div class="md-layout md-alignment-bottom-right">
+                  <md-button
+                    type="button"
+                    class="md-simple md-danger"
+                    @click="remove"
+                    v-if="this.booking.id"
+                    >删除</md-button
+                  >
+
+                  <md-button type="submit" class="md-raised md-primary"
+                    >保存</md-button
+                  >
+                </div>
               </div>
             </md-card-content>
           </md-card>
@@ -274,7 +274,7 @@
 <script>
 // import { Datetime } from "vue-datetime";
 // import "vue-datetime/dist/vue-datetime.css";
-import { Booking, BookingPrice, User, Event, Payment } from "@/resources";
+import { Booking, BookingPrice, User, Event, Payment, Card } from "@/resources";
 import Swal from "sweetalert2";
 import moment from "moment";
 
@@ -293,14 +293,17 @@ export default {
         adultsCount: 1,
         kidsCount: 1,
         socksCount: 1,
-        store: currentUserStore
+        store: currentUserStore,
+        card: null
       },
       price: null,
       customers: [],
       customerSearchTerm: "",
       storeSearchTerm: currentUserStore ? currentUserStore.name : "",
       events: [],
-      eventSearchTerm: ""
+      customerCards: [],
+      eventSearchTerm: "",
+      paymentGateway: null
     };
   },
   methods: {
@@ -352,7 +355,11 @@ export default {
       this.$router.go(-1);
     },
     async getCustomers(q) {
-      if (!q || q.length < 4) {
+      if (
+        !q ||
+        q.length < 4 ||
+        (this.booking.customer && q === this.booking.customer.name)
+      ) {
         if (this.customers.length) {
           this.customers = [];
         }
@@ -362,6 +369,11 @@ export default {
     selectCustomer(item) {
       this.booking.customer = item;
       this.customerSearchTerm = item.name;
+    },
+    updateCustomer(term) {
+      if (!term) {
+        this.booking.customer = null;
+      }
     },
     selectStore(item) {
       this.booking.store = item;
@@ -381,6 +393,13 @@ export default {
     async updateBookingPrice() {
       const { price } = (await BookingPrice.update(this.booking)).body;
       this.price = price;
+    },
+    useCard(card) {
+      if (!card) {
+        this.booking.card = null;
+      } else {
+        this.booking.card = card;
+      }
     },
     async pay(payment) {
       if (
@@ -410,16 +429,27 @@ export default {
         verticalAlign: "bottom",
         type: "success"
       });
+    },
+    async getCustomerCards() {
+      this.customerCards = (
+        await Card.get({
+          customer: this.booking.customer.id,
+          status: "activated"
+        })
+      ).body;
     }
   },
   watch: {
     booking: {
-      handler(b) {
+      handler(b, p) {
         if (!b.id) {
           this.updateBookingPrice();
         }
       },
       deep: true
+    },
+    "booking.customer"() {
+      this.getCustomerCards();
     }
   },
   async mounted() {

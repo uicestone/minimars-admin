@@ -141,11 +141,11 @@ Object.defineProperty(Vue.prototype, "$cardStatusNames", {
 Object.defineProperty(Vue.prototype, "$gatewayNames", {
   get() {
     return {
-      balance: "充值余额",
-      code: "次卡券码",
+      balance: "账户余额",
+      points: "账户积分",
       coupon: "团购优惠券",
       scan: "现场扫码",
-      card: "现场刷卡",
+      card: "会员卡",
       cash: "现场现金",
       wechatpay: "微信小程序",
       alipay: "支付宝",
