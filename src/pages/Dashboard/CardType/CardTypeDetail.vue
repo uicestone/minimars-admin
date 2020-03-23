@@ -40,7 +40,7 @@
               <div class="md-layout-item md-small-size-100 md-size-33">
                 <md-autocomplete
                   v-model="storeSearchTerm"
-                  :md-options="getStores(storeSearchTerm)"
+                  :md-options="$stores"
                   @md-selected="selectStore"
                 >
                   <label>门店</label>
@@ -148,7 +148,7 @@
 <script>
 // import { Datetime } from "vue-datetime";
 // import "vue-datetime/dist/vue-datetime.css";
-import { CardType, Store } from "@/resources";
+import { CardType } from "@/resources";
 import Swal from "sweetalert2";
 
 export default {
@@ -156,7 +156,6 @@ export default {
   data() {
     return {
       cardType: { id: "", store: null },
-      stores: [],
       storeSearchTerm: ""
     };
   },
@@ -204,10 +203,6 @@ export default {
         return;
       await CardType.delete({ id: this.cardType.id });
       this.$router.go(-1);
-    },
-    async getStores(q) {
-      this.stores = (await Store.get({ keyword: q })).body;
-      return this.stores;
     },
     selectStore(item) {
       this.cardType.store = item;

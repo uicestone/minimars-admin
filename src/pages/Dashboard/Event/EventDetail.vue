@@ -38,7 +38,7 @@
               <div class="md-layout-item md-small-size-100 md-size-33">
                 <md-autocomplete
                   v-model="storeSearchTerm"
-                  :md-options="getStores(storeSearchTerm)"
+                  :md-options="$stores"
                   @md-selected="selectStore"
                 >
                   <label>门店</label>
@@ -110,7 +110,7 @@
                     >选择图片</template
                   >
                   <template v-else>更换</template>
-                  <input type="file" @change="onFileChange" />
+                  <input type="file" @change="onFileChange" ref="file-input" />
                 </md-button>
               </div>
             </div>
@@ -124,7 +124,7 @@
 <script>
 // import { Datetime } from "vue-datetime";
 // import "vue-datetime/dist/vue-datetime.css";
-import { Event, Store, User } from "@/resources";
+import { Event, User } from "@/resources";
 import { Editor } from "@/components";
 import Swal from "sweetalert2";
 
@@ -135,7 +135,6 @@ export default {
   data() {
     return {
       event: { id: "", store: null },
-      stores: [],
       storeSearchTerm: "",
       posterImage: ""
     };
@@ -187,10 +186,6 @@ export default {
       await Event.delete({ id: this.event.id });
       this.$router.go(-1);
     },
-    async getStores(q) {
-      this.stores = (await Store.get({ keyword: q })).body;
-      return this.stores;
-    },
     selectStore(item) {
       this.event.store = item;
       this.storeSearchTerm = item.name;
@@ -225,6 +220,7 @@ export default {
     removeImage: function(type) {
       this.posterImage = "";
       this.event.posterUrl = null;
+      this.$refs["file-input"].value = "";
     }
   },
   watch: {

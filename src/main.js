@@ -75,6 +75,15 @@ Object.defineProperty(Vue.prototype, "$user", {
   }
 });
 
+Object.defineProperty(Vue.prototype, "$stores", {
+  get() {
+    return this.$root.stores || [];
+  },
+  set(val) {
+    this.$root.stores = val;
+  }
+});
+
 Object.defineProperty(Vue.prototype, "$bookingTypeNames", {
   get() {
     return {

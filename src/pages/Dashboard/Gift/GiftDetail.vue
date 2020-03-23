@@ -42,7 +42,7 @@
               <div class="md-layout-item md-small-size-100 md-size-25">
                 <md-autocomplete
                   v-model="storeSearchTerm"
-                  :md-options="getStores(storeSearchTerm)"
+                  :md-options="$stores"
                   @md-selected="selectStore"
                 >
                   <label>门店</label>
@@ -99,7 +99,7 @@
                     >选择图片</template
                   >
                   <template v-else>更换</template>
-                  <input type="file" @change="onFileChange" />
+                  <input type="file" @change="onFileChange" ref="file-input" />
                 </md-button>
               </div>
             </div>
@@ -124,7 +124,6 @@ export default {
   data() {
     return {
       gift: { id: "", store: null },
-      stores: [],
       storeSearchTerm: "",
       posterImage: ""
     };
@@ -174,10 +173,6 @@ export default {
       await Gift.delete({ id: this.gift.id });
       this.$router.go(-1);
     },
-    async getStores(q) {
-      this.stores = (await Store.get({ keyword: q })).body;
-      return this.stores;
-    },
     selectStore(item) {
       this.gift.store = item;
       this.storeSearchTerm = item.name;
@@ -212,6 +207,7 @@ export default {
     removeImage: function(type) {
       this.posterImage = "";
       this.gift.posterUrl = null;
+      this.$refs["file-input"].value = "";
     }
   },
   async mounted() {

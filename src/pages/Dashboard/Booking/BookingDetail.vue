@@ -27,7 +27,7 @@
               <div class="md-layout-item md-small-size-100 md-size-25">
                 <md-autocomplete
                   v-model="storeSearchTerm"
-                  :md-options="getStores(storeSearchTerm)"
+                  :md-options="$stores"
                   @md-selected="selectStore"
                   :disabled="$user.role === 'manager'"
                 >
@@ -264,7 +264,7 @@
 <script>
 // import { Datetime } from "vue-datetime";
 // import "vue-datetime/dist/vue-datetime.css";
-import { Booking, BookingPrice, Store, User, Event } from "@/resources";
+import { Booking, BookingPrice, User, Event } from "@/resources";
 import Swal from "sweetalert2";
 import moment from "moment";
 
@@ -288,7 +288,6 @@ export default {
       price: null,
       customers: [],
       customerSearchTerm: "",
-      stores: [],
       storeSearchTerm: currentUserStore ? currentUserStore.name : "",
       events: [],
       eventSearchTerm: ""
@@ -343,24 +342,24 @@ export default {
       this.$router.go(-1);
     },
     async getCustomers(q) {
-      this.customers = (await User.get({ keyword: q })).body;
+      if (!q || q.length < 4) {
+        if (this.customers.length) {
+          this.customers = [];
+        }
+      } else this.customers = (await User.get({ keyword: q })).body;
       return this.customers;
     },
     selectCustomer(item) {
       this.booking.customer = item;
       this.customerSearchTerm = item.name;
     },
-    async getStores(q) {
-      this.stores = (await Store.get({ keyword: q })).body;
-      return this.stores;
-    },
     selectStore(item) {
       this.booking.store = item;
       this.storeSearchTerm = item.name;
     },
     async getEvents(q) {
-      this.stores = (await Event.get({ keyword: q })).body;
-      return this.stores;
+      this.events = (await Event.get({ keyword: q })).body;
+      return this.events;
     },
     selectEvent(item) {
       this.booking.event = item;

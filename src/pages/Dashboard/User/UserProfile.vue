@@ -68,7 +68,7 @@
                 <div class="md-layout-item md-small-size-100 md-size-50">
                   <md-autocomplete
                     v-model="storeSearchTerm"
-                    :md-options="getStores(storeSearchTerm)"
+                    :md-options="$stores"
                     @md-selected="selectStore"
                   >
                     <label>门店</label>
@@ -339,7 +339,6 @@ export default {
       },
       depositPayments: [],
       userBookings: [],
-      stores: [],
       storeSearchTerm: "",
       headerColor: ""
     };
@@ -404,10 +403,6 @@ export default {
       this.user.avatarUrl = null;
       this.$user.avatarUrl = null;
       this.$refs.avatarFileInput.value = "";
-    },
-    async getStores(q) {
-      this.stores = (await Store.get({ keyword: q })).body;
-      return this.stores;
     },
     selectStore(item) {
       this.user.store = item;

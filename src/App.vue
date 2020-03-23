@@ -10,10 +10,8 @@
 
 <script>
 import Vue from "vue";
-import { Auth } from "@/resources/Auth";
 
 export default {
-  mixins: [Auth],
   async created() {
     Vue.http.options.root = process.env.VUE_APP_API_BASE;
     Vue.http.interceptors.push(this.interceptor);
@@ -77,11 +75,10 @@ export default {
       ],
       firstDayOfAWeek: 1
     };
-    this.$http.get("config").then(res => {
-      this.$config = res.body;
-    });
     try {
-      this.$user = await this.auth();
+      this.$config = (await this.$http.get("config")).body;
+      this.$stores = (await this.$http.get("store")).body;
+      this.$user = (await this.$http.get("auth/user")).body;
     } catch (e) {
       console.warn(e);
     }
@@ -97,7 +94,7 @@ export default {
       }
       // stop request and return 401 response when no token exist except for login request
       if (
-        request.url !== "auth/login" &&
+        !["auth/login", "config", "store"].includes(request.url) &&
         !window.localStorage.getItem("token")
       ) {
         window.location.hash = "#/login";

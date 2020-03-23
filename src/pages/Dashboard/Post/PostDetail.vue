@@ -83,7 +83,7 @@
                     >选择图片</template
                   >
                   <template v-else>更换</template>
-                  <input type="file" @change="onFileChange" />
+                  <input type="file" @change="onFileChange" ref="file-input" />
                 </md-button>
               </div>
             </div>
@@ -187,6 +187,7 @@ export default {
     removeImage: function(type) {
       this.posterImage = "";
       this.post.posterUrl = null;
+      this.$refs["file-input"].value = "";
     }
   },
   async mounted() {
