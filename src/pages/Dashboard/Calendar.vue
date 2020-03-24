@@ -21,12 +21,12 @@
               defaultView="dayGridMonth"
               :plugins="calendarPlugins"
               :events="events"
-              :selectable= "true"
+              :selectable="true"
               @dateClick="dateClick"
               :header="header"
               :buttonIcons="buttonIcons"
-              :selectHelper= "true"
-              :editable= "true"
+              :selectHelper="true"
+              :editable="true"
             />
           </md-card-content>
         </md-card>
@@ -35,10 +35,10 @@
   </div>
 </template>
 <script>
-import FullCalendar from '@fullcalendar/vue'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction';
-import timeGridPlugin from '@fullcalendar/timegrid';
+import FullCalendar from "@fullcalendar/vue";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import timeGridPlugin from "@fullcalendar/timegrid";
 import Swal from "sweetalert2";
 
 var today = new Date();
@@ -52,17 +52,17 @@ export default {
   },
   data() {
     return {
-      calendarPlugins: [ dayGridPlugin, interactionPlugin, timeGridPlugin ],
+      calendarPlugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
       header: {
-        center: 'dayGridMonth,timeGridWeek,timeGridDay',
+        center: "dayGridMonth,timeGridWeek,timeGridDay",
         right: "prev,next,today"
       },
       buttonIcons: {
-        close: 'fa-times',
-        prev: 'left-single-arrow',
-        next: 'right-single-arrow',
-        prevYear: 'fa-angle-double-left',
-        nextYear: 'fa-angle-double-right'
+        close: "fa-times",
+        prev: "left-single-arrow",
+        next: "right-single-arrow",
+        prevYear: "fa-angle-double-left",
+        nextYear: "fa-angle-double-right"
       },
       events: [
         {
@@ -125,7 +125,7 @@ export default {
           className: "event-orange"
         }
       ]
-    }
+    };
   },
   methods: {
     dateClick: function(info) {
@@ -140,7 +140,7 @@ export default {
         cancelButtonClass: "md-button md-danger",
         buttonsStyling: false
       }).then(() => {
-        var eventTitle = document.getElementById('md-input').value;
+        var eventTitle = document.getElementById("md-input").value;
         if (eventTitle) {
           let calendarApi = this.$refs.calendar.getApi();
           calendarApi.addEvent({

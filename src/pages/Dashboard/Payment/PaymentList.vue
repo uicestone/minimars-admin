@@ -1,167 +1,53 @@
-<template>
-  <div class="md-layout">
-    <div class="md-layout-item">
-      <md-card>
-        <md-card-header class="md-card-header-icon md-card-header-primary">
-          <div class="card-icon">
-            <md-icon>payment</md-icon>
-          </div>
-          <h4 class="title">流水明细</h4>
-        </md-card-header>
-        <md-card-content class="paginated-table">
-          <div
-            class="md-toolbar md-table-toolbar md-transparent md-theme-default md-elevation-0 md-layout mb-2"
-          >
-            <div class="md-layout-item" style="flex:0;flex-basis:200px">
-              总金额：{{ totalAmount | currency }}
-            </div>
-            <div
-              class="md-layout md-layout-item md-alignment-center-right search-query"
-            >
-              <md-datepicker
-                v-model="searchQuery.date"
-                :md-model-type="String"
-                md-immediately
-                class="md-layout-item md-size-20 md-xsmall-size-100"
-                ><label>日期</label>
-              </md-datepicker>
-
-              <md-field class="md-layout-item md-size-15 md-xsmall-size-25">
-                <label>完成</label>
-                <md-select v-model="searchQuery.paid">
-                  <md-option value="">全部</md-option>
-                  <md-option
-                    v-for="(name, paid) in {
-                      true: '是',
-                      false: '否'
-                    }"
-                    :key="paid"
-                    :value="paid"
-                    >{{ name }}</md-option
-                  >
-                </md-select>
-              </md-field>
-
-              <md-field class="md-layout-item md-size-15 md-xsmall-size-25">
-                <label>类型</label>
-                <md-select v-model="searchQuery.attach">
-                  <md-option value="">全部</md-option>
-                  <md-option
-                    v-for="(name, attach) in {
-                      booking: '预约',
-                      card: '会员卡'
-                    }"
-                    :key="attach"
-                    :value="attach"
-                    >{{ name }}</md-option
-                  >
-                </md-select>
-              </md-field>
-
-              <md-field class="md-layout-item md-size-15 md-xsmall-size-25">
-                <label>方向</label>
-                <md-select v-model="searchQuery.direction">
-                  <md-option value="">全部</md-option>
-                  <md-option
-                    v-for="(name, direction) in {
-                      payment: '收款',
-                      refund: '退款'
-                    }"
-                    :key="direction"
-                    :value="direction"
-                    >{{ name }}</md-option
-                  >
-                </md-select>
-              </md-field>
-
-              <md-field class="md-layout-item md-size-15 md-xsmall-size-25">
-                <label>通道</label>
-                <md-select v-model="searchQuery.gateway" multiple>
-                  <md-option
-                    v-for="(name, gateway) in $gatewayNames"
-                    :key="gateway"
-                    :value="gateway"
-                    >{{ name }}</md-option
-                  >
-                </md-select>
-              </md-field>
-            </div>
-          </div>
-
-          <md-table
-            :value="queriedData"
-            :md-sort.sync="currentSort"
-            :md-sort-order.sync="currentSortOrder"
-            :md-sort-fn="noop"
-            class="table-striped table-hover"
-          >
-            <md-table-row
-              slot="md-table-row"
-              md-selectable="single"
-              slot-scope="{ item }"
-              @click="showDetail(item)"
-            >
-              <md-table-cell
-                md-label="客户"
-                md-sort-by="customer.name"
-                @click.native.stop="goToCustomer(item.customer)"
-                style="min-width:100px"
-                >{{ item.customer.name
-                }}<span v-if="item.customer.mobile">{{
-                  item.customer.mobile.substr(-4)
-                }}</span
-                ><md-icon class="mini"
-                  >keyboard_arrow_right</md-icon
-                ></md-table-cell
-              >
-              <md-table-cell md-label="金额" md-sort-by="amount">{{
-                item.amountDeposit || item.amount | currency
-              }}</md-table-cell>
-              <md-table-cell md-label="完成" md-sort-by="paid">{{
-                item.paid ? "是" : "否"
-              }}</md-table-cell>
-              <md-table-cell
-                md-label="描述"
-                md-sort-by="title"
-                style="min-width:25em"
-                >{{ item.title }}</md-table-cell
-              >
-              <md-table-cell md-label="通道" md-sort-by="gateway">{{
-                item.gateway | paymentGatewayName
-              }}</md-table-cell>
-              <md-table-cell md-label="更新时间" md-sort-by="updatedAt">{{
-                item.createdAt | date
-              }}</md-table-cell>
-              <md-table-cell
-                md-label="相关链接"
-                @click.native.stop="goToRelatedItem(item)"
-                >{{ relatedItem(item) }}</md-table-cell
-              >
-              <!-- <md-table-cell md-label="操作">
-                <md-button
-                  class="md-just-icon md-danger md-simple"
-                  @click="">
-                  <md-icon>close</md-icon>
-                </md-button>
-              </md-table-cell> -->
-            </md-table-row>
-          </md-table>
-        </md-card-content>
-        <md-card-actions md-alignment="space-between">
-          <div class="">
-            <p class="card-category">{{ from }} - {{ to }} / {{ total }}</p>
-          </div>
-          <pagination
-            class="pagination-no-border pagination-primary"
-            v-model="pagination.currentPage"
-            :per-page="pagination.perPage"
-            :total="total"
-          >
-          </pagination>
-        </md-card-actions>
-      </md-card>
-    </div>
-  </div>
+<template lang="pug">
+.md-layout
+  .md-layout-item
+    md-card
+      md-card-header.md-card-header-icon.md-card-header-primary
+        .card-icon
+          md-icon payment
+        h4.title 流水明细
+      md-card-content.paginated-table
+        .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
+          .md-layout-item(style='flex:0;flex-basis:200px')
+            | 总金额：{{ totalAmount | currency }}
+          .md-layout.md-layout-item.md-alignment-center-right.search-query
+            md-datepicker.md-layout-item.md-size-20.md-xsmall-size-100(v-model='searchQuery.date', :md-model-type='String', md-immediately='')
+              label 日期
+            md-field.md-layout-item.md-size-15.md-xsmall-size-25
+              label 完成
+              md-select(v-model='searchQuery.paid')
+                md-option(value='') 全部
+                md-option(v-for="(name, paid) in { true: '是', false: '否' }", :key='paid', :value='paid') {{ name }}
+            md-field.md-layout-item.md-size-15.md-xsmall-size-25
+              label 类型
+              md-select(v-model='searchQuery.attach')
+                md-option(value='') 全部
+                md-option(v-for="(name, attach) in { booking: '预约', card: '会员卡' }", :key='attach', :value='attach') {{ name }}
+            md-field.md-layout-item.md-size-15.md-xsmall-size-25
+              label 方向
+              md-select(v-model='searchQuery.direction')
+                md-option(value='') 全部
+                md-option(v-for="(name, direction) in { payment: '收款', refund: '退款' }", :key='direction', :value='direction') {{ name }}
+            md-field.md-layout-item.md-size-15.md-xsmall-size-25
+              label 通道
+              md-select(v-model='searchQuery.gateway', multiple)
+                md-option(v-for='(name, gateway) in $gatewayNames', :key='gateway', :value='gateway') {{ name }}
+        md-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='noop')
+          md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }')
+            md-table-cell(md-label='客户', md-sort-by='customer.name', @click.native.stop='goToCustomer(item.customer)', style='min-width:100px') {{ item.customer.name }}
+              span(v-if='item.customer.mobile')
+                | {{ item.customer.mobile.substr(-4) }}
+              md-icon.mini keyboard_arrow_right
+            md-table-cell(md-label='金额', md-sort-by='amount') {{ item.amountDeposit || item.amount | currency }}
+            md-table-cell(md-label='完成', md-sort-by='paid') {{ item.paid ? "是" : "否" }}
+            md-table-cell(md-label='描述', md-sort-by='title', style='min-width:25em') {{ item.title }}
+            md-table-cell(md-label='通道', md-sort-by='gateway') {{ item.gateway | paymentGatewayName }}
+            md-table-cell(md-label='更新时间', md-sort-by='updatedAt') {{ item.createdAt | date }}
+            md-table-cell(md-label='相关链接', @click.native.stop='goToRelatedItem(item)') {{ relatedItem(item) }}
+      md-card-actions(md-alignment='space-between')
+        div
+          p.card-category {{ from }} - {{ to }} / {{ total }}
+        pagination.pagination-no-border.pagination-primary(v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
 </template>
 
 <script>
@@ -224,9 +110,6 @@ export default {
       this.queriedData = response.body;
       this.pagination.total = Number(response.headers.map["items-total"][0]);
       this.totalAmount = Number(response.headers.map["total-amount"][0]);
-    },
-    showDetail(item) {
-      // this.$router.push(`/payment/${item.id}`);
     },
     showCreate() {
       // this.$router.push("/payment/add");

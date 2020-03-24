@@ -245,12 +245,8 @@
                     ><i class="fa fa-times"></i>Remove</md-button
                   >
                   <md-button class="md-success md-round md-fileinput">
-                    <template v-if="!imageRegular"
-                      >Select image</template
-                    >
-                    <template v-else
-                      >Change</template
-                    >
+                    <template v-if="!imageRegular">Select image</template>
+                    <template v-else>Change</template>
                     <input type="file" @change="onFileChange" />
                   </md-button>
                 </div>
@@ -275,12 +271,8 @@
                     ><i class="fa fa-times"></i>Remove</md-button
                   >
                   <md-button class="md-success md-round md-fileinput">
-                    <template v-if="!imageCircle"
-                      >Add Photo</template
-                    >
-                    <template v-else
-                      >Change</template
-                    >
+                    <template v-if="!imageCircle">Add Photo</template>
+                    <template v-else>Change</template>
                     <input type="file" name="circle" @change="onFileChange" />
                   </md-button>
                 </div>

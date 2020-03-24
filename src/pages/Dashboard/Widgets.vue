@@ -27,12 +27,11 @@
     <div
       class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-50"
     >
-
       <nav-tabs-card>
         <template slot="content">
           <span class="md-nav-tabs-title">Tasks:</span>
           <md-tabs class="md-rose" md-alignment="left">
-            <md-tab id="tab-home" md-label="Bugs" md-icon="bug_report" >
+            <md-tab id="tab-home" md-label="Bugs" md-icon="bug_report">
               <md-table v-model="firstTabs" @md-selected="onSelect">
                 <md-table-row
                   slot="md-table-row"
@@ -136,9 +135,7 @@
         </div>
         <div class="md-layout-item md-size-90">
           <testimonial-card>
-            <template slot="header-icon"
-              >format_quote</template
-            >
+            <template slot="header-icon">format_quote</template>
             <template slot="content">
               <h5 class="description">
                 Your products, all the kits that I have downloaded from your

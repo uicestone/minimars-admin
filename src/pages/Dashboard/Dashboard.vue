@@ -1,328 +1,174 @@
-<template>
-  <div class="md-layout">
-    <div class="md-layout-item md-size-100 md-layout md-alignment-center-right">
-      <div class="md-layout-item md-size-20 md-xsmall-size-100 stats-date">
-        <md-datepicker v-model="date" :md-model-type="String" md-immediately />
-      </div>
-      <div
-        class="md-layout-item md-size-20 md-xsmall-size-100 stats-date"
-        style="display:flex;justify-content:space-between"
-      >
-        <md-button class="md-info" style="flex:0" @click="addDate(-1)">
-          <span class="md-label">
-            <md-icon>keyboard_arrow_left</md-icon>
-          </span>
-          前一天</md-button
-        >
-        <md-button
-          class="md-info"
-          style="flex:0"
-          @click="addDate(1)"
-          :disabled="date >= today"
-        >
-          后一天
-          <md-icon>keyboard_arrow_right</md-icon>
-        </md-button>
-      </div>
-      <div class="md-layout-item md-size-10 md-xsmall-size-100">
-        <md-button
-          :href="$http.options.root + 'daily-report/' + date"
-          class="md-info"
-          style="width:100%"
-          >下载日报表</md-button
-        >
-      </div>
-    </div>
-    <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
-      <stats-card header-color="primary">
-        <template slot="header">
-          <div class="card-icon">
-            <md-icon>playlist_add_check</md-icon>
-          </div>
-          <p class="category">当日门票收入</p>
-          <h3 class="title">
-            ¥
-            <animated-number
-              :value="stats.paidAmount - stats.socksAmount"
-            ></animated-number>
-          </h3>
-        </template>
-
-        <template slot="footer">
-          <div class="stats">
-            <md-icon>bookmark_border</md-icon>
-            含现场支付、余额消费和次卡核销
-          </div>
-        </template>
-      </stats-card>
-    </div>
-    <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
-      <stats-card header-color="warning">
-        <template slot="header">
-          <div class="card-icon">
-            <md-icon>payment</md-icon>
-          </div>
-          <p class="category">当日充值收入</p>
-          <h3 class="title">
-            ¥ <animated-number :value="stats.depositAmount"></animated-number>
-          </h3>
-        </template>
-
-        <template slot="footer">
-          <div class="stats">
-            <md-icon>bookmark_border</md-icon>
-            其中次卡 ¥
-            <animated-number :value="stats.codeDepositAmount"></animated-number>
-          </div>
-        </template>
-      </stats-card>
-    </div>
-    <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
-      <stats-card header-color="green">
-        <template slot="header">
-          <div class="card-icon">
-            <md-icon>store</md-icon>
-          </div>
-          <p class="category">当日入场人数</p>
-          <h3 class="title">
-            <animated-number :value="stats.customerCount"></animated-number>
-          </h3>
-        </template>
-
-        <template slot="footer">
-          <div class="stats">
-            <md-icon>bookmark_border</md-icon>
-            其中儿童人数
-            <animated-number :value="stats.kidsCount"></animated-number>
-          </div>
-        </template>
-      </stats-card>
-    </div>
-    <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
-      <stats-card header-color="grey">
-        <template slot="header">
-          <div class="card-icon">
-            <i class="fas fa-socks"></i>
-          </div>
-          <p class="category">当日袜子发放</p>
-          <h3 class="title">
-            <animated-number :value="stats.socksCount"></animated-number> 双
-          </h3>
-        </template>
-
-        <template slot="footer">
-          <div class="stats">
-            <md-icon>bookmark_border</md-icon>
-            当日累计袜子发放量
-          </div>
-        </template>
-      </stats-card>
-    </div>
-    <div
-      class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33"
-    >
-      <chart-card
-        header-animation="false"
-        :chart-data="dailyCustomersChart.data"
-        :chart-options="dailyCustomersChart.options"
-        chart-type="Line"
-        chart-inside-header
-        background-color="rose"
-      >
-        <md-icon slot="fixed-button">build</md-icon>
-        <md-button class="md-simple md-info md-just-icon" slot="first-button">
-          <md-icon>refresh</md-icon>
-          <md-tooltip md-direction="bottom">Refresh</md-tooltip>
-        </md-button>
-        <md-button class="md-simple md-just-icon" slot="second-button">
-          <md-icon>edit</md-icon>
-          <md-tooltip md-direction="bottom">Change Date</md-tooltip>
-        </md-button>
-
-        <template slot="content">
-          <h4 class="title">每日人数</h4>
-          <p class="category">
-            最近一周每日累计入场人数
-          </p>
-        </template>
-
-        <template slot="footer">
-          <div class="stats">
-            <md-icon>access_time</md-icon>
-            实时
-          </div>
-        </template>
-      </chart-card>
-    </div>
-    <div
-      class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33"
-    >
-      <chart-card
-        header-animation="false"
-        :chart-data="dailyBookingPaymentChart.data"
-        :chart-options="dailyBookingPaymentChart.options"
-        chart-type="Line"
-        chart-inside-header
-        background-color="green"
-      >
-        <md-button class="md-simple md-info md-just-icon" slot="first-button">
-          <md-icon>refresh</md-icon>
-          <md-tooltip md-direction="bottom">Refresh</md-tooltip>
-        </md-button>
-        <md-button class="md-simple md-just-icon" slot="second-button">
-          <md-icon>edit</md-icon>
-          <md-tooltip md-direction="bottom">Change Date</md-tooltip>
-        </md-button>
-
-        <template slot="content">
-          <h4 class="title">每日门票收入</h4>
-          <p class="category">
-            <!-- <span class="text-success"
-              ><i class="fas fa-long-arrow-alt-up"></i>
-              <animated-number :value="55"></animated-number>%
-            </span> -->
-            最近一周每日门票收入（含余额和次卡核销）
-          </p>
-        </template>
-
-        <template slot="footer">
-          <div class="stats">
-            <md-icon>access_time</md-icon>
-            实时
-          </div>
-        </template>
-      </chart-card>
-    </div>
-    <div
-      class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33"
-    >
-      <chart-card
-        header-animation="false"
-        :chart-data="dailyDepositPaymentChart.data"
-        :chart-options="dailyDepositPaymentChart.options"
-        chart-type="Line"
-        chart-inside-header
-        background-color="blue"
-      >
-        <md-button class="md-simple md-info md-just-icon" slot="first-button">
-          <md-icon>refresh</md-icon>
-          <md-tooltip md-direction="bottom">Refresh</md-tooltip>
-        </md-button>
-        <md-button class="md-simple md-just-icon" slot="second-button">
-          <md-icon>edit</md-icon>
-          <md-tooltip md-direction="bottom">Change Date</md-tooltip>
-        </md-button>
-
-        <template slot="content">
-          <h4 class="title">每日充值收入</h4>
-          <p class="category">
-            最近一周每日充值和次卡销售收入
-          </p>
-        </template>
-
-        <template slot="footer">
-          <div class="stats">
-            <md-icon>access_time</md-icon>
-            实时
-          </div>
-        </template>
-      </chart-card>
-    </div>
-    <div class="md-layout-item md-size-33">
-      <global-sales-card header-color="primary">
-        <template slot="header">
-          <div class="card-icon">
-            <md-icon>language</md-icon>
-          </div>
-          <h4 class="title">当日各收款方式收款额</h4>
-        </template>
-
-        <template slot="content">
-          <div class="md-layout">
-            <div class="md-layout-item md-size-100">
-              <md-table v-model="paidAmountByGatewayNames">
-                <md-table-row slot="md-table-row" slot-scope="{ item }">
-                  <md-table-cell>{{ item.name }}</md-table-cell>
-                  <md-table-cell>{{ item.amount | currency }}</md-table-cell>
-                </md-table-row>
-              </md-table>
-            </div>
-            <!-- <div class="md-layout-item md-size-50">
-              <async-world-map class="map" :data="mapData"></async-world-map>
-            </div> -->
-          </div>
-        </template>
-      </global-sales-card>
-    </div>
-    <div class="md-layout-item md-size-33">
-      <global-sales-card header-color="green">
-        <template slot="header">
-          <div class="card-icon">
-            <md-icon>language</md-icon>
-          </div>
-          <h4 class="title">当日各优惠核销人数和券值</h4>
-        </template>
-
-        <template slot="content">
-          <div class="md-layout">
-            <div class="md-layout-item md-size-100">
-              <md-table v-model="stats.couponsCount">
-                <md-table-row slot="md-table-row" slot-scope="{ item }">
-                  <md-table-cell>{{ item.name }}</md-table-cell>
-                  <md-table-cell>{{ item.count }}</md-table-cell>
-                  <md-table-cell>{{ item.amount | currency }}</md-table-cell>
-                </md-table-row>
-              </md-table>
-            </div>
-            <!-- <div class="md-layout-item md-size-50">
-              <async-world-map class="map" :data="mapData"></async-world-map>
-            </div> -->
-          </div>
-        </template>
-      </global-sales-card>
-    </div>
-    <div class="md-layout-item md-size-33">
-      <global-sales-card header-color="warning">
-        <template slot="header">
-          <div class="card-icon">
-            <md-icon>language</md-icon>
-          </div>
-          <h4 class="title">当日各卡种充值人数和金额</h4>
-        </template>
-
-        <template slot="content">
-          <div class="md-layout">
-            <div class="md-layout-item md-size-100">
-              <md-table v-model="stats.depositsCount">
-                <md-table-row slot="md-table-row" slot-scope="{ item }">
-                  <md-table-cell>{{ item.desc }}</md-table-cell>
-                  <md-table-cell>{{ item.count }}</md-table-cell>
-                  <md-table-cell>{{
-                    (item.price * item.count) | currency
-                  }}</md-table-cell>
-                </md-table-row>
-              </md-table>
-            </div>
-            <!-- <div class="md-layout-item md-size-50">
-              <async-world-map class="map" :data="mapData"></async-world-map>
-            </div> -->
-          </div>
-        </template>
-      </global-sales-card>
-    </div>
-  </div>
+<template lang="pug">
+.md-layout
+  .md-layout-item.md-size-100.md-layout.md-alignment-center-right
+    .md-layout-item.md-size-20.md-xsmall-size-100.stats-date
+      md-datepicker(v-model='date', :md-model-type='String', md-immediately='')
+    .md-layout-item.md-size-20.md-xsmall-size-100.stats-date(style='display:flex;justify-content:space-between')
+      md-button.md-info(style='flex:0', @click='addDate(-1)')
+        span.md-label
+          md-icon keyboard_arrow_left
+        | 前一天
+      md-button.md-info(style='flex:0', @click='addDate(1)', :disabled='date >= today')
+        | 后一天
+        md-icon keyboard_arrow_right
+    .md-layout-item.md-size-10.md-xsmall-size-100
+      md-button.md-info(:href="$http.options.root + 'daily-report/' + date", style='width:100%') 下载日报表
+  .md-layout-item.md-medium-size-50.md-xsmall-size-100.md-size-25
+    stats-card(header-color='primary')
+      template(slot='header')
+        .card-icon
+          md-icon playlist_add_check
+        p.category 当日门票收入
+        h3.title
+          | ¥
+          animated-number(:value='stats.paidAmount - stats.socksAmount')
+      template(slot='footer')
+        .stats
+          md-icon bookmark_border
+          | 含现场支付、余额消费和次卡核销
+  .md-layout-item.md-medium-size-50.md-xsmall-size-100.md-size-25
+    stats-card(header-color='warning')
+      template(slot='header')
+        .card-icon
+          md-icon payment
+        p.category 当日充值收入
+        h3.title
+          | ¥ 
+          animated-number(:value='stats.depositAmount')
+      template(slot='footer')
+        .stats
+          md-icon bookmark_border
+          | 其中次卡 ¥
+          animated-number(:value='stats.codeDepositAmount')
+  .md-layout-item.md-medium-size-50.md-xsmall-size-100.md-size-25
+    stats-card(header-color='green')
+      template(slot='header')
+        .card-icon
+          md-icon store
+        p.category 当日入场人数
+        h3.title
+          animated-number(:value='stats.customerCount')
+      template(slot='footer')
+        .stats
+          md-icon bookmark_border
+          | 其中儿童人数
+          animated-number(:value='stats.kidsCount')
+  .md-layout-item.md-medium-size-50.md-xsmall-size-100.md-size-25
+    stats-card(header-color='grey')
+      template(slot='header')
+        .card-icon
+          i.fas.fa-socks
+        p.category 当日袜子发放
+        h3.title
+          animated-number(:value='stats.socksCount')
+          | 双
+      template(slot='footer')
+        .stats
+          md-icon bookmark_border
+          | 当日累计袜子发放量
+  .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
+    chart-card(header-animation='false', :chart-data='dailyCustomersChart.data', :chart-options='dailyCustomersChart.options', chart-type='Line', chart-inside-header='', background-color='rose')
+      md-icon(slot='fixed-button') build
+      md-button.md-simple.md-info.md-just-icon(slot='first-button')
+        md-icon refresh
+        md-tooltip(md-direction='bottom') Refresh
+      md-button.md-simple.md-just-icon(slot='second-button')
+        md-icon edit
+        md-tooltip(md-direction='bottom') Change Date
+      template(slot='content')
+        h4.title 每日人数
+        p.category
+          | 最近一周每日累计入场人数
+      template(slot='footer')
+        .stats
+          md-icon access_time
+          | 实时
+  .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
+    chart-card(header-animation='false', :chart-data='dailyBookingPaymentChart.data', :chart-options='dailyBookingPaymentChart.options', chart-type='Line', chart-inside-header='', background-color='green')
+      md-button.md-simple.md-info.md-just-icon(slot='first-button')
+        md-icon refresh
+        md-tooltip(md-direction='bottom') Refresh
+      md-button.md-simple.md-just-icon(slot='second-button')
+        md-icon edit
+        md-tooltip(md-direction='bottom') Change Date
+      template(slot='content')
+        h4.title 每日门票收入
+        p.category
+          | 最近一周每日门票收入（含余额和次卡核销）
+      template(slot='footer')
+        .stats
+          md-icon access_time
+          | 实时
+  .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
+    chart-card(header-animation='false', :chart-data='dailyDepositPaymentChart.data', :chart-options='dailyDepositPaymentChart.options', chart-type='Line', chart-inside-header='', background-color='blue')
+      md-button.md-simple.md-info.md-just-icon(slot='first-button')
+        md-icon refresh
+        md-tooltip(md-direction='bottom') Refresh
+      md-button.md-simple.md-just-icon(slot='second-button')
+        md-icon edit
+        md-tooltip(md-direction='bottom') Change Date
+      template(slot='content')
+        h4.title 每日充值收入
+        p.category
+          | 最近一周每日充值和次卡销售收入
+      template(slot='footer')
+        .stats
+          md-icon access_time
+          | 实时
+  .md-layout-item.md-size-33
+    global-sales-card(header-color='primary')
+      template(slot='header')
+        .card-icon
+          md-icon language
+        h4.title 当日各收款方式收款额
+      template(slot='content')
+        .md-layout
+          .md-layout-item.md-size-100
+            md-table(v-model='paidAmountByGatewayNames')
+              md-table-row(slot='md-table-row', slot-scope='{ item }')
+                md-table-cell {{ item.name }}
+                md-table-cell {{ item.amount | currency }}
+  .md-layout-item.md-size-33
+    global-sales-card(header-color='green')
+      template(slot='header')
+        .card-icon
+          md-icon language
+        h4.title 当日各优惠核销人数和券值
+      template(slot='content')
+        .md-layout
+          .md-layout-item.md-size-100
+            md-table(v-model='stats.couponsCount')
+              md-table-row(slot='md-table-row', slot-scope='{ item }')
+                md-table-cell {{ item.name }}
+                md-table-cell {{ item.count }}
+                md-table-cell {{ item.amount | currency }}
+  .md-layout-item.md-size-33
+    global-sales-card(header-color='warning')
+      template(slot='header')
+        .card-icon
+          md-icon language
+        h4.title 当日各卡种充值人数和金额
+      template(slot='content')
+        .md-layout
+          .md-layout-item.md-size-100
+            md-table(v-model='stats.depositsCount')
+              md-table-row(slot='md-table-row', slot-scope='{ item }')
+                md-table-cell {{ item.desc }}
+                md-table-cell {{ item.count }}
+                md-table-cell
+                  | {{ (item.price * item.count) | currency }}
 </template>
 
 <script>
 import moment from "moment";
-import AsyncWorldMap from "@/components/WorldMap/AsyncWorldMap.vue";
+// import AsyncWorldMap from "@/components/WorldMap/AsyncWorldMap.vue";
 import {
   StatsCard,
   ChartCard,
-  ProductCard,
+  // ProductCard,
   AnimatedNumber,
-  GlobalSalesCard,
-  GlobalSalesTable
+  GlobalSalesCard
+  // GlobalSalesTable
 } from "@/components";
 
 export default {
@@ -330,10 +176,10 @@ export default {
     StatsCard,
     ChartCard,
     AnimatedNumber,
-    ProductCard,
-    GlobalSalesCard,
-    GlobalSalesTable,
-    AsyncWorldMap
+    // ProductCard,
+    GlobalSalesCard
+    // GlobalSalesTable,
+    // AsyncWorldMap
   },
   data() {
     return {

@@ -1,32 +1,19 @@
-<template>
-  <div class="md-layout text-center">
-    <div
-      class="md-layout-item md-size-33 md-medium-size-50 md-small-size-70 md-xsmall-size-100"
-    >
-      <form @submit.prevent="submitLogin">
-        <login-card header-color="primary">
-          <h4 slot="title" class="title">登录</h4>
-          <md-field class="md-form-group" slot="inputs">
-            <md-icon>face</md-icon>
-            <label>用户名</label>
-            <md-input v-model="login"></md-input>
-          </md-field>
-          <md-field class="md-form-group" slot="inputs">
-            <md-icon>lock_outline</md-icon>
-            <label>密码</label>
-            <md-input type="password" v-model="password"></md-input>
-          </md-field>
-          <md-button
-            type="submit"
-            slot="footer"
-            class="md-simple md-success md-lg"
-          >
-            登录
-          </md-button>
-        </login-card>
-      </form>
-    </div>
-  </div>
+<template lang="pug">
+.md-layout.text-center
+  .md-layout-item.md-size-33.md-medium-size-50.md-small-size-70.md-xsmall-size-100
+    form(@submit.prevent='submitLogin')
+      login-card(header-color='primary')
+        h4.title(slot='title') 登录
+        md-field.md-form-group(slot='inputs')
+          md-icon face
+          label 用户名
+          md-input(v-model='login')
+        md-field.md-form-group(slot='inputs')
+          md-icon lock_outline
+          label 密码
+          md-input(type='password', v-model='password')
+        md-button.md-simple.md-success.md-lg(type='submit', slot='footer')
+          | 登录
 </template>
 <script>
 import { LoginCard } from "@/components";
@@ -57,5 +44,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

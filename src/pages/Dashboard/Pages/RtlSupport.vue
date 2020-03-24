@@ -141,9 +141,7 @@
         </div>
         <div class="md-layout-item md-size-90">
           <testimonial-card>
-            <template slot="header-icon"
-              >format_quote</template
-            >
+            <template slot="header-icon">format_quote</template>
             <template slot="content">
               <h5 class="description">
                 بعد و وسوء الأحمر, دون عقبت الهادي أم, قد حول قادة حكومة يتعلّق.
