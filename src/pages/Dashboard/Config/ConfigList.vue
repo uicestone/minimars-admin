@@ -1,38 +1,18 @@
-<template>
-  <div class="md-layout">
-    <div class="md-layout-item">
-      <md-card>
-        <md-card-header class="md-card-header-icon">
-          <div class="card-icon">
-            <md-icon>settings</md-icon>
-          </div>
-          <h4 class="title">配置列表</h4>
-        </md-card-header>
-        <md-card-content>
-          <md-table
-            :value="queriedData"
-            :md-sort.sync="currentSort"
-            :md-sort-order.sync="currentSortOrder"
-            :md-sort-fn="noop"
-            class="paginated-table table-striped table-hover"
-          >
-            <md-table-row
-              slot="md-table-row"
-              md-selectable="single"
-              slot-scope="{ item }"
-              @click="showDetail(item)"
-            >
-              <md-table-cell md-label="配置项">{{ item | key }}</md-table-cell>
-              <md-table-cell md-label="描述">{{ item.desc }}</md-table-cell>
-              <md-table-cell md-label="更新时间">{{
-                item.updatedAt | date
-              }}</md-table-cell>
-            </md-table-row>
-          </md-table>
-        </md-card-content>
-      </md-card>
-    </div>
-  </div>
+<template lang="pug">
+.md-layout
+  .md-layout-item
+    md-card
+      md-card-header.md-card-header-icon
+        .card-icon
+          md-icon settings
+        h4.title 配置列表
+      md-card-content
+        md-table.paginated-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='noop')
+          md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
+            md-table-cell(md-label='配置项') {{ item | key }}
+            md-table-cell(md-label='描述') {{ item.desc }}
+            md-table-cell(md-label='更新时间')
+              | {{ item.updatedAt | date }}
 </template>
 
 <script>

@@ -1,97 +1,44 @@
-<template>
-  <div class="content">
-    <div class="md-layout">
-      <div class="md-layout-item md-size-66 md-small-size-100 mx-auto">
-        <form @submit.prevent="save">
-          <md-card>
-            <md-card-header class="md-card-header-icon md-card-header-primary">
-              <div class="card-icon">
-                <md-icon>chrome_reader_mode</md-icon>
-              </div>
-              <h4 class="title">{{ post.title }}</h4>
-            </md-card-header>
-
-            <md-card-content class="md-layout">
-              <div class="md-layout-item md-size-100">
-                <md-field>
-                  <label>标题</label>
-                  <md-input v-model="post.title"></md-input>
-                </md-field>
-              </div>
-
-              <div class="md-layout-item md-size-100">
-                <md-field>
-                  <label>简称</label>
-                  <md-input v-model="post.slug"></md-input>
-                </md-field>
-              </div>
-              <div class="md-layout-item md-size-100">
-                <md-chips
-                  @keypress.native.enter.prevent
-                  v-model="post.tags"
-                  class="md-primary shake-on-error"
-                  md-placeholder="添加标签"
-                  md-check-duplicated
-                >
-                </md-chips>
-              </div>
-              <div class="md-layout-item md-size-100">
-                <md-field class="md-has-value mt-4">
-                  <label>内容</label>
-                  <editor v-model="post.content" />
-                </md-field>
-              </div>
-              <div class="md-layout-item md-size-100 text-right">
-                <md-button type="submit" class="md-raised md-primary mt-4"
-                  >保存</md-button
-                >
-                <md-button
-                  type="button"
-                  class="mt-4 ml-2 md-simple md-danger"
-                  @click="remove"
-                  v-if="post.id"
-                  >删除</md-button
-                >
-              </div>
-            </md-card-content>
-          </md-card>
-        </form>
-      </div>
-      <div class="md-layout-item md-size-33 md-small-size-100">
-        <md-card>
-          <div class="md-layout-item md-size-100 md-xsmall-size-100 pb-2">
-            <h4 class="card-title">封面图</h4>
-            <div class="file-input mx-auto" style="display:block">
-              <div class="image-container mx-auto">
-                <img
-                  :src="
-                    post.posterUrl ||
-                      posterImage ||
-                      '/img/image_placeholder.jpg'
-                  "
-                />
-              </div>
-              <div class="button-container">
-                <md-button
-                  class="md-danger md-round"
-                  @click="removeImage"
-                  v-if="posterImage || post.posterUrl"
-                  >移除</md-button
-                >
-                <md-button class="md-success md-round md-fileinput">
-                  <template v-if="!posterImage && !post.posterUrl"
-                    >选择图片</template
-                  >
-                  <template v-else>更换</template>
-                  <input type="file" @change="onFileChange" ref="file-input" />
-                </md-button>
-              </div>
-            </div>
-          </div>
-        </md-card>
-      </div>
-    </div>
-  </div>
+<template lang="pug">
+.content
+  .md-layout
+    .md-layout-item.md-size-66.md-small-size-100.mx-auto
+      form(@submit.prevent='save')
+        md-card
+          md-card-header.md-card-header-icon.md-card-header-primary
+            .card-icon
+              md-icon chrome_reader_mode
+            h4.title {{ post.title }}
+          md-card-content.md-layout
+            .md-layout-item.md-size-100
+              md-field
+                label 标题
+                md-input(v-model='post.title')
+            .md-layout-item.md-size-100
+              md-field
+                label 简称
+                md-input(v-model='post.slug')
+            .md-layout-item.md-size-100
+              md-chips.md-primary.shake-on-error(@keypress.native.enter.prevent='', v-model='post.tags', md-placeholder='添加标签', md-check-duplicated='')
+            .md-layout-item.md-size-100
+              md-field.md-has-value.mt-4
+                label 内容
+                editor(v-model='post.content')
+            .md-layout-item.md-size-100.text-right
+              md-button.md-raised.md-primary.mt-4(type='submit') 保存
+              md-button.mt-4.ml-2.md-simple.md-danger(type='button', @click='remove', v-if='post.id') 删除
+    .md-layout-item.md-size-33.md-small-size-100
+      md-card
+        .md-layout-item.md-size-100.md-xsmall-size-100.pb-2
+          h4.card-title 封面图
+          .file-input.mx-auto(style='display:block')
+            .image-container.mx-auto
+              img(:src="post.posterUrl || posterImage || '/img/image_placeholder.jpg'")
+            .button-container
+              md-button.md-danger.md-round(@click='removeImage', v-if='posterImage || post.posterUrl') 移除
+              md-button.md-success.md-round.md-fileinput
+                template(v-if='!posterImage && !post.posterUrl') 选择图片
+                template(v-else='') 更换
+                input(type='file', @change='onFileChange', ref='file-input')
 </template>
 
 <script>

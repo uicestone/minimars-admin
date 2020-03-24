@@ -1,169 +1,69 @@
-<template>
-  <div class="md-layout">
-    <div class="md-layout-item">
-      <md-card>
-        <md-card-header class="md-card-header-icon md-card-header-primary">
-          <div class="card-icon">
-            <md-icon>timer</md-icon>
-          </div>
-          <h4 class="title">预约列表</h4>
-        </md-card-header>
-        <md-card-content class="paginated-table">
-          <div
-            class="md-toolbar md-table-toolbar md-transparent md-theme-default md-elevation-0 md-layout mb-2"
-          >
-            <div class="md-layout">
-              <md-datepicker
-                v-model="searchQuery.date"
-                :md-model-type="String"
-                md-immediately
-                class="md-layout-item md-size-20 md-xsmall-size-100"
-                ><label>日期</label>
-              </md-datepicker>
-
-              <md-field class="md-layout-item md-size-15 md-xsmall-size-100">
-                <label>筛选状态</label>
-                <md-select v-model="searchQuery.status" multiple>
-                  <md-option
-                    v-for="(name, status) in $bookingStatusNames"
-                    :key="status"
-                    :value="status"
-                    >{{ name }}</md-option
-                  >
-                </md-select>
-              </md-field>
-
-              <md-field class="md-layout-item md-size-15 md-xsmall-size-100">
-                <label>筛选类型</label>
-                <md-select v-model="searchQuery.type">
-                  <md-option value="">全部类型</md-option>
-                  <md-option
-                    v-for="(name, type) in $bookingTypeNames"
-                    :key="type"
-                    :value="type"
-                    >{{ name }}</md-option
-                  >
-                </md-select>
-              </md-field>
-
-              <md-field
-                v-if="!searchQuery.customer"
-                class="md-layout-item md-size-15 md-xsmall-size-100"
-              >
-                <label>搜索客户</label>
-                <md-input
-                  type="search"
-                  clearable
-                  v-model="searchQuery.customerKeyword"
-                >
-                </md-input>
-              </md-field>
-
-              <md-field class="md-layout-item md-size-15 md-xsmall-size-100">
-                <label>优惠</label>
-                <md-select v-model="searchQuery.coupon">
-                  <md-option value="">不指定</md-option>
-                  <md-option
-                    v-for="coupon in $config.coupons"
-                    :key="coupon.slug"
-                    :value="coupon.slug"
-                    >{{ coupon.name }}</md-option
-                  >
-                </md-select>
-              </md-field>
-            </div>
-            <div class="toolbar-actions">
-              <md-button class="md-primary" @click="showCreate">
-                添加预约
-              </md-button>
-              <md-button class="md-just-icon md-simple" @click="queryData">
-                <md-icon>refresh</md-icon>
-              </md-button>
-            </div>
-          </div>
-          <md-table
-            :value="queriedData"
-            :md-sort.sync="currentSort"
-            :md-sort-order.sync="currentSortOrder"
-            :md-sort-fn="noop"
-            class="paginated-table table-striped table-hover"
-          >
-            <md-table-row
-              slot="md-table-row"
-              md-selectable="single"
-              slot-scope="{ item }"
-              @click="showDetail(item)"
-            >
-              <md-table-cell md-label="门店" md-sort-by="store.name">{{
-                item.store.name
-              }}</md-table-cell>
-              <md-table-cell
-                md-label="客户"
-                md-sort-by="customer.name"
-                @click.native.stop="goToCustomer(item.customer)"
-                style="min-width:120px"
-                >{{ item.customer.name }}
-                <span v-if="item.customer.mobile">{{
-                  item.customer.mobile.substr(-4)
-                }}</span>
-                <md-icon class="mini">keyboard_arrow_right</md-icon>
-              </md-table-cell>
-              <md-table-cell md-label="类型" md-sort-by="type">{{
-                item.type | bookingTypeName
-              }}</md-table-cell>
-              <md-table-cell md-label="状态" md-sort-by="status">{{
-                item.status | bookingStatusName
-              }}</md-table-cell>
-              <md-table-cell md-label="日期" md-sort-by="date">{{
-                item.date
-              }}</md-table-cell>
-              <md-table-cell md-label="入场时间" md-sort-by="checkInAt">{{
-                item.checkInAt
-              }}</md-table-cell>
-              <!-- <md-table-cell md-label="类型" md-sort-by="type">{{
-                item.type | bookingTypeName
-              }}</md-table-cell> -->
-              <md-table-cell md-label="大 / 小" md-sort-by="adultsCount"
-                >{{ item.adultsCount }} / {{ item.kidsCount }}</md-table-cell
-              >
-              <md-table-cell md-label="收款" md-sort-by="socksCount">
-                {{ item.payments | paidAmount | currency }}
-              </md-table-cell>
-              <md-table-cell md-label="优惠/券码" md-sort-by="coupon">
-                <span v-if="item.coupon">{{ item.coupon | couponName }}</span>
-                <span v-else-if="item.code">{{
-                  `${item.code.title} ${item.code.id.substr(-6).toUpperCase()}`
-                }}</span>
-                <span v-else>-</span>
-              </md-table-cell>
-              <md-table-cell md-label="创建时间" md-sort-by="createdAt">{{
-                item.createdAt | date
-              }}</md-table-cell>
-              <!-- <md-table-cell md-label="操作">
-                <md-button
-                  class="md-just-icon md-danger md-simple"
-                  @click="">
-                  <md-icon>close</md-icon>
-                </md-button>
-              </md-table-cell> -->
-            </md-table-row>
-          </md-table>
-        </md-card-content>
-        <md-card-actions md-alignment="space-between">
-          <div class="">
-            <p class="card-category">{{ from }} - {{ to }} / {{ total }}</p>
-          </div>
-          <pagination
-            class="pagination-no-border pagination-primary"
-            v-model="pagination.currentPage"
-            :per-page="pagination.perPage"
-            :total="total"
-          >
-          </pagination>
-        </md-card-actions>
-      </md-card>
-    </div>
-  </div>
+<template lang="pug">
+.md-layout
+  .md-layout-item
+    md-card
+      md-card-header.md-card-header-icon.md-card-header-primary
+        .card-icon
+          md-icon timer
+        h4.title 预约列表
+      md-card-content.paginated-table
+        .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
+          .md-layout
+            md-datepicker.md-layout-item.md-size-20.md-xsmall-size-100(v-model='searchQuery.date', :md-model-type='String', md-immediately='')
+              label 日期
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100
+              label 筛选状态
+              md-select(v-model='searchQuery.status', multiple='')
+                md-option(v-for='(name, status) in $bookingStatusNames', :key='status', :value='status') {{ name }}
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100
+              label 筛选类型
+              md-select(v-model='searchQuery.type')
+                md-option(value='') 全部类型
+                md-option(v-for='(name, type) in $bookingTypeNames', :key='type', :value='type') {{ name }}
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100(v-if='!searchQuery.customer')
+              label 搜索客户
+              md-input(type='search', clearable='', v-model='searchQuery.customerKeyword')
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100
+              label 优惠
+              md-select(v-model='searchQuery.coupon')
+                md-option(value='') 不指定
+                md-option(v-for='coupon in $config.coupons', :key='coupon.slug', :value='coupon.slug') {{ coupon.name }}
+          .toolbar-actions
+            md-button.md-primary(@click='showCreate')
+              | 添加预约
+            md-button.md-just-icon.md-simple(@click='queryData')
+              md-icon refresh
+        md-table.paginated-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='noop')
+          md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
+            md-table-cell(md-label='门店', md-sort-by='store.name')
+              | {{ item.store.name }}
+            md-table-cell(md-label='客户', md-sort-by='customer.name', @click.native.stop='goToCustomer(item.customer)', style='min-width:120px')
+              | {{ item.customer.name }}
+              span(v-if='item.customer.mobile')
+                | {{ item.customer.mobile.substr(-4) }}
+              md-icon.mini keyboard_arrow_right
+            md-table-cell(md-label='类型', md-sort-by='type')
+              | {{ item.type | bookingTypeName }}
+            md-table-cell(md-label='状态', md-sort-by='status')
+              | {{ item.status | bookingStatusName }}
+            md-table-cell(md-label='日期', md-sort-by='date')
+              | {{ item.date }}
+            md-table-cell(md-label='入场时间', md-sort-by='checkInAt')
+              | {{ item.checkInAt }}
+            md-table-cell(md-label='大 / 小', md-sort-by='adultsCount') {{ item.adultsCount }} / {{ item.kidsCount }}
+            md-table-cell(md-label='收款', md-sort-by='socksCount')
+              | {{ item.payments | paidAmount | currency }}
+            md-table-cell(md-label='优惠/券码', md-sort-by='coupon')
+              span(v-if='item.coupon') {{ item.coupon | couponName }}
+              span(v-else-if='item.code')
+                | {{ `${item.code.title} ${item.code.id.substr(-6).toUpperCase()}` }}
+              span(v-else='') -
+            md-table-cell(md-label='创建时间', md-sort-by='createdAt')
+              | {{ item.createdAt | date }}
+      md-card-actions(md-alignment='space-between')
+        div
+          p.card-category {{ from }} - {{ to }} / {{ total }}
+        pagination.pagination-no-border.pagination-primary(v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
 </template>
 
 <script>

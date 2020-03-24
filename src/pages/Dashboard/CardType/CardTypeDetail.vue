@@ -1,171 +1,66 @@
-<template>
-  <div class="content">
-    <div class="md-layout">
-      <div class="md-layout-item md-size-66 md-small-size-100 mx-auto">
-        <form @submit.prevent="save">
-          <md-card>
-            <md-card-header class="md-card-header-icon md-card-header-primary">
-              <div class="card-icon">
-                <md-icon>card_membership</md-icon>
-              </div>
-              <h4 class="title">{{ cardType.title }}</h4>
-            </md-card-header>
-
-            <md-card-content class="md-layout">
-              <div class="md-layout-item md-size-50">
-                <md-field>
-                  <label>名称</label>
-                  <md-input v-model="cardType.title"></md-input>
-                </md-field>
-              </div>
-              <div class="md-layout-item md-size-25">
-                <md-field>
-                  <label>代号</label>
-                  <md-input v-model="cardType.slug"></md-input>
-                </md-field>
-              </div>
-              <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-field>
-                  <label>门店</label>
-                  <md-select v-model="cardType.store">
-                    <md-option>不绑定门店</md-option>
-                    <md-option
-                      v-for="store in $stores"
-                      :key="store.id"
-                      :value="store.id"
-                      >{{ store.name }}</md-option
-                    >
-                  </md-select>
-                </md-field>
-              </div>
-              <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-field>
-                  <label>类型</label>
-                  <md-select v-model="cardType.type" @keydown.enter.prevent="">
-                    <md-option
-                      v-for="(name, type) in $cardTypeNames"
-                      :key="type"
-                      :value="type"
-                      >{{ name }}</md-option
-                    >
-                  </md-select>
-                </md-field>
-              </div>
-              <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-field>
-                  <label>售价</label>
-                  <md-input type="number" v-model="cardType.price"></md-input>
-                </md-field>
-              </div>
-              <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-field>
-                  <label>单次最多儿童数</label>
-                  <md-input type="number" v-model="cardType.maxKids"></md-input>
-                </md-field>
-              </div>
-              <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-field>
-                  <label>每儿童免费陪同成人</label>
-                  <md-input
-                    type="number"
-                    v-model="cardType.freeParentsPerKid"
-                  ></md-input>
-                </md-field>
-              </div>
-              <div
-                class="md-layout-item md-small-size-100 md-size-100"
-                v-if="cardType.type === 'times'"
-              >
-                <md-field>
-                  <label>次数</label>
-                  <md-input type="number" v-model="cardType.times"></md-input>
-                </md-field>
-              </div>
-              <div
-                class="md-layout-item md-small-size-100 md-size-100"
-                v-if="cardType.type === 'balance'"
-              >
-                <md-field>
-                  <label>面值</label>
-                  <md-input type="number" v-model="cardType.balance"></md-input>
-                </md-field>
-              </div>
-              <div
-                class="md-layout-item md-small-size-100 md-size-50"
-                v-if="cardType.type === 'period'"
-              >
-                <!-- <md-field :class="{ 'md-has-value': cardType.date }">
-                  <label>日期</label>
-                  <datetime
-                    v-model="cardType.date"
-                    input-class="md-input"
-                    type="date"
-                    auto
-                    format="yyyy-LL-dd"
-                    value-zone="Asia/Shanghai"
-                    :phrases="{ ok: '确定', cancel: '取消' }"
-                  />
-                </md-field> -->
-                <md-datepicker
-                  placeholder="开始日期"
-                  v-model="cardType.start"
-                  :md-model-type="Date"
-                  md-immediately
-                >
-                  <label>开始日期</label>
-                </md-datepicker>
-              </div>
-              <div
-                class="md-layout-item md-small-size-100 md-size-50"
-                v-if="cardType.type === 'period'"
-              >
-                <!-- <md-field :class="{ 'md-has-value': cardType.date }">
-                  <label>日期</label>
-                  <datetime
-                    v-model="cardType.date"
-                    input-class="md-input"
-                    type="date"
-                    auto
-                    format="yyyy-LL-dd"
-                    value-zone="Asia/Shanghai"
-                    :phrases="{ ok: '确定', cancel: '取消' }"
-                  />
-                </md-field> -->
-                <md-datepicker
-                  placeholder="截止日期"
-                  v-model="cardType.end"
-                  :md-model-type="Date"
-                  md-immediately
-                  ><label>截止日期</label>
-                </md-datepicker>
-              </div>
-              <div class="md-layout-item md-size-100">
-                <md-field>
-                  <label>内容详情</label>
-                  <md-textarea
-                    v-model="cardType.content"
-                    class="no-padding"
-                  ></md-textarea>
-                </md-field>
-              </div>
-              <div class="md-layout-item md-size-100 text-right">
-                <md-button type="submit" class="md-raised md-primary mt-4"
-                  >保存</md-button
-                >
-                <md-button
-                  type="button"
-                  class="mt-4 ml-2 md-simple md-danger"
-                  @click="remove"
-                  v-if="this.cardType.id"
-                  >删除</md-button
-                >
-              </div>
-            </md-card-content>
-          </md-card>
-        </form>
-      </div>
-    </div>
-  </div>
+<template lang="pug">
+.content
+  .md-layout
+    .md-layout-item.md-size-66.md-small-size-100.mx-auto
+      form(@submit.prevent='save')
+        md-card
+          md-card-header.md-card-header-icon.md-card-header-primary
+            .card-icon
+              md-icon card_membership
+            h4.title {{ cardType.title }}
+          md-card-content.md-layout
+            .md-layout-item.md-size-50
+              md-field
+                label 名称
+                md-input(v-model='cardType.title')
+            .md-layout-item.md-size-25
+              md-field
+                label 代号
+                md-input(v-model='cardType.slug')
+            .md-layout-item.md-small-size-100.md-size-25
+              md-field
+                label 门店
+                md-select(v-model='cardType.store')
+                  md-option 不绑定门店
+                  md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
+            .md-layout-item.md-small-size-100.md-size-25
+              md-field
+                label 类型
+                md-select(v-model='cardType.type', @keydown.enter.prevent='')
+                  md-option(v-for='(name, type) in $cardTypeNames', :key='type', :value='type') {{ name }}
+            .md-layout-item.md-small-size-100.md-size-25
+              md-field
+                label 售价
+                md-input(type='number', v-model='cardType.price')
+            .md-layout-item.md-small-size-100.md-size-25
+              md-field
+                label 单次最多儿童数
+                md-input(type='number', v-model='cardType.maxKids')
+            .md-layout-item.md-small-size-100.md-size-25
+              md-field
+                label 每儿童免费陪同成人
+                md-input(type='number', v-model='cardType.freeParentsPerKid')
+            .md-layout-item.md-small-size-100.md-size-100(v-if="cardType.type === 'times'")
+              md-field
+                label 次数
+                md-input(type='number', v-model='cardType.times')
+            .md-layout-item.md-small-size-100.md-size-100(v-if="cardType.type === 'balance'")
+              md-field
+                label 面值
+                md-input(type='number', v-model='cardType.balance')
+            .md-layout-item.md-small-size-100.md-size-50(v-if="cardType.type === 'period'")
+              md-datepicker(placeholder='开始日期', v-model='cardType.start', :md-model-type='Date', md-immediately='')
+                label 开始日期
+            .md-layout-item.md-small-size-100.md-size-50(v-if="cardType.type === 'period'")
+              md-datepicker(placeholder='截止日期', v-model='cardType.end', :md-model-type='Date', md-immediately='')
+                label 截止日期
+            .md-layout-item.md-size-100
+              md-field
+                label 内容详情
+                md-textarea.no-padding(v-model='cardType.content')
+            .md-layout-item.md-size-100.text-right
+              md-button.md-raised.md-primary.mt-4(type='submit') 保存
+              md-button.mt-4.ml-2.md-simple.md-danger(type='button', @click='remove', v-if='this.cardType.id') 删除
 </template>
 
 <script>

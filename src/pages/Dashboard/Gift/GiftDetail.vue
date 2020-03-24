@@ -1,115 +1,56 @@
-<template>
-  <div class="content">
-    <div class="md-layout">
-      <div class="md-layout-item md-size-66 md-small-size-100 mx-auto">
-        <form @submit.prevent="save">
-          <md-card>
-            <md-card-header class="md-card-header-icon md-card-header-primary">
-              <div class="card-icon">
-                <md-icon>card_giftcard</md-icon>
-              </div>
-              <h4 class="title">{{ gift.title }}</h4>
-            </md-card-header>
-
-            <md-card-content class="md-layout">
-              <div class="md-layout-item md-size-100">
-                <md-field>
-                  <label>显示名称</label>
-                  <md-input v-model="gift.title"></md-input>
-                </md-field>
-              </div>
-              <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-field>
-                  <label>库存</label>
-                  <md-input type="number" v-model="gift.quantity"></md-input>
-                </md-field>
-              </div>
-              <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-field>
-                  <label>积分售价</label>
-                  <md-input
-                    type="number"
-                    v-model="gift.priceInPoints"
-                  ></md-input>
-                </md-field>
-              </div>
-              <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-field>
-                  <label>收款售价 ¥</label>
-                  <md-input type="number" v-model="gift.priceInCny"></md-input>
-                </md-field>
-              </div>
-              <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-field>
-                  <label>门店</label>
-                  <md-select v-model="gift.store">
-                    <md-option>不绑定门店</md-option>
-                    <md-option
-                      v-for="store in $stores"
-                      :key="store.id"
-                      :value="store.id"
-                      >{{ store.name }}</md-option
-                    >
-                  </md-select>
-                </md-field>
-              </div>
-              <div class="md-layout-item md-small-size-100">
-                <md-field class="md-has-value mt-4">
-                  <label>内容</label>
-                  <editor v-model="gift.content" />
-                </md-field>
-              </div>
-              <div class="md-layout-item md-size-100 text-right">
-                <md-button type="submit" class="md-raised md-primary mt-4"
-                  >保存</md-button
-                >
-                <md-button
-                  type="button"
-                  class="mt-4 ml-2 md-simple md-danger"
-                  @click="remove"
-                  v-if="this.gift.id"
-                  >删除</md-button
-                >
-              </div>
-            </md-card-content>
-          </md-card>
-        </form>
-      </div>
-      <div class="md-layout-item md-size-33 md-small-size-100">
-        <md-card>
-          <div class="md-layout-item md-size-100 md-xsmall-size-100 pb-2">
-            <h4 class="card-title">封面图</h4>
-            <div class="file-input mx-auto" style="display:block">
-              <div class="image-container mx-auto">
-                <img
-                  :src="
-                    gift.posterUrl ||
-                      posterImage ||
-                      '/img/image_placeholder.jpg'
-                  "
-                />
-              </div>
-              <div class="button-container">
-                <md-button
-                  class="md-danger md-round"
-                  @click="removeImage"
-                  v-if="posterImage || gift.posterUrl"
-                  >移除</md-button
-                >
-                <md-button class="md-success md-round md-fileinput">
-                  <template v-if="!posterImage && !gift.posterUrl"
-                    >选择图片</template
-                  >
-                  <template v-else>更换</template>
-                  <input type="file" @change="onFileChange" ref="file-input" />
-                </md-button>
-              </div>
-            </div>
-          </div>
-        </md-card>
-      </div>
-    </div>
-  </div>
+<template lang="pug">
+.content
+  .md-layout
+    .md-layout-item.md-size-66.md-small-size-100.mx-auto
+      form(@submit.prevent='save')
+        md-card
+          md-card-header.md-card-header-icon.md-card-header-primary
+            .card-icon
+              md-icon card_giftcard
+            h4.title {{ gift.title }}
+          md-card-content.md-layout
+            .md-layout-item.md-size-100
+              md-field
+                label 显示名称
+                md-input(v-model='gift.title')
+            .md-layout-item.md-small-size-100.md-size-25
+              md-field
+                label 库存
+                md-input(type='number', v-model='gift.quantity')
+            .md-layout-item.md-small-size-100.md-size-25
+              md-field
+                label 积分售价
+                md-input(type='number', v-model='gift.priceInPoints')
+            .md-layout-item.md-small-size-100.md-size-25
+              md-field
+                label 收款售价 ¥
+                md-input(type='number', v-model='gift.priceInCny')
+            .md-layout-item.md-small-size-100.md-size-25
+              md-field
+                label 门店
+                md-select(v-model='gift.store')
+                  md-option 不绑定门店
+                  md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
+            .md-layout-item.md-small-size-100
+              md-field.md-has-value.mt-4
+                label 内容
+                editor(v-model='gift.content')
+            .md-layout-item.md-size-100.text-right
+              md-button.md-raised.md-primary.mt-4(type='submit') 保存
+              md-button.mt-4.ml-2.md-simple.md-danger(type='button', @click='remove', v-if='this.gift.id') 删除
+    .md-layout-item.md-size-33.md-small-size-100
+      md-card
+        .md-layout-item.md-size-100.md-xsmall-size-100.pb-2
+          h4.card-title 封面图
+          .file-input.mx-auto(style='display:block')
+            .image-container.mx-auto
+              img(:src="gift.posterUrl || posterImage || '/img/image_placeholder.jpg'")
+            .button-container
+              md-button.md-danger.md-round(@click='removeImage', v-if='posterImage || gift.posterUrl') 移除
+              md-button.md-success.md-round.md-fileinput
+                template(v-if='!posterImage && !gift.posterUrl') 选择图片
+                template(v-else) 更换
+                input(type='file', @change='onFileChange', ref='file-input')
 </template>
 
 <script>

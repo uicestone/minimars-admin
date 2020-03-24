@@ -1,301 +1,107 @@
-<template>
-  <div class="content">
-    <div class="md-layout">
-      <div class="md-layout-item md-size-66 md-small-size-100 mx-auto">
-        <form @submit.prevent="save" ref="form">
-          <md-card>
-            <md-card-header class="md-card-header-icon md-card-header-primary">
-              <div class="card-icon">
-                <md-icon>timer</md-icon>
-              </div>
-              <h4 class="title">{{ booking.id.substr(-6).toUpperCase() }}</h4>
-            </md-card-header>
-
-            <md-card-content class="md-layout">
-              <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-autocomplete
-                  v-model="customerSearchTerm"
-                  :md-options="getCustomers(customerSearchTerm)"
-                  @md-selected="selectCustomer"
-                  @md-changed="updateCustomer"
-                  :disabled="booking.status && booking.status !== 'pending'"
-                >
-                  <label>客户</label>
-                  <template slot="md-autocomplete-item" slot-scope="{ item }">
-                    {{ item.name }}
-                  </template>
-                </md-autocomplete>
-              </div>
-              <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-field>
-                  <label>门店</label>
-                  <md-select v-model="booking.store">
-                    <md-option
-                      v-for="store in $stores"
-                      :key="store.id"
-                      :value="store.id"
-                      >{{ store.name }}</md-option
-                    >
-                  </md-select>
-                </md-field>
-              </div>
-              <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-field>
-                  <label>类型</label>
-                  <md-select v-model="booking.type" @keydown.enter.prevent="">
-                    <md-option
-                      v-for="(name, type) in $bookingTypeNames"
-                      :key="type"
-                      :value="type"
-                      >{{ name }}</md-option
-                    >
-                  </md-select>
-                </md-field>
-              </div>
-              <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-field>
-                  <label>状态</label>
-                  <md-select
-                    v-model="booking.status"
-                    @keydown.enter.prevent
-                    :disabled="$user.role === 'manager'"
-                  >
-                    <md-option
-                      v-for="(name, status) in $bookingStatusNames"
-                      :key="status"
-                      :value="status"
-                      >{{ name }}</md-option
-                    >
-                  </md-select>
-                </md-field>
-              </div>
-              <div
-                class="md-layout-item md-small-size-100 md-size-100"
-                v-if="booking.type === 'event'"
-              >
-                <md-autocomplete
-                  v-model="eventSearchTerm"
-                  :md-options="events"
-                  @md-selected="selectEvent"
-                >
-                  <label>活动</label>
-                  <template slot="md-autocomplete-item" slot-scope="{ item }">
-                    {{ item.title }}
-                  </template>
-                </md-autocomplete>
-              </div>
-              <div
-                class="md-layout-item md-layout md-small-size-100 md-size-50 p-0"
-              >
-                <div class="md-layout-item md-small-size-100 md-size-66">
-                  <!-- <md-field :class="{ 'md-has-value': booking.date }">
-                  <label>日期</label>
-                  <datetime
-                    v-model="booking.date"
-                    input-class="md-input"
-                    type="date"
-                    auto
-                    format="yyyy-LL-dd"
-                    value-zone="Asia/Shanghai"
-                    :phrases="{ ok: '确定', cancel: '取消' }"
-                  />
-                </md-field> -->
-                  <md-datepicker
-                    v-model="booking.date"
-                    :md-model-type="String"
-                    md-immediately
-                  />
-                </div>
-                <div class="md-layout-item md-small-size-100 md-size-33">
-                  <md-field>
-                    <label>入场时间</label>
-                    <md-input v-model="booking.checkInAt"></md-input>
-                  </md-field>
-                </div>
-              </div>
-              <div
-                class="md-layout-item md-layout md-small-size-100 md-size-50 p-0"
-              >
-                <div class="md-layout-item md-small-size-100 md-size-50">
-                  <md-field>
-                    <label>成人</label>
-                    <md-input
-                      v-model="booking.adultsCount"
-                      type="number"
-                      min="0"
-                    ></md-input>
-                    <span class="md-suffix">位</span>
-                  </md-field>
-                </div>
-                <div class="md-layout-item md-small-size-100 md-size-50">
-                  <md-field>
-                    <label>儿童</label>
-                    <md-input
-                      v-model="booking.kidsCount"
-                      type="number"
-                      min="0"
-                    ></md-input>
-                    <span class="md-suffix">位</span>
-                  </md-field>
-                </div>
-              </div>
-              <div class="md-layout-item md-small-size-100">
-                <md-field>
-                  <label>备注</label>
-                  <md-textarea
-                    v-model="booking.remarks"
-                    class="no-padding"
-                  ></md-textarea>
-                </md-field>
-              </div>
-              <div
-                class="md-layout-item md-layout md-alignment-bottom-space-between md-size-100 text-right mt-2"
-              >
-                <div
-                  class="md-layout md-alignment-bottom-left pl-0"
-                  style="flex:1;flex-wrap:nowrap"
-                >
-                  <div style="padding-left:0;width:150px" v-if="!booking.id">
-                    <md-field>
-                      <label>支付方式</label>
-                      <md-select
-                        v-model="paymentGateway"
-                        :disabled="
-                          (priceInPoints && !price) ||
-                            (!customerCards.length && !price)
-                        "
-                      >
-                        <md-option
-                          v-for="card in customerCards"
-                          v-show="price"
-                          :key="card.id"
-                          :value="card.id"
-                          @click.native="useCard(card)"
-                          >{{ card.title }}</md-option
-                        >
-                        <md-option
-                          value="points"
-                          @click="useCard(false)"
-                          v-show="priceInPoints"
-                          >账户积分</md-option
-                        >
-                        <md-option
-                          value="balance"
-                          @click="useCard(false)"
-                          v-show="price"
-                          >账户余额</md-option
-                        >
-                        <md-option
-                          value="cash"
-                          @click="useCard(false)"
-                          v-show="price"
-                          >现金刷卡</md-option
-                        >
-                      </md-select>
-                    </md-field>
-                  </div>
-                  <md-button
-                    type="button"
-                    class="mt-2 md-simple md-info md-btn-link"
-                    @click="goCustomerDetail"
-                    v-if="booking.customer"
-                    >客户：{{ booking.customer.name }}
-                    <span v-if="booking.customer.mobile"
-                      >({{ booking.customer.mobile.substr(-4) }})</span
-                    ></md-button
-                  >
-                  <md-button
-                    class="md-simple md-warning mt-2 md-btn-link"
-                    v-if="price !== null"
-                    >{{ price | currency }}</md-button
-                  >
-                  <md-button
-                    class="md-simple md-warning mt-2 md-btn-link"
-                    v-if="priceInPoints !== null"
-                    >{{ priceInPoints }} 积分</md-button
-                  >
-                </div>
-                <div class="md-layout md-alignment-bottom-right">
-                  <md-button
-                    type="button"
-                    class="md-simple md-danger"
-                    @click="remove"
-                    v-if="this.booking.id"
-                    >删除</md-button
-                  >
-
-                  <md-button type="submit" class="md-raised md-primary"
-                    >保存</md-button
-                  >
-                </div>
-              </div>
-            </md-card-content>
-          </md-card>
-          <md-card class="payments-card">
-            <md-card-header class="md-card-header-icon md-card-header-danger">
-              <div class="card-icon">
-                <md-icon>payment</md-icon>
-              </div>
-              <h4 class="title">付款记录</h4>
-            </md-card-header>
-
-            <md-card-content class="md-layout">
-              <md-table>
-                <md-table-row
-                  v-for="payment in booking.payments"
-                  :key="payment.id"
-                >
-                  <md-table-cell md-label="金额" md-sort-by="amount">
-                    <span v-if="payment.amount">¥{{ payment.amount }}</span>
-                    <span v-if="payment.amountInPoints">{{
-                      payment.amountInPoints
-                    }}</span>
-                  </md-table-cell>
-                  <md-table-cell
-                    md-label="描述"
-                    md-sort-by="title"
-                    style="width:40%"
-                    >{{ payment.title }}</md-table-cell
-                  >
-                  <md-table-cell md-label="通道" md-sort-by="gateway">{{
-                    payment.gateway | paymentGatewayName
-                  }}</md-table-cell>
-                  <md-table-cell md-label="创建时间" md-sort-by="createdAt">{{
-                    payment.createdAt | date
-                  }}</md-table-cell>
-                  <md-table-cell md-label="收款">
-                    <md-button
-                      class="md-success md-normal"
-                      disabled
-                      v-if="payment.paid"
-                      >已收款</md-button
-                    >
-                    <md-button
-                      v-else
-                      class="md-normal md-warning"
-                      @click="pay(payment)"
-                      >收款</md-button
-                    >
-                  </md-table-cell>
-                </md-table-row>
-              </md-table>
-            </md-card-content>
-          </md-card>
-        </form>
-      </div>
-    </div>
-  </div>
+<template lang="pug">
+.content
+  .md-layout
+    .md-layout-item.md-size-66.md-small-size-100.mx-auto
+      form(@submit.prevent='save', ref='form')
+        md-card
+          md-card-header.md-card-header-icon.md-card-header-primary
+            .card-icon
+              md-icon timer
+            h4.title {{ booking.id.substr(-6).toUpperCase() }}
+          md-card-content.md-layout
+            .md-layout-item.md-small-size-100.md-size-25
+              md-autocomplete(v-model='customerSearchTerm', :md-options='getCustomers(customerSearchTerm)', @md-selected='selectCustomer', @md-changed='updateCustomer', :disabled="booking.status && booking.status !== 'pending'")
+                label 客户
+                template(slot='md-autocomplete-item', slot-scope='{ item }')
+                  | {{ item.name }}
+            .md-layout-item.md-small-size-100.md-size-25
+              md-field
+                label 门店
+                md-select(v-model='booking.store')
+                  md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
+            .md-layout-item.md-small-size-100.md-size-25
+              md-field
+                label 类型
+                md-select(v-model='booking.type', @keydown.enter.prevent='')
+                  md-option(v-for='(name, type) in $bookingTypeNames', :key='type', :value='type') {{ name }}
+            .md-layout-item.md-small-size-100.md-size-25
+              md-field
+                label 状态
+                md-select(v-model='booking.status', @keydown.enter.prevent='', :disabled="$user.role === 'manager'")
+                  md-option(v-for='(name, status) in $bookingStatusNames', :key='status', :value='status') {{ name }}
+            .md-layout-item.md-small-size-100.md-size-100(v-if="booking.type === 'event'")
+              md-autocomplete(v-model='eventSearchTerm', :md-options='events', @md-selected='selectEvent')
+                label 活动
+                template(slot='md-autocomplete-item', slot-scope='{ item }')
+                  | {{ item.title }}
+            .md-layout-item.md-layout.md-small-size-100.md-size-50.p-0
+              .md-layout-item.md-small-size-100.md-size-66
+                md-datepicker(v-model='booking.date', :md-model-type='String', md-immediately='')
+              .md-layout-item.md-small-size-100.md-size-33
+                md-field
+                  label 入场时间
+                  md-input(v-model='booking.checkInAt')
+            .md-layout-item.md-layout.md-small-size-100.md-size-50.p-0
+              .md-layout-item.md-small-size-100.md-size-50
+                md-field
+                  label 成人
+                  md-input(v-model='booking.adultsCount', type='number', min='0')
+                  span.md-suffix 位
+              .md-layout-item.md-small-size-100.md-size-50
+                md-field
+                  label 儿童
+                  md-input(v-model='booking.kidsCount', type='number', min='0')
+                  span.md-suffix 位
+            .md-layout-item.md-small-size-100
+              md-field
+                label 备注
+                md-textarea.no-padding(v-model='booking.remarks')
+            .md-layout-item.md-layout.md-alignment-bottom-space-between.md-size-100.text-right.mt-2
+              .md-layout.md-alignment-bottom-left.pl-0(style='flex:1;flex-wrap:nowrap')
+                div(style='padding-left:0;width:150px', v-if='!booking.id')
+                  md-field
+                    label 支付方式
+                    md-select(v-model='paymentGateway', :disabled='(priceInPoints && !price) || (!customerCards.length && !price)')
+                      md-option(v-for='card in customerCards', v-show='price', :key='card.id', :value='card.id', @click.native='useCard(card)') {{ card.title }}
+                      md-option(value='points', @click='useCard(false)', v-show='priceInPoints') 账户积分
+                      md-option(value='balance', @click='useCard(false)', v-show='price') 账户余额
+                      md-option(value='cash', @click='useCard(false)', v-show='price') 现金刷卡
+                md-button.mt-2.md-simple.md-info.md-btn-link(type='button', @click='goCustomerDetail', v-if='booking.customer')
+                  | 客户：{{ booking.customer.name }}
+                  span(v-if='booking.customer.mobile') ({{ booking.customer.mobile.substr(-4) }})
+                md-button.md-simple.md-warning.mt-2.md-btn-link(v-if='price !== null') {{ price | currency }}
+                md-button.md-simple.md-warning.mt-2.md-btn-link(v-if='priceInPoints !== null') {{ priceInPoints }} 积分
+              .md-layout.md-alignment-bottom-right
+                md-button.md-simple.md-danger(type='button', @click='remove', v-if='this.booking.id') 删除
+                md-button.md-raised.md-primary(type='submit') 保存
+        md-card.payments-card
+          md-card-header.md-card-header-icon.md-card-header-danger
+            .card-icon
+              md-icon payment
+            h4.title 付款记录
+          md-card-content.md-layout
+            md-table
+              md-table-row(v-for='payment in booking.payments', :key='payment.id')
+                md-table-cell(md-label='金额', md-sort-by='amount')
+                  span(v-if='payment.amount') ¥{{ payment.amount }}
+                  span(v-if='payment.amountInPoints')
+                    | {{ payment.amountInPoints }}
+                md-table-cell(md-label='描述', md-sort-by='title', style='width:40%') {{ payment.title }}
+                md-table-cell(md-label='通道', md-sort-by='gateway')
+                  | {{ payment.gateway | paymentGatewayName }}
+                md-table-cell(md-label='创建时间', md-sort-by='createdAt')
+                  | {{ payment.createdAt | date }}
+                md-table-cell(md-label='收款')
+                  md-button.md-success.md-normal(disabled='', v-if='payment.paid') 已收款
+                  md-button.md-normal.md-warning(v-else='', @click='pay(payment)') 收款
 </template>
 
 <script>
-// import { Datetime } from "vue-datetime";
-// import "vue-datetime/dist/vue-datetime.css";
 import { Booking, BookingPrice, User, Event, Payment, Card } from "@/resources";
 import Swal from "sweetalert2";
 import moment from "moment";
 
 export default {
-  // components: { Datetime },
   data() {
     return {
       booking: {

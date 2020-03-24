@@ -1,75 +1,36 @@
-<template>
-  <div class="md-layout">
-    <div class="md-layout-item">
-      <md-card>
-        <md-card-header class="md-card-header-icon md-card-header-primary">
-          <div class="card-icon">
-            <md-icon>chrome_reader_mode</md-icon>
-          </div>
-          <h4 class="title">文章列表</h4>
-        </md-card-header>
-        <md-card-content class="paginated-table">
-          <div
-            class="md-toolbar md-table-toolbar md-transparent md-theme-default md-elevation-0 md-layout mb-2"
-          >
-            <div class="md-layout">
-              <md-field class="md-layout-item md-size-15 md-xsmall-size-100">
-                <label>标签</label>
-                <md-input clearable v-model="searchQuery.tag"> </md-input>
-              </md-field>
-            </div>
-            <div class="toolbar-actions">
-              <md-button class="md-primary" @click="showCreate">
-                添加文章
-              </md-button>
-              <md-button class="md-just-icon md-simple" @click="queryData">
-                <md-icon>refresh</md-icon>
-              </md-button>
-            </div>
-          </div>
-          <md-table
-            :value="queriedData"
-            :md-sort.sync="currentSort"
-            :md-sort-order.sync="currentSortOrder"
-            :md-sort-fn="noop"
-            class="paginated-table table-striped table-hover"
-          >
-            <md-table-row
-              slot="md-table-row"
-              md-selectable="single"
-              slot-scope="{ item }"
-              @click="showDetail(item)"
-            >
-              <md-table-cell md-label="标题" md-sort-by="title">{{
-                item.title
-              }}</md-table-cell>
-              <md-table-cell md-label="简称" md-sort-by="slug">{{
-                item.slug
-              }}</md-table-cell>
-              <md-table-cell md-label="发布者" md-sort-by="author.name">{{
-                item.author.name
-              }}</md-table-cell>
-              <md-table-cell md-label="修改时间" md-sort-by="updatedAt">{{
-                item.updatedAt | date("YYYY-MM-DD HH:mm")
-              }}</md-table-cell>
-            </md-table-row>
-          </md-table>
-        </md-card-content>
-        <md-card-actions md-alignment="space-between">
-          <div class="">
-            <p class="card-category">{{ from }} - {{ to }} / {{ total }}</p>
-          </div>
-          <pagination
-            class="pagination-no-border pagination-primary"
-            v-model="pagination.currentPage"
-            :per-page="pagination.perPage"
-            :total="total"
-          >
-          </pagination>
-        </md-card-actions>
-      </md-card>
-    </div>
-  </div>
+<template lang="pug">
+.md-layout
+  .md-layout-item
+    md-card
+      md-card-header.md-card-header-icon.md-card-header-primary
+        .card-icon
+          md-icon chrome_reader_mode
+        h4.title 文章列表
+      md-card-content.paginated-table
+        .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
+          .md-layout
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100
+              label 标签
+              md-input(clearable='', v-model='searchQuery.tag')  
+          .toolbar-actions
+            md-button.md-primary(@click='showCreate')
+              | 添加文章
+            md-button.md-just-icon.md-simple(@click='queryData')
+              md-icon refresh
+        md-table.paginated-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='noop')
+          md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
+            md-table-cell(md-label='标题', md-sort-by='title')
+              | {{ item.title }}
+            md-table-cell(md-label='简称', md-sort-by='slug')
+              | {{ item.slug }}
+            md-table-cell(md-label='发布者', md-sort-by='author.name')
+              | {{ item.author.name }}
+            md-table-cell(md-label='修改时间', md-sort-by='updatedAt')
+              | {{ item.updatedAt | date("YYYY-MM-DD HH:mm") }}
+      md-card-actions(md-alignment='space-between')
+        div
+          p.card-category {{ from }} - {{ to }} / {{ total }}
+        pagination.pagination-no-border.pagination-primary(v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
 </template>
 
 <script>
