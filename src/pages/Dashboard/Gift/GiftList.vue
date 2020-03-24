@@ -35,14 +35,12 @@
 <script>
 import { Pagination } from "@/components";
 import { Gift } from "@/resources";
-import moment from "moment";
 
 export default {
   components: {
     Pagination
   },
   data() {
-    const customer = this.$route.query.customer;
     return {
       currentSort: "title",
       currentSortOrder: "asc",

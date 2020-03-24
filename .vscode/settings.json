@@ -1,4 +1,7 @@
 {
   "vetur.format.defaultFormatter.html": "prettier",
-  "prettier.disableLanguages": ["scss", "html"]
+  "prettier.disableLanguages": [
+    "scss",
+    "html"
+  ]
 }

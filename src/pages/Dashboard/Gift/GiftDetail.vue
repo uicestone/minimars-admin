@@ -56,7 +56,7 @@
 <script>
 // import { Datetime } from "vue-datetime";
 // import "vue-datetime/dist/vue-datetime.css";
-import { Gift, Store, User } from "@/resources";
+import { Gift } from "@/resources";
 import { Editor } from "@/components";
 import Swal from "sweetalert2";
 

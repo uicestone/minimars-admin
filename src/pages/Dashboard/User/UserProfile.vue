@@ -160,7 +160,7 @@
 </template>
 
 <script>
-import { Booking, User, Payment, Store, Card } from "@/resources";
+import { Booking, User, Payment, Card } from "@/resources";
 import Swal from "sweetalert2";
 
 export default {
