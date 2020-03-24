@@ -27,17 +27,18 @@
                 </md-autocomplete>
               </div>
               <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-autocomplete
-                  v-model="storeSearchTerm"
-                  :md-options="$stores"
-                  @md-selected="selectStore"
-                  :disabled="$user.role === 'manager'"
-                >
+                <md-field>
                   <label>门店</label>
-                  <template slot="md-autocomplete-item" slot-scope="{ item }">
-                    {{ item.name }}
-                  </template>
-                </md-autocomplete>
+                  <md-select v-model="booking.store">
+                    <md-option>不绑定门店</md-option>
+                    <md-option
+                      v-for="store in $stores"
+                      :key="store.id"
+                      :value="store.id"
+                      >{{ store.name }}</md-option
+                    >
+                  </md-select>
+                </md-field>
               </div>
               <div class="md-layout-item md-small-size-100 md-size-25">
                 <md-field>
@@ -281,7 +282,6 @@ import moment from "moment";
 export default {
   // components: { Datetime },
   data() {
-    const currentUserStore = this.$user.store;
     return {
       booking: {
         id: "",
@@ -293,13 +293,12 @@ export default {
         adultsCount: 1,
         kidsCount: 1,
         socksCount: 1,
-        store: currentUserStore,
+        store: this.$user.store,
         card: null
       },
       price: null,
       customers: [],
       customerSearchTerm: "",
-      storeSearchTerm: currentUserStore ? currentUserStore.name : "",
       events: [],
       customerCards: [],
       eventSearchTerm: "",
@@ -375,10 +374,6 @@ export default {
         this.booking.customer = null;
       }
     },
-    selectStore(item) {
-      this.booking.store = item;
-      this.storeSearchTerm = item.name;
-    },
     async getEvents(q) {
       this.events = (await Event.get({ keyword: q })).body;
       return this.events;
@@ -440,6 +435,9 @@ export default {
     }
   },
   watch: {
+    "$user.store"(s) {
+      this.booking.store = s;
+    },
     booking: {
       handler(b, p) {
         if (!b.id) {
@@ -450,6 +448,13 @@ export default {
     },
     "booking.customer"() {
       this.getCustomerCards();
+    },
+    "booking.store"(v) {
+      if (typeof v === "object" && v) {
+        this.booking.store = this.booking.store.id;
+      } else if (v === false) {
+        this.booking.store = null;
+      }
     }
   },
   async mounted() {
@@ -457,7 +462,6 @@ export default {
       this.booking = (await Booking.get({ id: this.$route.params.id })).body;
       if (this.booking.customer)
         this.customerSearchTerm = this.booking.customer.name;
-      if (this.booking.store) this.storeSearchTerm = this.booking.store.name;
       if (this.booking.event) this.eventSearchTerm = this.booking.event.title;
     } else {
       this.updateBookingPrice();

@@ -28,6 +28,7 @@
                 <md-field>
                   <label>门店</label>
                   <md-select v-model="cardType.store">
+                    <md-option>不绑定门店</md-option>
                     <md-option
                       v-for="store in $stores"
                       :key="store.id"
@@ -246,16 +247,12 @@ export default {
       }
     },
     "cardType.store"(v) {
-      // if (v) {
-      //   this.cardType.storeId = v.id;
-      // }
-      if (typeof v === "object") {
+      if (typeof v === "object" && v) {
         this.cardType.store = this.cardType.store.id;
+      } else if (v === false) {
+        this.cardType.store = null;
       }
     }
-    // "cardType.storeId"(v) {
-    //   this.cardType.store = this.$store.find(s => s.id === v);
-    // }
   },
   async mounted() {
     if (this.$route.params.id !== "add") {

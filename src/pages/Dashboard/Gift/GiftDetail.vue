@@ -40,16 +40,18 @@
                 </md-field>
               </div>
               <div class="md-layout-item md-small-size-100 md-size-25">
-                <md-autocomplete
-                  v-model="storeSearchTerm"
-                  :md-options="$stores"
-                  @md-selected="selectStore"
-                >
+                <md-field>
                   <label>门店</label>
-                  <template slot="md-autocomplete-item" slot-scope="{ item }">
-                    {{ item.name }}
-                  </template>
-                </md-autocomplete>
+                  <md-select v-model="gift.store">
+                    <md-option>不绑定门店</md-option>
+                    <md-option
+                      v-for="store in $stores"
+                      :key="store.id"
+                      :value="store.id"
+                      >{{ store.name }}</md-option
+                    >
+                  </md-select>
+                </md-field>
               </div>
               <div class="md-layout-item md-small-size-100">
                 <md-field class="md-has-value mt-4">
@@ -124,7 +126,6 @@ export default {
   data() {
     return {
       gift: { id: "", store: null },
-      storeSearchTerm: "",
       posterImage: ""
     };
   },
@@ -173,10 +174,6 @@ export default {
       await Gift.delete({ id: this.gift.id });
       this.$router.go(-1);
     },
-    selectStore(item) {
-      this.gift.store = item;
-      this.storeSearchTerm = item.name;
-    },
     onFileChange(e) {
       let files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
@@ -210,10 +207,18 @@ export default {
       this.$refs["file-input"].value = "";
     }
   },
+  watch: {
+    "gift.store"(v) {
+      if (typeof v === "object" && v) {
+        this.gift.store = this.gift.store.id;
+      } else if (v === false) {
+        this.gift.store = null;
+      }
+    }
+  },
   async mounted() {
     if (this.$route.params.id !== "add") {
       this.gift = (await Gift.get({ id: this.$route.params.id })).body;
-      if (this.gift.store) this.storeSearchTerm = this.gift.store.name;
     }
   }
 };

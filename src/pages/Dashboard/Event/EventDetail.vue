@@ -36,16 +36,18 @@
                 </md-datepicker>
               </div>
               <div class="md-layout-item md-small-size-100 md-size-33">
-                <md-autocomplete
-                  v-model="storeSearchTerm"
-                  :md-options="$stores"
-                  @md-selected="selectStore"
-                >
+                <md-field>
                   <label>门店</label>
-                  <template slot="md-autocomplete-item" slot-scope="{ item }">
-                    {{ item.name }}
-                  </template>
-                </md-autocomplete>
+                  <md-select v-model="event.store">
+                    <md-option>不绑定门店</md-option>
+                    <md-option
+                      v-for="store in $stores"
+                      :key="store.id"
+                      :value="store.id"
+                      >{{ store.name }}</md-option
+                    >
+                  </md-select>
+                </md-field>
               </div>
               <div class="md-layout-item md-small-size-100 md-size-33">
                 <md-field>
@@ -135,7 +137,6 @@ export default {
   data() {
     return {
       event: { id: "", store: null },
-      storeSearchTerm: "",
       posterImage: ""
     };
   },
@@ -186,10 +187,6 @@ export default {
       await Event.delete({ id: this.event.id });
       this.$router.go(-1);
     },
-    selectStore(item) {
-      this.event.store = item;
-      this.storeSearchTerm = item.name;
-    },
     onFileChange(e) {
       let files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
@@ -228,12 +225,18 @@ export default {
       if (!v.constructor || v.constructor.name !== "Date") {
         this.event.date = new Date(this.event.date);
       }
+    },
+    "event.store"(v) {
+      if (typeof v === "object" && v) {
+        this.event.store = this.event.store.id;
+      } else if (v === false) {
+        this.event.store = null;
+      }
     }
   },
   async mounted() {
     if (this.$route.params.id !== "add") {
       this.event = (await Event.get({ id: this.$route.params.id })).body;
-      if (this.event.store) this.storeSearchTerm = this.event.store.name;
     }
   }
 };

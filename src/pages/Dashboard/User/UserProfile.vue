@@ -63,16 +63,18 @@
                   </md-field>
                 </div>
                 <div class="md-layout-item md-small-size-100 md-size-50">
-                  <md-autocomplete
-                    v-model="storeSearchTerm"
-                    :md-options="$stores"
-                    @md-selected="selectStore"
-                  >
+                  <md-field>
                     <label>门店</label>
-                    <template slot="md-autocomplete-item" slot-scope="{ item }">
-                      {{ item.name }}
-                    </template>
-                  </md-autocomplete>
+                    <md-select v-model="user.store">
+                      <md-option>不绑定门店</md-option>
+                      <md-option
+                        v-for="store in $stores"
+                        :key="store.id"
+                        :value="store.id"
+                        >{{ store.name }}</md-option
+                      >
+                    </md-select>
+                  </md-field>
                 </div>
                 <div class="md-layout-item md-small-size-100 md-size-50">
                   <md-field>
@@ -370,8 +372,7 @@ export default {
       },
       cards: [],
       cardPayments: [],
-      userBookings: [],
-      storeSearchTerm: ""
+      userBookings: []
     };
   },
   methods: {
@@ -501,6 +502,15 @@ export default {
       this.getCards();
     }
   },
+  watch: {
+    "user.store"(store) {
+      if (typeof store === "object" && store) {
+        this.user.store = this.user.store.id;
+      } else if (store === false) {
+        this.user.store = null;
+      }
+    }
+  },
   async mounted() {
     if (this.$route.params.id !== "add") {
       if (this.$route.params.id === this.$user.id) {
@@ -511,7 +521,6 @@ export default {
       this.getCardPayments();
       this.userBookings = (await Booking.get({ customer: this.user.id })).body;
       this.getCards();
-      if (this.user.store) this.storeSearchTerm = this.user.store.name;
     }
   }
 };
