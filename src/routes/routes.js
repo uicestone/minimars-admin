@@ -12,8 +12,6 @@ const BookingList = () => import("@/pages/Dashboard/Booking/BookingList.vue");
 const CardType = () => import("@/pages/Dashboard/CardType/CardTypeDetail.vue");
 const CardTypeList = () =>
   import("@/pages/Dashboard/CardType/CardTypeList.vue");
-// const Code = () => import("@/pages/Dashboard/Code/CodeDetail.vue");
-const CodeList = () => import("@/pages/Dashboard/Code/CodeList.vue");
 const Event = () => import("@/pages/Dashboard/Event/EventDetail.vue");
 const EventList = () => import("@/pages/Dashboard/Event/EventList.vue");
 const Gift = () => import("@/pages/Dashboard/Gift/GiftDetail.vue");
@@ -263,27 +261,6 @@ let cardTypeMenu = {
   ]
 };
 
-let codeMenu = {
-  path: "/code",
-  component: DashboardLayout,
-  redirect: "/code/index",
-  children: [
-    {
-      path: "index",
-      name: "券码列表",
-      component: CodeList,
-      meta: {
-        keepAlive: true
-      }
-    }
-    // {
-    //   path: ":id",
-    //   name: "券码详情",
-    //   component: Code
-    // }
-  ]
-};
-
 let eventMenu = {
   path: "/event",
   component: DashboardLayout,
@@ -472,7 +449,6 @@ const routes = [
   pagesMenu,
   bookingMenu,
   cardTypeMenu,
-  codeMenu,
   eventMenu,
   giftMenu,
   paymentMenu,
