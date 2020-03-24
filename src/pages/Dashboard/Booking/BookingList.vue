@@ -25,7 +25,7 @@
                 <label>筛选状态</label>
                 <md-select v-model="searchQuery.status" multiple>
                   <md-option
-                    v-for="(name, status) in bookingStatusNames"
+                    v-for="(name, status) in $bookingStatusNames"
                     :key="status"
                     :value="status"
                     >{{ name }}</md-option
@@ -38,10 +38,7 @@
                 <md-select v-model="searchQuery.type">
                   <md-option value="">全部类型</md-option>
                   <md-option
-                    v-for="(name, type) in {
-                      play: '自由游玩',
-                      party: '派对'
-                    }"
+                    v-for="(name, type) in $bookingTypeNames"
                     :key="type"
                     :value="type"
                     >{{ name }}</md-option
@@ -97,23 +94,23 @@
               slot-scope="{ item }"
               @click="showDetail(item)"
             >
-              <md-table-cell
-                md-label="门店"
-                md-sort-by="store.name"
-                style="min-width:100px"
-                >{{ item.store.name }}</md-table-cell
-              >
+              <md-table-cell md-label="门店" md-sort-by="store.name">{{
+                item.store.name
+              }}</md-table-cell>
               <md-table-cell
                 md-label="客户"
                 md-sort-by="customer.name"
                 @click.native.stop="goToCustomer(item.customer)"
-                style="min-width:150px"
+                style="min-width:120px"
                 >{{ item.customer.name }}
                 <span v-if="item.customer.mobile">{{
                   item.customer.mobile.substr(-4)
                 }}</span>
                 <md-icon class="mini">keyboard_arrow_right</md-icon>
               </md-table-cell>
+              <md-table-cell md-label="类型" md-sort-by="type">{{
+                item.type | bookingTypeName
+              }}</md-table-cell>
               <md-table-cell md-label="状态" md-sort-by="status">{{
                 item.status | bookingStatusName
               }}</md-table-cell>
@@ -126,19 +123,13 @@
               <!-- <md-table-cell md-label="类型" md-sort-by="type">{{
                 item.type | bookingTypeName
               }}</md-table-cell> -->
-              <md-table-cell md-label="人 / 袜" md-sort-by="adultsCount"
-                >{{ item.adultsCount }} / {{ item.kidsCount }} /
-                {{ item.socksCount }}</md-table-cell
+              <md-table-cell md-label="大 / 小" md-sort-by="adultsCount"
+                >{{ item.adultsCount }} / {{ item.kidsCount }}</md-table-cell
               >
-              <md-table-cell md-label="价格/已付" md-sort-by="socksCount"
-                >{{ item.price }} /
-                {{ item.payments | paidAmount }}
+              <md-table-cell md-label="收款" md-sort-by="socksCount">
+                {{ item.payments | paidAmount | currency }}
               </md-table-cell>
-              <md-table-cell
-                md-label="优惠/券码"
-                md-sort-by="coupon"
-                style="min-width:150px"
-              >
+              <md-table-cell md-label="优惠/券码" md-sort-by="coupon">
                 <span v-if="item.coupon">{{ item.coupon | couponName }}</span>
                 <span v-else-if="item.code">{{
                   `${item.code.title} ${item.code.id.substr(-6).toUpperCase()}`
@@ -199,8 +190,7 @@ export default {
         customer
       },
       searchDelayTimeout: null,
-      queriedData: [],
-      bookingStatusNames: this.$bookingStatusNames
+      queriedData: []
     };
   },
   activated() {

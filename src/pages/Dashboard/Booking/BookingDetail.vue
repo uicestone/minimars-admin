@@ -30,7 +30,6 @@
                 <md-field>
                   <label>门店</label>
                   <md-select v-model="booking.store">
-                    <md-option>不绑定门店</md-option>
                     <md-option
                       v-for="store in $stores"
                       :key="store.id"
@@ -76,7 +75,7 @@
               >
                 <md-autocomplete
                   v-model="eventSearchTerm"
-                  :md-options="getEvents(eventSearchTerm)"
+                  :md-options="events"
                   @md-selected="selectEvent"
                 >
                   <label>活动</label>
@@ -117,7 +116,7 @@
               <div
                 class="md-layout-item md-layout md-small-size-100 md-size-50 p-0"
               >
-                <div class="md-layout-item md-small-size-100 md-size-33">
+                <div class="md-layout-item md-small-size-100 md-size-50">
                   <md-field>
                     <label>成人</label>
                     <md-input
@@ -128,7 +127,7 @@
                     <span class="md-suffix">位</span>
                   </md-field>
                 </div>
-                <div class="md-layout-item md-small-size-100 md-size-33">
+                <div class="md-layout-item md-small-size-100 md-size-50">
                   <md-field>
                     <label>儿童</label>
                     <md-input
@@ -137,17 +136,6 @@
                       min="0"
                     ></md-input>
                     <span class="md-suffix">位</span>
-                  </md-field>
-                </div>
-                <div class="md-layout-item md-small-size-100 md-size-33">
-                  <md-field>
-                    <label>袜子</label>
-                    <md-input
-                      v-model="booking.socksCount"
-                      type="number"
-                      min="0"
-                    ></md-input>
-                    <span class="md-suffix">双</span>
                   </md-field>
                 </div>
               </div>
@@ -170,19 +158,38 @@
                   <div style="padding-left:0;width:150px" v-if="!booking.id">
                     <md-field>
                       <label>支付方式</label>
-                      <md-select v-model="paymentGateway">
+                      <md-select
+                        v-model="paymentGateway"
+                        :disabled="
+                          (priceInPoints && !price) ||
+                            (!customerCards.length && !price)
+                        "
+                      >
                         <md-option
                           v-for="card in customerCards"
+                          v-show="price"
                           :key="card.id"
                           :value="card.id"
                           @click.native="useCard(card)"
                           >{{ card.title }}</md-option
                         >
-                        <md-option value="balance" @click="useCard(false)"
-                          >账户余额支付</md-option
+                        <md-option
+                          value="points"
+                          @click="useCard(false)"
+                          v-show="priceInPoints"
+                          >账户积分</md-option
                         >
-                        <md-option value="cash" @click="useCard(false)"
-                          >现金刷卡支付</md-option
+                        <md-option
+                          value="balance"
+                          @click="useCard(false)"
+                          v-show="price"
+                          >账户余额</md-option
+                        >
+                        <md-option
+                          value="cash"
+                          @click="useCard(false)"
+                          v-show="price"
+                          >现金刷卡</md-option
                         >
                       </md-select>
                     </md-field>
@@ -201,6 +208,11 @@
                     class="md-simple md-warning mt-2 md-btn-link"
                     v-if="price !== null"
                     >{{ price | currency }}</md-button
+                  >
+                  <md-button
+                    class="md-simple md-warning mt-2 md-btn-link"
+                    v-if="priceInPoints !== null"
+                    >{{ priceInPoints }} 积分</md-button
                   >
                 </div>
                 <div class="md-layout md-alignment-bottom-right">
@@ -233,9 +245,12 @@
                   v-for="payment in booking.payments"
                   :key="payment.id"
                 >
-                  <md-table-cell md-label="金额" md-sort-by="amount"
-                    >¥{{ payment.amount }}</md-table-cell
-                  >
+                  <md-table-cell md-label="金额" md-sort-by="amount">
+                    <span v-if="payment.amount">¥{{ payment.amount }}</span>
+                    <span v-if="payment.amountInPoints">{{
+                      payment.amountInPoints
+                    }}</span>
+                  </md-table-cell>
                   <md-table-cell
                     md-label="描述"
                     md-sort-by="title"
@@ -288,6 +303,7 @@ export default {
         type: "play",
         status: "pending",
         customer: null,
+        event: null,
         date: moment().format("YYYY-MM-DD"),
         checkInAt: moment().format("HH:mm:ss"),
         adultsCount: 1,
@@ -297,11 +313,12 @@ export default {
         card: null
       },
       price: null,
+      priceInPoints: null,
       customers: [],
       customerSearchTerm: "",
       events: [],
       customerCards: [],
-      eventSearchTerm: "",
+      eventSearchTerm: null,
       paymentGateway: null
     };
   },
@@ -386,8 +403,11 @@ export default {
       this.$router.push(`/user/${this.booking.customer.id}`);
     },
     async updateBookingPrice() {
-      const { price } = (await BookingPrice.update(this.booking)).body;
-      this.price = price;
+      const { price, priceInPoints } = (
+        await BookingPrice.update(this.booking)
+      ).body;
+      this.price = price || null;
+      this.priceInPoints = priceInPoints || null;
     },
     useCard(card) {
       if (!card) {
@@ -449,11 +469,34 @@ export default {
     "booking.customer"() {
       this.getCustomerCards();
     },
+    "booking.type"(t) {
+      if (t === "event") {
+        this.getEvents();
+      }
+      if (t !== "event") {
+        this.booking.event = null;
+        this.eventSearchTerm = null;
+      }
+    },
     "booking.store"(v) {
       if (typeof v === "object" && v) {
         this.booking.store = this.booking.store.id;
       } else if (v === false) {
         this.booking.store = null;
+      }
+    },
+    eventSearchTerm(t) {
+      if (t === null) return;
+      this.getEvents(t);
+      if (!t) {
+        this.booking.event = null;
+      }
+    },
+    priceInPoints() {
+      if (this.priceInPoints && !this.price) {
+        this.paymentGateway = "points";
+      } else if (!this.priceInPoints && this.paymentGateway === "points") {
+        this.paymentGateway = null;
       }
     }
   },

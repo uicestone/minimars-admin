@@ -47,91 +47,15 @@
               <div
                 class="md-layout-item md-size-75 md-layout md-alignment-vertical"
               >
-                <div class="md-layout-item md-small-size-100 md-size-50">
+                <div class="md-layout-item md-small-size-100 md-size-25">
                   <md-field>
                     <label>姓名</label>
                     <md-input v-model="user.name"></md-input>
                   </md-field>
                 </div>
                 <div
-                  class="md-layout-item md-small-size-100 md-size-50"
-                  v-if="user.role === 'customer'"
-                >
-                  <md-field>
-                    <label>性别</label>
-                    <md-input v-model="user.gender" type="text"></md-input>
-                  </md-field>
-                </div>
-                <div class="md-layout-item md-small-size-100 md-size-50">
-                  <md-field>
-                    <label>门店</label>
-                    <md-select v-model="user.store">
-                      <md-option>不绑定门店</md-option>
-                      <md-option
-                        v-for="store in $stores"
-                        :key="store.id"
-                        :value="store.id"
-                        >{{ store.name }}</md-option
-                      >
-                    </md-select>
-                  </md-field>
-                </div>
-                <div class="md-layout-item md-small-size-100 md-size-50">
-                  <md-field>
-                    <label>手机号</label>
-                    <md-input v-model="user.mobile" type="text"></md-input>
-                  </md-field>
-                </div>
-                <div class="md-layout-item md-small-size-100 md-size-50">
-                  <md-field>
-                    <label>地区</label>
-                    <md-input v-model="user.region" type="text"></md-input>
-                  </md-field>
-                </div>
-                <div class="md-layout-item md-small-size-100 md-size-50">
-                  <md-field>
-                    <label>生日</label>
-                    <md-input v-model="user.birthday" type="text"></md-input>
-                  </md-field>
-                </div>
-                <div class="md-layout-item md-small-size-100 md-size-50">
-                  <md-field>
-                    <label>星座</label>
-                    <md-input
-                      v-model="user.constellation"
-                      type="text"
-                    ></md-input>
-                  </md-field>
-                </div>
-                <!-- <div
-                  v-if="user.role === 'customer'"
-                  class="md-layout-item md-small-size-100 md-size-50"
-                >
-                  <md-field>
-                    <label>卡号</label>
-                    <md-input
-                      v-model="user.cardNo"
-                      type="text"
-                      :disabled="!$user.can('edit-user')"
-                    ></md-input>
-                  </md-field>
-                </div> -->
-                <div
-                  v-if="user.role === 'customer'"
-                  class="md-layout-item md-small-size-100 md-size-50"
-                >
-                  <md-field>
-                    <label>余额</label>
-                    <md-input
-                      v-model="user.balance"
-                      type="text"
-                      disabled
-                    ></md-input>
-                  </md-field>
-                </div>
-                <div
                   v-if="user.role !== 'customer' || $user.can('manage-user')"
-                  class="md-layout-item md-small-size-100 md-size-50"
+                  class="md-layout-item md-small-size-100 md-size-25"
                 >
                   <md-field>
                     <label>角色</label>
@@ -146,19 +70,93 @@
                     </md-select>
                   </md-field>
                 </div>
-                <!-- <div
+                <div class="md-layout-item md-small-size-100 md-size-25">
+                  <md-field>
+                    <label>门店</label>
+                    <md-select v-model="user.store">
+                      <md-option>不绑定门店</md-option>
+                      <md-option
+                        v-for="store in $stores"
+                        :key="store.id"
+                        :value="store.id"
+                        >{{ store.name }}</md-option
+                      >
+                    </md-select>
+                  </md-field>
+                </div>
+                <div class="md-layout-item md-small-size-100 md-size-25">
+                  <md-field>
+                    <label>性别</label>
+                    <md-select
+                      v-model="user.gender"
+                      @keydown.enter.prevent=""
+                      :disabled="!$user.can('manage-user')"
+                    >
+                      <md-option value="1">男</md-option>
+                      <md-option value="2">女</md-option>
+                      <md-option value="0">未知</md-option>
+                    </md-select>
+                  </md-field>
+                </div>
+                <div class="md-layout-item md-small-size-100 md-size-50">
+                  <md-field>
+                    <label>手机号</label>
+                    <md-input v-model="user.mobile" type="text"></md-input>
+                  </md-field>
+                </div>
+                <div class="md-layout-item md-small-size-100 md-size-50">
+                  <md-field>
+                    <label>身份证号</label>
+                    <md-input v-model="user.idCardNo" />
+                  </md-field>
+                </div>
+                <div class="md-layout-item md-small-size-100 md-size-33">
+                  <md-field>
+                    <label>地区</label>
+                    <md-input v-model="user.region" type="text"></md-input>
+                  </md-field>
+                </div>
+                <div class="md-layout-item md-small-size-100 md-size-33">
+                  <md-field>
+                    <label>生日</label>
+                    <md-input v-model="user.birthday" type="text"></md-input>
+                  </md-field>
+                </div>
+                <div class="md-layout-item md-small-size-100 md-size-33">
+                  <md-field>
+                    <label>星座</label>
+                    <md-input
+                      v-model="user.constellation"
+                      type="text"
+                    ></md-input>
+                  </md-field>
+                </div>
+                <div
                   v-if="user.role === 'customer'"
                   class="md-layout-item md-small-size-100 md-size-50"
                 >
                   <md-field>
-                    <label>会员等级</label>
+                    <label>余额</label>
                     <md-input
-                      v-model="user.cardType"
+                      v-model="user.balance"
                       type="text"
                       disabled
                     ></md-input>
                   </md-field>
-                </div> -->
+                </div>
+                <div
+                  v-if="user.role === 'customer'"
+                  class="md-layout-item md-small-size-100 md-size-50"
+                >
+                  <md-field>
+                    <label>积分</label>
+                    <md-input
+                      v-model="user.points"
+                      type="text"
+                      disabled
+                    ></md-input>
+                  </md-field>
+                </div>
                 <div
                   v-if="user.role !== 'customer'"
                   class="md-layout-item md-small-size-100 md-size-50"
@@ -166,12 +164,6 @@
                   <md-field>
                     <label>通行证</label>
                     <md-input v-model="user.passNo" />
-                  </md-field>
-                </div>
-                <div class="md-layout-item md-small-size-100 md-size-50">
-                  <md-field>
-                    <label>身份证号</label>
-                    <md-input v-model="user.idCardNo" />
                   </md-field>
                 </div>
               </div>
@@ -235,8 +227,8 @@
                 <!-- <md-table-cell md-label="类型" md-sort-by="type">{{
                 booking.type | bookingTypeName
               }}</md-table-cell> -->
-                <md-table-cell md-label="时长" md-sort-by="hours">{{
-                  booking.hours ? `${booking.hours}小时` : "畅玩"
+                <md-table-cell md-label="类型" md-sort-by="type">{{
+                  booking.type | bookingTypeName
                 }}</md-table-cell>
                 <md-table-cell md-label="人数/袜子" md-sort-by="adultsCount"
                   >{{ booking.adultsCount }} /
