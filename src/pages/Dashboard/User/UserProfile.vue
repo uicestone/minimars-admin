@@ -105,15 +105,11 @@
                 | {{ booking.date }}
               md-table-cell(md-label='时间', md-sort-by='checkInAt')
                 | {{ booking.checkInAt }}
-              //
-                <md-table-cell md-label="类型" md-sort-by="type">{{
-                booking.type | bookingTypeName
-                }}</md-table-cell>
               md-table-cell(md-label='类型', md-sort-by='type')
                 | {{ booking.type | bookingTypeName }}
-              md-table-cell(md-label='人数/袜子', md-sort-by='adultsCount')
+              md-table-cell(md-label='大/小', md-sort-by='kidsCount')
                 | {{ booking.adultsCount }} /
-                | {{ booking.socksCount }}
+                | {{ booking.kidsCount }}
               md-table-cell(md-label='优惠', md-sort-by='coupon', style='min-width:150px')
                 | {{ booking.coupon | couponName }}
               md-table-cell(md-label='状态', md-sort-by='status')
@@ -278,7 +274,12 @@ export default {
       this.getCardPayments();
     },
     async getCards() {
-      this.cards = (await Card.get({ customer: this.user.id })).body;
+      this.cards = (
+        await Card.get({
+          customer: this.user.id,
+          status: "valid,activated,expired"
+        })
+      ).body;
     },
     async pay(payment) {
       if (
