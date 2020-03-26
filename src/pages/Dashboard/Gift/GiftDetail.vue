@@ -24,7 +24,7 @@
             .md-layout-item.md-small-size-100.md-size-25
               md-field
                 label 收款售价 ¥
-                md-input(type='number', v-model='gift.priceInCny')
+                md-input(type='number', v-model='gift.price')
             .md-layout-item.md-small-size-100.md-size-25
               md-field
                 label 门店

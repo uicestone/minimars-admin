@@ -22,8 +22,8 @@
               | {{ item.date | date("YYYY-MM-DD") }}
             md-table-cell(md-label='积分售价', md-sort-by='priceInPoints')
               | {{ item.priceInPoints }}
-            md-table-cell(md-label='收款售价', md-sort-by='priceInCny')
-              | {{ item.priceInCny | currency }}
+            md-table-cell(md-label='收款售价', md-sort-by='price')
+              | {{ item.price | currency }}
       md-card-actions(md-alignment='space-between')
         div
           p.card-category {{ from }} - {{ to }} / {{ total }}
