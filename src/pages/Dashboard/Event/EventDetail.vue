@@ -16,20 +16,24 @@
             .md-layout-item.md-small-size-100.md-size-33
               md-datepicker(v-model='event.date', md-immediately='')
                 label 日期
-            .md-layout-item.md-small-size-100.md-size-33
+            .md-layout-item.md-small-size-100.md-size-25
               md-field
                 label 门店
                 md-select(v-model='event.store')
                   md-option 不绑定门店
                   md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
-            .md-layout-item.md-small-size-100.md-size-33
+            .md-layout-item.md-small-size-100.md-size-25
               md-field
                 label 积分售价
                 md-input(type='number', v-model='event.priceInPoints')
-            .md-layout-item.md-small-size-100.md-size-33
+            .md-layout-item.md-small-size-100.md-size-25
               md-field
                 label 收款售价 ¥
                 md-input(type='number', v-model='event.priceInCny')
+            .md-layout-item.md-small-size-100.md-size-25
+              md-field
+                label 最大儿童人数
+                md-input(type='number', v-model='event.kidsCountMax')
             .md-layout-item.md-small-size-100
               md-field.md-has-value.mt-4
                 label 内容
@@ -37,6 +41,8 @@
             .md-layout-item.md-size-100.text-right
               md-button.md-raised.md-primary.mt-4(type='submit') 保存
               md-button.mt-4.ml-2.md-simple.md-danger(type='button', @click='remove', v-if='this.event.id') 删除
+              md-button.mt-4.md-simple.md-info.md-btn-link(type='button' v-if="event.kidsCountLeft || event.kidsCountLeft === 0")
+                | 剩余儿童名额：{{ event.kidsCountLeft }}
     .md-layout-item.md-size-33.md-small-size-100
       md-card
         .md-layout-item.md-size-100.md-xsmall-size-100.pb-2

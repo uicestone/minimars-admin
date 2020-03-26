@@ -41,17 +41,22 @@
                 md-field
                   label 入场时间
                   md-input(v-model='booking.checkInAt')
-            .md-layout-item.md-layout.md-small-size-100.md-size-50.p-0
-              .md-layout-item.md-small-size-100.md-size-50
+            .md-layout-item.md-layout.md-small-size-100.md-size-50.p-0(style="flex-wrap:nowrap")
+              .md-layout-item(style="flex:1;min-width:33%")
                 md-field
                   label 成人
                   md-input(v-model='booking.adultsCount', type='number', min='0')
                   span.md-suffix 位
-              .md-layout-item.md-small-size-100.md-size-50
+              .md-layout-item(style="flex:1;min-width:33%")
                 md-field
                   label 儿童
                   md-input(v-model='booking.kidsCount', type='number', min='0')
                   span.md-suffix 位
+              .md-layout-item(v-if="booking.type==='play'")(style="flex:1;min-width:33%")
+                md-field
+                  label 袜子
+                  md-input(v-model='booking.socksCount', type='number', min='0')
+                  span.md-suffix 双
             .md-layout-item.md-small-size-100
               md-field
                 label 备注
