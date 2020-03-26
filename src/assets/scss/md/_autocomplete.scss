@@ -6,6 +6,13 @@
       margin-bottom: 5px;
     }
 
+    &.md-highlight {
+      background: $brand-primary !important;
+      .md-list-item-button {
+        color: white !important
+      }
+    }
+
     .md-list-item-button {
       background-color: transparent;
       color: $gray-dark !important;

@@ -10,19 +10,19 @@
             h4.title {{ booking.id.substr(-6).toUpperCase() }}
           md-card-content.md-layout
             .md-layout-item.md-small-size-100.md-size-25
-              md-autocomplete(v-model='customerSearchTerm', :md-options='getCustomers(customerSearchTerm)', @md-selected='selectCustomer', @md-changed='updateCustomer', :disabled="booking.status && booking.status !== 'pending'")
+              md-autocomplete(v-model='customerSearchTerm', :md-options='getCustomers(customerSearchTerm)', @md-selected='selectCustomer', @md-changed='updateCustomer', @keypress.enter.native.prevent, :disabled="booking.status && booking.status !== 'pending'" autocomplete="off")
                 label 客户
                 template(slot='md-autocomplete-item', slot-scope='{ item }')
                   | {{ item.name }}
             .md-layout-item.md-small-size-100.md-size-25
               md-field
                 label 门店
-                md-select(v-model='booking.store')
+                md-select(v-model='booking.store', @keypress.enter.prevent)
                   md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
             .md-layout-item.md-small-size-100.md-size-25
               md-field
                 label 类型
-                md-select(v-model='booking.type', @keydown.enter.prevent='')
+                md-select(v-model='booking.type', @keydown.enter.prevent)
                   md-option(v-for='(name, type) in $bookingTypeNames', :key='type', :value='type') {{ name }}
             .md-layout-item.md-small-size-100.md-size-25
               md-field
@@ -30,8 +30,13 @@
                 md-select(v-model='booking.status', @keydown.enter.prevent='', :disabled="$user.role === 'manager'")
                   md-option(v-for='(name, status) in $bookingStatusNames', :key='status', :value='status') {{ name }}
             .md-layout-item.md-small-size-100.md-size-100(v-if="booking.type === 'event'")
-              md-autocomplete(v-model='eventSearchTerm', :md-options='events', @md-selected='selectEvent')
+              md-autocomplete(v-model='eventSearchTerm', :md-options='events', @md-selected='selectEvent' @keypress.enter.native.prevent autocomplete="off")
                 label 活动
+                template(slot='md-autocomplete-item', slot-scope='{ item }')
+                  | {{ item.title }}
+            .md-layout-item.md-small-size-100.md-size-100(v-if="booking.type === 'gift'")
+              md-autocomplete(v-model='giftSearchTerm', :md-options='gifts', @md-selected='selectGift' @keypress.enter.native.prevent autocomplete="off")
+                label 礼品
                 template(slot='md-autocomplete-item', slot-scope='{ item }')
                   | {{ item.title }}
             .md-layout-item.md-layout.md-small-size-100.md-size-50.p-0
@@ -42,12 +47,12 @@
                   label 入场时间
                   md-input(v-model='booking.checkInAt')
             .md-layout-item.md-layout.md-small-size-100.md-size-50.p-0(style="flex-wrap:nowrap")
-              .md-layout-item(style="flex:1;min-width:33%")
+              .md-layout-item(style="flex:1;min-width:33%" v-if="['play','event'].includes(booking.type)")
                 md-field
                   label 成人
                   md-input(v-model='booking.adultsCount', type='number', min='0')
                   span.md-suffix 位
-              .md-layout-item(style="flex:1;min-width:33%")
+              .md-layout-item(style="flex:1;min-width:33%" v-if="['play','event'].includes(booking.type)")
                 md-field
                   label 儿童
                   md-input(v-model='booking.kidsCount', type='number', min='0')
@@ -57,6 +62,10 @@
                   label 袜子
                   md-input(v-model='booking.socksCount', type='number', min='0')
                   span.md-suffix 双
+              .md-layout-item(v-if="booking.type==='gift'")(style="flex:1;min-width:33%")
+                md-field
+                  label 数量
+                  md-input(v-model='booking.quantity', type='number', min='0')
             .md-layout-item.md-small-size-100
               md-field
                 label 备注
@@ -66,12 +75,12 @@
                 div(style='padding-left:0;width:150px', v-if='!booking.id')
                   md-field
                     label 支付方式
-                    md-select(v-model='paymentGateway', :disabled='(priceInPoints && !price) || (!customerCards.length && !price)')
-                      md-option(v-for='card in customerCards', v-show='price', :key='card.id', :value='card.id', @click.native='useCard(card)') {{ card.title }}
+                    md-select(v-model='paymentGateway', :disabled='!price')
+                      md-option(v-for='card in customerCards', v-show='price && card.store === booking.store', :key='card.id', :value='card.id', @click.native='useCard(card)') {{ card.title }}
                       md-option(value='points', @click='useCard(false)', v-show='priceInPoints') 账户积分
                       md-option(value='balance', @click='useCard(false)', v-show='price') 账户余额
                       md-option(value='cash', @click='useCard(false)', v-show='price') 现金刷卡
-                md-button.mt-2.md-simple.md-info.md-btn-link(type='button', @click='goCustomerDetail', v-if='booking.customer')
+                md-button.mt-2.md-simple.md-info.md-btn-link(type='button', @click='goCustomerDetail', v-if='booking.id && booking.customer')
                   | 客户：{{ booking.customer.name }}
                   span(v-if='booking.customer.mobile') ({{ booking.customer.mobile.substr(-4) }})
                 md-button.md-simple.md-warning.mt-2.md-btn-link(v-if='price !== null') {{ price | currency }}
@@ -102,7 +111,15 @@
 </template>
 
 <script>
-import { Booking, BookingPrice, User, Event, Payment, Card } from "@/resources";
+import {
+  Booking,
+  BookingPrice,
+  User,
+  Event,
+  Gift,
+  Payment,
+  Card
+} from "@/resources";
 import Swal from "sweetalert2";
 import moment from "moment";
 
@@ -115,6 +132,7 @@ export default {
         status: "pending",
         customer: null,
         event: null,
+        gift: null,
         date: moment().format("YYYY-MM-DD"),
         checkInAt: moment().format("HH:mm:ss"),
         adultsCount: 1,
@@ -128,8 +146,10 @@ export default {
       customers: [],
       customerSearchTerm: "",
       events: [],
+      gifts: [],
       customerCards: [],
       eventSearchTerm: null,
+      giftSearchTerm: null,
       paymentGateway: null
     };
   },
@@ -203,12 +223,26 @@ export default {
       }
     },
     async getEvents(q) {
-      this.events = (await Event.get({ keyword: q })).body;
+      if (typeof this.booking.store === "object") return;
+      this.events = (
+        await Event.get({ keyword: q, store: this.booking.store })
+      ).body;
       return this.events;
     },
     selectEvent(item) {
       this.booking.event = item;
       this.eventSearchTerm = item.title;
+    },
+    async getGifts(q) {
+      if (typeof this.booking.store === "object") return;
+      this.gifts = (
+        await Gift.get({ keyword: q, store: this.booking.store })
+      ).body;
+      return this.gifts;
+    },
+    selectGift(item) {
+      this.booking.gift = item;
+      this.giftSearchTerm = item.title;
     },
     goCustomerDetail() {
       this.$router.push(`/user/${this.booking.customer.id}`);
@@ -279,8 +313,12 @@ export default {
     },
     "booking.customer"() {
       this.getCustomerCards();
+      this.booking.card = null;
+      this.paymentGateway = null;
     },
     "booking.type"(t) {
+      this.booking.card = null;
+      this.paymentGateway = null;
       if (t === "event") {
         this.getEvents();
       }
@@ -288,12 +326,40 @@ export default {
         this.booking.event = null;
         this.eventSearchTerm = null;
       }
+      if (t === "gift") {
+        this.getGifts();
+        this.booking.quantity = 1;
+      }
+      if (t !== "gift") {
+        this.booking.gift = null;
+        this.giftSearchTerm = null;
+        this.booking.quantity = undefined;
+      }
     },
-    "booking.store"(v) {
+    "booking.store"(v, p) {
       if (typeof v === "object" && v) {
         this.booking.store = this.booking.store.id;
       } else if (v === false) {
         this.booking.store = null;
+      }
+      if (typeof v === "string" && typeof p === "object") {
+        return;
+      }
+      if (typeof v !== "string") {
+        return;
+      }
+      this.booking.card = null;
+      this.paymentGateway = null;
+      if (this.booking.type === "event") {
+        this.getEvents();
+        this.booking.event = null;
+        this.eventSearchTerm = null;
+      }
+      if (this.booking.type === "gift") {
+        console.log(v, p);
+        this.getGifts();
+        this.booking.gift = null;
+        this.giftSearchTerm = null;
       }
     },
     eventSearchTerm(t) {
@@ -301,6 +367,13 @@ export default {
       this.getEvents(t);
       if (!t) {
         this.booking.event = null;
+      }
+    },
+    giftSearchTerm(t) {
+      if (t === null) return;
+      this.getGifts(t);
+      if (!t) {
+        this.booking.gift = null;
       }
     },
     priceInPoints() {
@@ -317,6 +390,7 @@ export default {
       if (this.booking.customer)
         this.customerSearchTerm = this.booking.customer.name;
       if (this.booking.event) this.eventSearchTerm = this.booking.event.title;
+      if (this.booking.gift) this.giftSearchTerm = this.booking.gift.title;
     } else {
       this.updateBookingPrice();
     }

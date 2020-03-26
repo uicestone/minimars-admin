@@ -33,8 +33,8 @@
                   label 角色
                   md-select(v-model='user.role', @keydown.enter.prevent='', :disabled="!$user.can('manage-user')")
                     md-option(value='admin') 管理员
-                    md-option(value='manager') 店长
-                    md-option(value='customer') 客人
+                    md-option(value='manager') 店员
+                    md-option(value='customer') 客户
               .md-layout-item.md-small-size-100.md-size-25
                 md-field
                   label 门店
@@ -45,9 +45,9 @@
                 md-field
                   label 性别
                   md-select(v-model='user.gender', @keydown.enter.prevent='', :disabled="!$user.can('manage-user')")
-                    md-option(value='1') 男
-                    md-option(value='2') 女
-                    md-option(value='0') 未知
+                    md-option(value='男') 男
+                    md-option(value='女') 女
+                    md-option(value='未知') 未知
               .md-layout-item.md-small-size-100.md-size-50
                 md-field
                   label 手机号

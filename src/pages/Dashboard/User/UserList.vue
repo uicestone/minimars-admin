@@ -12,23 +12,25 @@
             | 总余额：{{ totalBalance | currency }}
           .md-layout.md-layout-item.md-alignment-center-right.search-query
             md-field.md-layout-item.md-size-25.md-xsmall-size-100
-              md-input(type='search', min-length='4', clearable='', placeholder='搜索 手机 / 会员卡 / 姓名', v-model='searchQuery.keyword')
+              md-input(type='search', min-length='4', clearable='', placeholder='搜索 手机/姓名/会员码', v-model='searchQuery.keyword')
             md-field.md-layout-item.md-size-20.md-xsmall-size-100
               label 筛选角色
               md-select(v-model='searchQuery.role')
                 md-option(v-for="(name, type) in { admin: '管理员', manager: '店员', customer: '客户' }", :key='type', :value='type') {{ name }}
-            md-field.md-layout-item.md-size-20.md-xsmall-size-100(v-if="searchQuery.role === 'customer'")
+            //- md-field.md-layout-item.md-size-20.md-xsmall-size-100(v-if="searchQuery.role === 'customer'")
               label 会员类型
               md-select(v-model='searchQuery.membership', multiple='')
                 md-option(value='code') 次卡
                 md-option(value='deposit') 充值
-            md-field.md-layout-item.md-size-20.md-xsmall-size-100(v-if="searchQuery.role === 'customer'")
+            //- md-field.md-layout-item.md-size-20.md-xsmall-size-100(v-if="searchQuery.role === 'customer'")
               label 会员等级
               md-select(v-model='searchQuery.cardTypes', multiple='')
                 md-option(v-for='level in $config.depositLevels', :key='level.slug', :value='level.cardType') {{ level.cardType }}
           .toolbar-actions
             md-button.md-primary(@click='showCreate')
               | 添加用户
+            md-button.md-just-icon.md-simple(@click='queryData')
+              md-icon refresh
         md-table.paginated-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='noop')
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
             md-table-cell(md-label='姓名', md-sort-by='name')
@@ -152,8 +154,8 @@ export default {
     roleName(role) {
       const roleName = {
         admin: "管理员",
-        manager: "店长",
-        customer: "客人"
+        manager: "店员",
+        customer: "客户"
       };
       return roleName[role];
     }
