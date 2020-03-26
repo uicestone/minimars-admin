@@ -87,13 +87,13 @@
           md-card-content.md-layout
             md-table
               md-table-row(v-for='payment in booking.payments', :key='payment.id')
+                md-table-cell(md-label='描述', md-sort-by='title', style='width:40%') {{ payment.title }}
+                md-table-cell(md-label='通道', md-sort-by='gateway')
+                  | {{ payment.gateway | paymentGatewayName }}
                 md-table-cell(md-label='金额', md-sort-by='amount')
                   span(v-if='payment.amount') ¥{{ payment.amount }}
                   span(v-if='payment.amountInPoints')
                     | {{ payment.amountInPoints }}
-                md-table-cell(md-label='描述', md-sort-by='title', style='width:40%') {{ payment.title }}
-                md-table-cell(md-label='通道', md-sort-by='gateway')
-                  | {{ payment.gateway | paymentGatewayName }}
                 md-table-cell(md-label='创建时间', md-sort-by='createdAt')
                   | {{ payment.createdAt | date }}
                 md-table-cell(md-label='收款')

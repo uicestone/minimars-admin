@@ -20,7 +20,6 @@
               md-field
                 label 门店
                 md-select(v-model='event.store')
-                  md-option 不绑定门店
                   md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
             .md-layout-item.md-small-size-100.md-size-25
               md-field
@@ -43,6 +42,22 @@
               md-button.mt-4.ml-2.md-simple.md-danger(type='button', @click='remove', v-if='this.event.id') 删除
               md-button.mt-4.md-simple.md-info.md-btn-link(type='button' v-if="event.kidsCountLeft || event.kidsCountLeft === 0")
                 | 剩余儿童名额：{{ event.kidsCountLeft }}
+        md-card.bookings-card
+          md-card-header.md-card-header-icon.md-card-header-blue
+            .card-icon
+              md-icon payment
+            h4.title 报名记录
+          md-card-content.md-layout
+            md-table
+              md-table-row(v-for='booking in bookings', :key='booking.id')
+                md-table-cell(md-label='客户', md-sort-by='customer')
+                  | {{ booking.customer.name }}
+                md-table-cell(md-label='人数', md-sort-by='kidsCount')
+                  | {{ booking.kidsCount }}
+                md-table-cell(md-label='时间', md-sort-by='checkInAt')
+                  | {{ booking.createdAt | date('YYYY-MM-DD HH:mm') }}
+                md-table-cell(md-label='状态', md-sort-by='status')
+                  | {{ booking.status | bookingStatusName }}
     .md-layout-item.md-size-33.md-small-size-100
       md-card
         .md-layout-item.md-size-100.md-xsmall-size-100.pb-2
@@ -61,7 +76,7 @@
 <script>
 // import { Datetime } from "vue-datetime";
 // import "vue-datetime/dist/vue-datetime.css";
-import { Event } from "@/resources";
+import { Event, Booking } from "@/resources";
 import { Editor } from "@/components";
 import Swal from "sweetalert2";
 
@@ -72,7 +87,8 @@ export default {
   data() {
     return {
       event: { id: "", store: null },
-      posterImage: ""
+      posterImage: "",
+      bookings: []
     };
   },
   methods: {
@@ -172,6 +188,9 @@ export default {
   async mounted() {
     if (this.$route.params.id !== "add") {
       this.event = (await Event.get({ id: this.$route.params.id })).body;
+      this.bookings = (
+        await Booking.get({ event: this.$route.params.id })
+      ).body;
     }
   }
 };
@@ -191,5 +210,8 @@ export default {
 }
 .md-card .md-table {
   width: 100%;
+}
+.bookings-card {
+  margin-top: 50px;
 }
 </style>

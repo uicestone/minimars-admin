@@ -8,7 +8,7 @@
         h4.title 门店列表
       md-card-content
         md-table.paginated-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='noop')
-          md-table-toolbar.md-layout.mb-2
+          //- md-table-toolbar.md-layout.mb-2
             md-field.md-layout.md-layout-item.md-size-20.md-xsmall-size-100
               md-input(type='search', clearable='', placeholder='搜索', style='width: 200px;', v-model='searchQuery.keyword')
             .toolbar-actions
