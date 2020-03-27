@@ -252,6 +252,7 @@ export default {
       this.$router.push(`/user/${this.booking.customer.id}`);
     },
     async updateBookingPrice() {
+      if (!this.booking.customer) return;
       const { price, priceInPoints } = (
         await BookingPrice.update(this.booking)
       ).body;
@@ -402,6 +403,8 @@ export default {
       if (this.booking.event) this.eventSearchTerm = this.booking.event.title;
       if (this.booking.gift) this.giftSearchTerm = this.booking.gift.title;
     } else {
+      const { type } = this.$route.query;
+      if (type) this.booking.type = type;
       this.updateBookingPrice();
     }
   }

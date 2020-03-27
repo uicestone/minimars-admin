@@ -9,28 +9,32 @@
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
           .md-layout
-            md-datepicker.md-layout-item.md-size-20.md-xsmall-size-100(v-model='searchQuery.date', :md-model-type='String', md-immediately='')
+            md-datepicker.md-layout-item.md-size-25.md-xsmall-size-100(v-model='searchQuery.date', :md-model-type='String', md-immediately='')
               label 日期
-            md-field.md-layout-item.md-size-15.md-xsmall-size-100
+            md-field.md-layout-item.md-size-20.md-xsmall-size-100(v-if='!searchQuery.customer')
+              label 搜索客户
+              md-input(type='search', clearable='', v-model='searchQuery.customerKeyword')
+            md-field.md-layout-item.md-size-20.md-xsmall-size-100
               label 筛选状态
               md-select(v-model='searchQuery.status', multiple='')
                 md-option(v-for='(name, status) in $bookingStatusNames', :key='status', :value='status') {{ name }}
-            md-field.md-layout-item.md-size-15.md-xsmall-size-100
+            md-field.md-layout-item.md-size-20.md-xsmall-size-100
               label 筛选类型
               md-select(v-model='searchQuery.type')
                 md-option(value='') 全部类型
                 md-option(v-for='(name, type) in $bookingTypeNames', :key='type', :value='type') {{ name }}
-            md-field.md-layout-item.md-size-15.md-xsmall-size-100(v-if='!searchQuery.customer')
-              label 搜索客户
-              md-input(type='search', clearable='', v-model='searchQuery.customerKeyword')
-            md-field.md-layout-item.md-size-15.md-xsmall-size-100
+            //- md-field.md-layout-item.md-size-15.md-xsmall-size-100
               label 优惠
               md-select(v-model='searchQuery.coupon')
                 md-option(value='') 不指定
                 md-option(v-for='coupon in $config.coupons', :key='coupon.slug', :value='coupon.slug') {{ coupon.name }}
           .toolbar-actions
-            md-button.md-primary(@click='showCreate')
-              | 添加预约
+            md-button.md-primary.mr-2(@click='showCreate')
+              | 门票预约
+            md-button.md-warning.mr-2(@click='showCreate("event")')
+              | 活动预约
+            md-button.md-rose(@click='showCreate("gift")')
+              | 礼品兑换
             md-button.md-just-icon.md-simple(@click='queryData')
               md-icon refresh
         md-table.paginated-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='noop')
@@ -144,8 +148,8 @@ export default {
     showDetail(item) {
       this.$router.push(`/booking/${item.id}`);
     },
-    showCreate() {
-      this.$router.push("/booking/add");
+    showCreate(type) {
+      this.$router.push("/booking/add" + (type ? `?type=${type}` : ""));
     },
     goToCustomer(customer) {
       this.$router.push(`/user/${customer.id}`);
