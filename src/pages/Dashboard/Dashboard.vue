@@ -11,8 +11,8 @@
       md-button.md-info(style='flex:0', @click='addDate(1)', :disabled='date >= today')
         | 后一天
         md-icon keyboard_arrow_right
-    .md-layout-item.md-size-10.md-xsmall-size-100
-      md-button.md-info(:href="$http.options.root + 'daily-report/' + date", style='width:100%') 下载日报表
+    //- .md-layout-item.md-size-10.md-xsmall-size-100
+    //-   md-button.md-info(:href="$http.options.root + 'daily-report/' + date", style='width:100%') 下载日报表
   .md-layout-item.md-medium-size-50.md-xsmall-size-100.md-size-25
     stats-card(header-color='primary')
       template(slot='header')
@@ -34,7 +34,7 @@
         p.category 当日充值收入
         h3.title
           | ¥ 
-          animated-number(:value='stats.depositAmount')
+          animated-number(:value='stats.cardAmount')
       template(slot='footer')
         .stats
           md-icon bookmark_border
@@ -100,7 +100,7 @@
           md-icon access_time
           | 实时
   .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
-    chart-card(header-animation='false', :chart-data='dailyDepositPaymentChart.data', :chart-options='dailyDepositPaymentChart.options', chart-type='Line', chart-inside-header='', background-color='blue')
+    chart-card(header-animation='false', :chart-data='dailyCardPaymentChart.data', :chart-options='dailyCardPaymentChart.options', chart-type='Line', chart-inside-header='', background-color='blue')
       md-button.md-simple.md-info.md-just-icon(slot='first-button')
         md-icon refresh
         md-tooltip(md-direction='bottom') Refresh
@@ -151,7 +151,7 @@
       template(slot='content')
         .md-layout
           .md-layout-item.md-size-100
-            md-table(v-model='stats.depositsCount')
+            md-table(v-model='stats.cardTypesCount')
               md-table-row(slot='md-table-row', slot-scope='{ item }')
                 md-table-cell {{ item.desc }}
                 md-table-cell {{ item.count }}
@@ -191,16 +191,16 @@ export default {
         customerCount: null,
         kidsCount: null,
         paidAmount: null,
-        depositAmount: null,
+        cardAmount: null,
         codeDepositAmount: null,
         socksCount: null,
         paidAmountByGateways: {},
         couponsCount: [],
         codesCount: [],
-        depositsCount: [],
+        cardTypesCount: [],
         dailyCustomers: [],
         dailyBookingPayment: [],
-        dailyDepositPayment: []
+        dailyCardPayment: []
       },
       weekdayMapping: {
         1: "一",
@@ -309,9 +309,9 @@ export default {
         }
       };
     },
-    dailyDepositPaymentChart() {
-      const values = this.stats.dailyDepositPayment.map(d => d.amount);
-      const labels = this.stats.dailyDepositPayment.map(
+    dailyCardPaymentChart() {
+      const values = this.stats.dailyCardPayment.map(d => d.amount);
+      const labels = this.stats.dailyCardPayment.map(
         d => this.weekdayMapping[d.day]
       );
       const high = Math.max(...values) * 1.05;
