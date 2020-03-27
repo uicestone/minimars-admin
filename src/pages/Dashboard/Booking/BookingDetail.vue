@@ -91,6 +91,7 @@
               .md-layout.md-alignment-bottom-right
                 md-button.md-simple.md-danger(type='button', @click='remove', v-if='this.booking.id') 删除
                 md-button.md-raised.md-primary(type='submit') 保存
+                md-button.md-raised.md-warning.ml-2(v-if="booking.status === 'booked' && ['play','event'].includes(booking.type)" @click="checkIn") 入场
         md-card.payments-card
           md-card-header.md-card-header-icon.md-card-header-danger
             .card-icon
@@ -299,6 +300,12 @@ export default {
           customer: this.booking.customer.id,
           status: "activated"
         })
+      ).body;
+    },
+    async checkIn() {
+      this.booking.status = "in_service";
+      this.booking = (
+        await Booking.update({ id: this.booking.id }, this.booking)
       ).body;
     }
   },
