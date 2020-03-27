@@ -27,7 +27,6 @@ import Collapse from "./Collapse.vue";
 import Slider from "./Slider.vue";
 import SimpleWizard from "./Wizard/Wizard.vue";
 import WizardTab from "./Wizard/WizardTab.vue";
-import AsyncWorldMap from "./WorldMap/AsyncWorldMap.vue";
 
 import Pagination from "./Pagination.vue";
 
@@ -63,6 +62,5 @@ export {
   WizardTab,
   AnimatedNumber,
   Collapse,
-  AsyncWorldMap,
   Editor
 };

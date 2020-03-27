@@ -161,7 +161,6 @@
 
 <script>
 import moment from "moment";
-// import AsyncWorldMap from "@/components/WorldMap/AsyncWorldMap.vue";
 import {
   StatsCard,
   ChartCard,
@@ -179,7 +178,6 @@ export default {
     // ProductCard,
     GlobalSalesCard
     // GlobalSalesTable,
-    // AsyncWorldMap
   },
   data() {
     return {

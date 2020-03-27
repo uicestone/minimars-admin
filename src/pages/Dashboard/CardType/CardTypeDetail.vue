@@ -64,13 +64,10 @@
 </template>
 
 <script>
-// import { Datetime } from "vue-datetime";
-// import "vue-datetime/dist/vue-datetime.css";
 import { CardType } from "@/resources";
 import { confirm } from "@/helpers/sweetAlert";
 
 export default {
-  // components: { Datetime },
   data() {
     return {
       cardType: { id: "", store: null, freeParentsPerKid: 2, maxKids: 2 }

@@ -58,12 +58,12 @@
                   label 儿童
                   md-input(v-model='booking.kidsCount', type='number', min='0')
                   span.md-suffix 位
-              .md-layout-item(v-if="booking.type==='play'")(style="flex:1;min-width:33%")
+              .md-layout-item(v-if="booking.type==='play'", style="flex:1;min-width:33%")
                 md-field
                   label 袜子
                   md-input(v-model='booking.socksCount', type='number', min='0')
                   span.md-suffix 双
-              .md-layout-item(v-if="booking.type==='gift'")(style="flex:1;min-width:33%")
+              .md-layout-item(v-if="booking.type==='gift'", style="flex:1;min-width:33%")
                 md-field
                   label 数量
                   md-input(v-model='booking.quantity', type='number', min='0')
@@ -78,8 +78,9 @@
                     label 支付方式
                     md-select(v-model='paymentGateway', :disabled='!price')
                       md-option(v-for='card in customerCards', v-show='price && card.store === booking.store', :key='card.id', :value='card.id', @click.native='useCard(card)')
-                        span {{ card.title }}
-                        span(v-if='card.timesLeft') 剩余{{ card.timesLeft }}
+                        b
+                        b {{ card.title }}
+                        b(v-if='card.timesLeft') -剩余{{ card.timesLeft }}
                       md-option(value='points', @click='useCard(false)', v-show='priceInPoints') 账户积分 {{ booking.customer ? booking.customer.points : ''}}
                       md-option(value='balance', @click='useCard(false)', v-show='price') 账户余额
                       md-option(value='cash', @click='useCard(false)', v-show='price') 现金刷卡

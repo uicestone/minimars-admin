@@ -18,7 +18,7 @@ import "./assets/scss/material-dashboard.scss";
 import "./assets/css/demo.css";
 
 // library auto imports
-import "es6-promise/auto";
+// import "es6-promise/auto";
 
 export default {
   install(Vue) {

@@ -46,15 +46,12 @@
 </template>
 
 <script>
-// import { Datetime } from "vue-datetime";
-// import "vue-datetime/dist/vue-datetime.css";
 import { Post } from "@/resources";
 import { Editor } from "@/components";
 import { confirm } from "@/helpers/sweetAlert";
 
 export default {
   components: {
-    // Datetime
     Editor
   },
   data() {
