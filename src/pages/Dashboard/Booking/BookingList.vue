@@ -29,7 +29,7 @@
                 md-option(value='') 不指定
                 md-option(v-for='coupon in $config.coupons', :key='coupon.slug', :value='coupon.slug') {{ coupon.name }}
           .toolbar-actions
-            md-button.md-primary.mr-2(@click='showCreate')
+            md-button.md-primary.mr-2(@click='showCreate()')
               | 门票预约
             md-button.md-warning.mr-2(@click='showCreate("event")')
               | 活动预约

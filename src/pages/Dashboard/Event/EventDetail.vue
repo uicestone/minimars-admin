@@ -78,7 +78,7 @@
 // import "vue-datetime/dist/vue-datetime.css";
 import { Event, Booking } from "@/resources";
 import { Editor } from "@/components";
-import Swal from "sweetalert2";
+import { confirm } from "@/helpers/sweetAlert";
 
 export default {
   components: {
@@ -120,19 +120,12 @@ export default {
     },
     async remove() {
       if (
-        !(
-          await Swal.fire({
-            title: "确定要删除这个活动？",
-            text: `这个操作不可撤销，该活动的报名数据将被清空`,
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonClass: "md-button md-danger",
-            cancelButtonClass: "md-button",
-            confirmButtonText: "确定删除",
-            cancelButtonText: "取消",
-            buttonsStyling: false
-          })
-        ).value
+        !(await confirm(
+          "确定要删除这个活动",
+          `这个操作不可撤销，该活动的报名数据将被清空`,
+          "确定删除",
+          "error"
+        ))
       )
         return;
       await Event.delete({ id: this.event.id });

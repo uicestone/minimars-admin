@@ -67,7 +67,7 @@
 // import { Datetime } from "vue-datetime";
 // import "vue-datetime/dist/vue-datetime.css";
 import { CardType } from "@/resources";
-import Swal from "sweetalert2";
+import { confirm } from "@/helpers/sweetAlert";
 
 export default {
   // components: { Datetime },
@@ -103,19 +103,12 @@ export default {
     },
     async remove() {
       if (
-        !(
-          await Swal.fire({
-            title: "确定要删除这个卡片种类？",
-            text: `这个操作不可撤销，已购该卡客户将不会受影响`,
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonClass: "md-button md-danger",
-            cancelButtonClass: "md-button",
-            confirmButtonText: "确定删除",
-            cancelButtonText: "取消",
-            buttonsStyling: false
-          })
-        ).value
+        !(await confirm(
+          "确定要删除这个卡片种类",
+          `这个操作不可撤销，已购该卡客户将不会受影响`,
+          "确定删除",
+          "error"
+        ))
       )
         return;
       await CardType.delete({ id: this.cardType.id });

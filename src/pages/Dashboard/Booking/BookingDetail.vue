@@ -124,7 +124,7 @@ import {
   Payment,
   Card
 } from "@/resources";
-import Swal from "sweetalert2";
+import { confirm } from "@/helpers/sweetAlert";
 import moment from "moment";
 
 export default {
@@ -187,19 +187,12 @@ export default {
     },
     async remove() {
       if (
-        !(
-          await Swal.fire({
-            title: "确定要删除这个预约？",
-            text: `这个操作不可撤销，并且将删除这个预约和他的所有支付记录`,
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonClass: "md-button md-danger",
-            cancelButtonClass: "md-button",
-            confirmButtonText: "确定删除",
-            cancelButtonText: "取消",
-            buttonsStyling: false
-          })
-        ).value
+        !(await confirm(
+          "确定要删除这个预约？",
+          `这个操作不可撤销，并且将删除这个预约和他的所有支付记录`,
+          "确定删除",
+          "error"
+        ))
       )
         return;
       await Booking.delete({ id: this.booking.id });
@@ -268,19 +261,11 @@ export default {
     },
     async pay(payment) {
       if (
-        !(
-          await Swal.fire({
-            title: `确定已收款 ¥${payment.amount.toFixed(2)}？`,
-            // text: `这个操作`,
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonClass: "md-button md-warning",
-            cancelButtonClass: "md-button",
-            confirmButtonText: "确定已收款",
-            cancelButtonText: "取消",
-            buttonsStyling: false
-          })
-        ).value
+        !(await confirm(
+          `确定已收款 ¥${payment.amount.toFixed(2)}`,
+          null,
+          "确定已收款"
+        ))
       )
         return;
       await Payment.update({ id: payment.id }, { paid: true });

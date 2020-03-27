@@ -157,7 +157,7 @@
 
 <script>
 import { Booking, User, Payment, Card } from "@/resources";
-import Swal from "sweetalert2";
+import { promptSelect, confirm } from "@/helpers/sweetAlert";
 
 export default {
   data() {
@@ -245,24 +245,15 @@ export default {
       ).body;
     },
     async createCard(cardType) {
-      const paymentGateway = (
-        await Swal.fire({
-          title: "购买" + cardType.title,
-          text: `请选择支付方式`,
-          type: "success",
-          input: "select",
-          inputOptions: {
-            cash: "现金刷卡",
-            scan: "现场扫码"
-          },
-          showCancelButton: true,
-          confirmButtonClass: "md-button md-success",
-          cancelButtonClass: "md-button",
-          confirmButtonText: "确定购买",
-          cancelButtonText: "取消",
-          buttonsStyling: false
-        })
-      ).value;
+      const paymentGateway = await promptSelect(
+        "购买" + cardType.title,
+        `请选择支付方式`,
+        {
+          cash: "现金刷卡",
+          scan: "现场扫码"
+        },
+        "确定购买"
+      );
       if (!paymentGateway) return;
       const card = (
         await Card.save(
@@ -283,19 +274,11 @@ export default {
     },
     async pay(payment) {
       if (
-        !(
-          await Swal.fire({
-            title: `确定已收款 ¥${payment.amount.toFixed(2)}？`,
-            // text: `这个操作`,
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonClass: "md-button md-warning",
-            cancelButtonClass: "md-button",
-            confirmButtonText: "确定已收款",
-            cancelButtonText: "取消",
-            buttonsStyling: false
-          })
-        ).value
+        !(await confirm(
+          `确定已收款 ¥${payment.amount.toFixed(2)}`,
+          null,
+          "确定已收款"
+        ))
       )
         return;
       await Payment.update({ id: payment.id }, { paid: true });
