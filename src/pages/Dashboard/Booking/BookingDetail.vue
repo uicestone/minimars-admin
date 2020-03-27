@@ -7,6 +7,7 @@
           md-card-header.md-card-header-icon.md-card-header-primary
             .card-icon
               md-icon timer
+
             h4.title {{ booking.id.substr(-6).toUpperCase() }}
           md-card-content.md-layout
             .md-layout-item.md-small-size-100.md-size-25

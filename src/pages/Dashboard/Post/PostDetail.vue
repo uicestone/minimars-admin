@@ -18,7 +18,11 @@
                 label 简称
                 md-input(v-model='post.slug')
             .md-layout-item.md-size-100
-              md-chips.md-primary.shake-on-error(@keypress.native.enter.prevent='', v-model='post.tags', md-placeholder='添加标签', md-check-duplicated='')
+              md-chips.md-primary.shake-on-error(@keypress.native.enter.prevent, v-model='post.tags', md-placeholder='添加标签', md-check-duplicated)
+            .md-layout-item.md-size-100(v-if='post.tags.includes("home-banner")')
+              md-field
+                label 链接至
+                md-input(v-model='post.target')
             .md-layout-item.md-size-100
               md-field.md-has-value.mt-4
                 label 内容
