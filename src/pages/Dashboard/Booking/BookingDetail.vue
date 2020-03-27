@@ -77,8 +77,10 @@
                   md-field
                     label 支付方式
                     md-select(v-model='paymentGateway', :disabled='!price')
-                      md-option(v-for='card in customerCards', v-show='price && card.store === booking.store', :key='card.id', :value='card.id', @click.native='useCard(card)') {{ card.title }}
-                      md-option(value='points', @click='useCard(false)', v-show='priceInPoints') 账户积分
+                      md-option(v-for='card in customerCards', v-show='price && card.store === booking.store', :key='card.id', :value='card.id', @click.native='useCard(card)')
+                        span {{ card.title }}
+                        span(v-if='card.timesLeft') 剩余{{ card.timesLeft }}
+                      md-option(value='points', @click='useCard(false)', v-show='priceInPoints') 账户积分 {{ booking.customer ? booking.customer.points : ''}}
                       md-option(value='balance', @click='useCard(false)', v-show='price') 账户余额
                       md-option(value='cash', @click='useCard(false)', v-show='price') 现金刷卡
                 md-button.mt-2.md-simple.md-info.md-btn-link(type='button', @click='goCustomerDetail', v-if='booking.id && booking.customer')
