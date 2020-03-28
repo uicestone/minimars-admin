@@ -118,7 +118,7 @@ export default {
         delete searchQuery.customerKeyword;
       }
 
-      for (let field in searchQuery) {
+      for (const field in searchQuery) {
         if (Array.isArray(searchQuery[field])) {
           searchQuery[field] = searchQuery[field].join(",");
         }
