@@ -10,18 +10,20 @@ import GlobalDirectives from "./globalDirectives";
 import SideBar from "./components/SidebarPlugin";
 // Tabs plugin. Used on Panels page.
 
+// @ts-ignore
 import VueMaterial from "vue-material";
 
 // asset imports
 import "vue-material/dist/vue-material.min.css";
 import "./assets/scss/material-dashboard.scss";
 import "./assets/css/demo.css";
+import { VueConstructor } from "vue/types/vue";
 
 // library auto imports
 // import "es6-promise/auto";
 
 export default {
-  install(Vue) {
+  install(Vue: VueConstructor) {
     Vue.use(GlobalComponents);
     Vue.use(GlobalDirectives);
     Vue.use(VueMaterial);

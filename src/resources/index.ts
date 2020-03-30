@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Vue from "vue";
 
 const Booking = new Vue.resource("booking{/id}");

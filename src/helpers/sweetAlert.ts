@@ -1,6 +1,12 @@
+// @ts-nocheck
 import Swal from "sweetalert2";
 
-export const confirm = async (title, text, confirmText, type = "question") => {
+export const confirm = async (
+  title: string,
+  text: string,
+  confirmText: string,
+  type = "question"
+) => {
   const classMap = {
     success: "md-success",
     error: "md-danger",

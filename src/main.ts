@@ -6,6 +6,7 @@ import DashboardPlugin from "./material-dashboard";
 
 // Plugins
 import App from "./App.vue";
+//@ts-ignore
 import Chartist from "chartist";
 
 // router setup
@@ -60,11 +61,12 @@ Object.defineProperty(Vue.prototype, "$config", {
 
 Object.defineProperty(Vue.prototype, "$user", {
   get() {
-    this.$root.user.can = function(cap) {
+    this.$root.user.can = function(cap: string) {
       const roleCaps = {
         admin: ".*",
         manager: "view-(booking|user|code)"
       };
+      // @ts-ignore
       return this.role && cap.match(`^${roleCaps[this.role]}$`);
     };
 
@@ -155,6 +157,7 @@ Object.defineProperty(Vue.prototype, "$gatewayNames", {
   }
 });
 
+// @ts-ignore
 Vue.filter("date", (value, format) => {
   if (!value) {
     return null;
@@ -162,10 +165,12 @@ Vue.filter("date", (value, format) => {
   return moment(value).format(format || "YYYY-MM-DD HH:mm");
 });
 
+// @ts-ignore
 Vue.filter("duration", value => {
   return moment.duration(value).humanize();
 });
 
+// @ts-ignore
 Vue.filter("round", (value, digits) => {
   if (!value) {
     return (0).toFixed(digits);
@@ -173,36 +178,44 @@ Vue.filter("round", (value, digits) => {
   return value.toFixed(digits || 0);
 });
 
+// @ts-ignore
 Vue.filter("bookingTypeName", value => {
   return Vue.prototype.$bookingTypeNames[value];
 });
 
+// @ts-ignore
 Vue.filter("bookingStatusName", value => {
   return Vue.prototype.$bookingStatusNames[value];
 });
 
+// @ts-ignore
 Vue.filter("cardTypeName", value => {
   return Vue.prototype.$cardTypeNames[value];
 });
 
+// @ts-ignore
 Vue.filter("cardStatusName", value => {
   return Vue.prototype.$cardStatusNames[value];
 });
 
+// @ts-ignore
 Vue.filter("currency", value => {
   if (value === undefined || value === null) return "-";
   return "¥ " + (+value).toFixed(2);
 });
 
+// @ts-ignore
 Vue.filter("paymentGatewayName", gateway => {
   return Vue.prototype.$gatewayNames[gateway];
 });
 
+// @ts-ignore
 Vue.filter("couponName", couponSlug => {
   const coupons = Vue.prototype.$config.coupons;
   if (!coupons) {
     return;
   }
+  // @ts-ignore
   const coupon = coupons.find(c => c.slug === couponSlug);
   if (coupon) {
     return coupon.name;

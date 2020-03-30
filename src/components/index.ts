@@ -1,5 +1,5 @@
 import IconCheckbox from "./Inputs/IconCheckbox.vue";
-import Badge from "./Badge";
+import Badge from "./Badge.vue";
 
 import DropDown from "./Dropdown.vue";
 
@@ -34,7 +34,7 @@ import Editor from "./Editor.vue";
 
 import SidebarPlugin from "./SidebarPlugin";
 
-import AnimatedNumber from "./AnimatedNumber";
+import AnimatedNumber from "./AnimatedNumber.vue";
 
 export {
   IconCheckbox,

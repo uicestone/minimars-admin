@@ -1,3 +1,4 @@
+// @ts-ignore
 import { directive as vClickOutside } from "vue-clickaway";
 
 /**
@@ -5,6 +6,7 @@ import { directive as vClickOutside } from "vue-clickaway";
  */
 
 const GlobalDirectives = {
+  // @ts-ignore
   install(Vue) {
     Vue.directive("click-outside", vClickOutside);
   }

@@ -5,6 +5,7 @@ const SidebarStore = {
   showSidebar: false,
   sidebarLinks: [],
   isMinimized: false,
+  // @ts-ignore
   displaySidebar(value) {
     this.showSidebar = value;
   },
@@ -25,6 +26,7 @@ const SidebarStore = {
 };
 
 const SidebarPlugin = {
+  // @ts-ignore
   install(Vue, options) {
     if (options && options.sidebarLinks) {
       SidebarStore.sidebarLinks = options.sidebarLinks;

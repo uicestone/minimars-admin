@@ -4,6 +4,7 @@ import DropDown from "./components/Dropdown.vue";
  */
 
 const GlobalComponents = {
+  // @ts-ignore
   install(Vue) {
     Vue.component("drop-down", DropDown);
   }
