@@ -5,7 +5,10 @@
     user-menu
     template(slot='links')
       sidebar-item(:link="{ name: '数据统计', icon: 'dashboard', path: '/dashboard' }")
-      sidebar-item(:link="{ name: '预约管理', icon: 'access_time', path: '/booking' }")
+      sidebar-item(:link="{ name: '票务管理', icon: 'access_time', path: '/booking?type=play' }")
+      sidebar-item(:link="{ name: '活动预约', icon: 'access_time', path: '/booking?type=event' }")
+      sidebar-item(:link="{ name: '礼品兑换', icon: 'access_time', path: '/booking?type=gift' }")
+      sidebar-item(:link="{ name: '餐饮消费', icon: 'access_time', path: '/booking?type=food' }")
       sidebar-item(:link="{ name: '用户管理', icon: 'people', path: '/user' }")
       sidebar-item(:link="{ name: '卡片种类', icon: 'card_membership', path: '/card-type' }")
       sidebar-item(:link="{ name: '内容管理', icon: 'chrome_reader_mode', path: '/post' }")

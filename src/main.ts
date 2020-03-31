@@ -124,7 +124,7 @@ Object.defineProperty(Vue.prototype, "$cardTypeNames", {
     return {
       times: "次卡",
       period: "时效卡",
-      balance: "充值卡"
+      balance: "储值卡"
     };
   }
 });
