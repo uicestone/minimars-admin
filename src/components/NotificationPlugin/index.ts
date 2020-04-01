@@ -1,27 +1,23 @@
 import Notifications from "./Notifications.vue";
+import { VueConstructor } from "vue";
 
-const NotificationStore = {
-  state: [], // here the notifications will be added
+class NotificationStore {
+  static state: { timestamp: Date }[] = []; // here the notifications will be added
 
-  // @ts-ignore
-  removeNotification(timestamp) {
-    // @ts-ignore
+  static removeNotification(timestamp: Date) {
     const indexToDelete = this.state.findIndex(n => n.timestamp === timestamp);
     if (indexToDelete !== -1) {
       this.state.splice(indexToDelete, 1);
     }
-  },
-  // @ts-ignore
-  addNotification(notification) {
+  }
+  static addNotification(notification: { timestamp: Date }) {
     notification.timestamp = new Date();
     notification.timestamp.setMilliseconds(
       notification.timestamp.getMilliseconds() + this.state.length
     );
-    // @ts-ignore
     this.state.push(notification);
-  },
-  // @ts-ignore
-  notify(notification) {
+  }
+  static notify(notification: { timestamp: Date } | { timestamp: Date }[]) {
     if (Array.isArray(notification)) {
       notification.forEach(notificationInstance => {
         this.addNotification(notificationInstance);
@@ -30,11 +26,10 @@ const NotificationStore = {
       this.addNotification(notification);
     }
   }
-};
+}
 
 const NotificationsPlugin = {
-  // @ts-ignore
-  install(Vue) {
+  install(Vue: VueConstructor) {
     Vue.mixin({
       data() {
         return {
@@ -42,10 +37,8 @@ const NotificationsPlugin = {
         };
       },
       methods: {
-        // @ts-ignore
         notify(notification) {
-          // @ts-ignore
-          this.notificationStore.notify(notification);
+          this.$root.notificationStore.notify(notification);
         }
       }
     });

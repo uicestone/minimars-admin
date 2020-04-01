@@ -1,5 +1,6 @@
 import Sidebar from "./SideBar.vue";
 import SidebarItem from "./SidebarItem.vue";
+import { VueConstructor } from "vue";
 
 const SidebarStore = {
   showSidebar: false,
@@ -26,8 +27,7 @@ const SidebarStore = {
 };
 
 const SidebarPlugin = {
-  // @ts-ignore
-  install(Vue, options) {
+  install(Vue: VueConstructor, options: any) {
     if (options && options.sidebarLinks) {
       SidebarStore.sidebarLinks = options.sidebarLinks;
     }

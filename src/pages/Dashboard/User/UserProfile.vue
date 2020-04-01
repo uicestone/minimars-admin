@@ -157,7 +157,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Watch } from "vue-property-decorator";
 import {
   BookingResource,
   PaymentResource,

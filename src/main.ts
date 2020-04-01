@@ -60,12 +60,11 @@ Object.defineProperty(Vue.prototype, "$config", {
 Object.defineProperty(Vue.prototype, "$user", {
   get() {
     this.$root.user.can = function(cap: string) {
-      const roleCaps = {
+      const roleCaps: Record<string, string> = {
         admin: ".*",
-        manager: "view-(booking|user|code)"
+        manager: "view-(booking|user)"
       };
-      // @ts-ignore
-      return this.role && cap.match(`^${roleCaps[this.role]}$`);
+      return this.role && cap.match(new RegExp(`^${roleCaps[this.role]}$`));
     };
 
     return this.$root.user;
@@ -163,66 +162,55 @@ Object.defineProperty(Vue.prototype, "$noop", {
   }
 });
 
-// @ts-ignore
-Vue.filter("date", (value, format) => {
+Vue.filter("date", (value: any, format: string) => {
   if (!value) {
     return null;
   }
   return moment(value).format(format || "YYYY-MM-DD HH:mm");
 });
 
-// @ts-ignore
-Vue.filter("duration", value => {
+Vue.filter("duration", (value: any) => {
   return moment.duration(value).humanize();
 });
 
-// @ts-ignore
-Vue.filter("round", (value, digits) => {
+Vue.filter("round", (value: any, digits: number) => {
   if (!value) {
     return (0).toFixed(digits);
   }
   return value.toFixed(digits || 0);
 });
 
-// @ts-ignore
-Vue.filter("bookingTypeName", value => {
+Vue.filter("bookingTypeName", (value: any) => {
   return Vue.prototype.$bookingTypeNames[value];
 });
 
-// @ts-ignore
-Vue.filter("bookingStatusName", value => {
+Vue.filter("bookingStatusName", (value: any) => {
   return Vue.prototype.$bookingStatusNames[value];
 });
 
-// @ts-ignore
-Vue.filter("cardTypeName", value => {
+Vue.filter("cardTypeName", (value: any) => {
   return Vue.prototype.$cardTypeNames[value];
 });
 
-// @ts-ignore
-Vue.filter("cardStatusName", value => {
+Vue.filter("cardStatusName", (value: any) => {
   return Vue.prototype.$cardStatusNames[value];
 });
 
-// @ts-ignore
-Vue.filter("currency", value => {
+Vue.filter("currency", (value: any) => {
   if (value === undefined || value === null) return "-";
   return "¥ " + (+value).toFixed(2);
 });
 
-// @ts-ignore
-Vue.filter("paymentGatewayName", gateway => {
+Vue.filter("paymentGatewayName", (gateway: any) => {
   return Vue.prototype.$gatewayNames[gateway];
 });
 
-// @ts-ignore
-Vue.filter("couponName", couponSlug => {
+Vue.filter("couponName", (couponSlug: any) => {
   const coupons = Vue.prototype.$config.coupons;
   if (!coupons) {
     return;
   }
-  // @ts-ignore
-  const coupon = coupons.find(c => c.slug === couponSlug);
+  const coupon = coupons.find((c: { slug: string }) => c.slug === couponSlug);
   if (coupon) {
     return coupon.name;
   }

@@ -16,5 +16,8 @@ declare module "vue/types/vue" {
     $gatewayNames: any;
     $notify: any;
     $material: any;
+    $sidebar: any;
+    notificationStore: any;
+    sidebarStore: any;
   }
 }
