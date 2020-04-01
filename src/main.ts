@@ -159,6 +159,12 @@ Object.defineProperty(Vue.prototype, "$gatewayNames", {
   }
 });
 
+Object.defineProperty(Vue.prototype, "$noop", {
+  get() {
+    return () => {};
+  }
+});
+
 // @ts-ignore
 Vue.filter("date", (value, format) => {
   if (!value) {
