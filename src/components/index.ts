@@ -32,6 +32,8 @@ import Pagination from "./Pagination.vue";
 
 import Editor from "./Editor.vue";
 
+import Poster from "./Poster.vue";
+
 import SidebarPlugin from "./SidebarPlugin";
 
 import AnimatedNumber from "./AnimatedNumber.vue";
@@ -62,5 +64,6 @@ export {
   WizardTab,
   AnimatedNumber,
   Collapse,
-  Editor
+  Editor,
+  Poster
 };

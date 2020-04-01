@@ -63,89 +63,80 @@
               md-button.mt-4.ml-2.md-simple.md-danger(type='button', @click='remove', v-if='this.cardType.id') 删除
 </template>
 
-<script>
-import { CardType } from "@/resources";
+<script lang="ts">
+import Vue from "vue";
+import { Watch } from "vue-property-decorator";
 import { confirm } from "@/helpers/sweetAlert";
+import { CardType, Store } from "@/resources/interfaces";
+import { CardTypeResource } from "@/resources";
 
-export default {
-  data() {
-    return {
-      cardType: { id: "", store: null, freeParentsPerKid: 2, maxKids: 2 }
-    };
-  },
-  methods: {
-    async save() {
-      if (this.$route.params.id === "add") {
-        this.cardType = (await CardType.save(this.cardType)).body;
-      } else {
-        this.cardType = (
-          await CardType.update(
-            {
-              id: this.$route.params.id
-            },
-            this.cardType
-          )
-        ).body;
-      }
-      this.$notify({
-        message: "保存成功",
-        icon: "check",
-        horizontalAlign: "center",
-        verticalAlign: "bottom",
-        type: "success"
-      });
-      if (this.$route.params.id === "add") {
-        this.$router.replace(`/card-type/${this.cardType.id}`);
-      }
-    },
-    async remove() {
-      if (
-        !(await confirm(
-          "确定要删除这个卡片种类",
-          `这个操作不可撤销，已购该卡客户将不会受影响`,
-          "确定删除",
-          "error"
-        ))
-      )
-        return;
-      await CardType.delete({ id: this.cardType.id });
-      this.$router.go(-1);
-    }
-  },
-  watch: {
-    "cardType.type"(type, typeWas) {
-      if (typeWas && type && type !== typeWas) {
-        delete this.cardType.start;
-        delete this.cardType.end;
-        delete this.cardType.balance;
-        delete this.cardType.times;
-      }
-    },
-    "cardType.start"(v) {
-      if (v && (!v.constructor || v.constructor.name !== "Date")) {
-        this.cardType.start = new Date(this.cardType.start);
-      }
-    },
-    "cardType.end"(v) {
-      if (v && (!v.constructor || v.constructor.name !== "Date")) {
-        this.cardType.end = new Date(this.cardType.end);
-      }
-    },
-    "cardType.store"(v) {
-      if (typeof v === "object" && v) {
-        this.cardType.store = this.cardType.store.id;
-      } else if (v === false) {
-        this.cardType.store = null;
-      }
-    }
-  },
-  async mounted() {
-    if (this.$route.params.id !== "add") {
-      this.cardType = (await CardType.get({ id: this.$route.params.id })).body;
-      if (this.cardType.store) this.storeSearchTerm = this.cardType.store.name;
+export default class CardTypeDetail extends Vue {
+  cardType: Partial<CardType> = {
+    id: "",
+    store: null,
+    freeParentsPerKid: 2,
+    maxKids: 2
+  };
+  async save() {
+    this.cardType = await CardTypeResource.save(this.cardType);
+
+    this.$notify({
+      message: "保存成功",
+      icon: "check",
+      horizontalAlign: "center",
+      verticalAlign: "bottom",
+      type: "success"
+    });
+
+    if (this.$route.params.id === "add") {
+      this.$router.replace(`/card-type/${this.cardType.id}`);
     }
   }
-};
+  async remove() {
+    if (
+      !(await confirm(
+        "确定要删除这个卡片种类",
+        `这个操作不可撤销，已购该卡客户将不会受影响`,
+        "确定删除",
+        "error"
+      ))
+    )
+      return;
+    await CardTypeResource.delete({ id: this.cardType.id });
+    this.$router.go(-1);
+  }
+  @Watch("cardType.type") onCardTypeTypeUpdate(type: string, typeWas: string) {
+    if (typeWas && type && type !== typeWas) {
+      delete this.cardType.start;
+      delete this.cardType.end;
+      delete this.cardType.balance;
+      delete this.cardType.times;
+    }
+  }
+  @Watch("cardType.start") onCardTypeStartUpdate(v: Date | string) {
+    if (v && (!v.constructor || v.constructor.name !== "Date")) {
+      this.cardType.start = new Date((this.cardType as CardType).start);
+    }
+  }
+  @Watch("cardType.end") onCardTypeEndUpdate(v: Date | string) {
+    if (v && (!v.constructor || v.constructor.name !== "Date")) {
+      this.cardType.end = new Date((this.cardType as CardType).end);
+    }
+  }
+  @Watch("cardType.store") onCardTypeStoreUpdate(v: Store | string | boolean) {
+    if (typeof v === "object" && v) {
+      // @ts-ignore
+      this.cardType.store = this.cardType.store.id;
+    } else if (v === false) {
+      this.cardType.store = null;
+    }
+  }
+  async mounted() {
+    if (this.$route.params.id !== "add") {
+      this.cardType = await CardTypeResource.get({ id: this.$route.params.id });
+    }
+  }
+}
 </script>
 <style lang="scss">
 .md-datepicker-body .md-dialog-actions {

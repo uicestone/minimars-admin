@@ -3,8 +3,8 @@ import Swal from "sweetalert2";
 
 export const confirm = async (
   title: string,
-  text: string,
-  confirmText: string,
+  text: string | null,
+  confirmText: string | null,
   type = "question"
 ) => {
   const classMap = {
@@ -16,7 +16,7 @@ export const confirm = async (
   };
   const result = await Swal.fire({
     title,
-    text,
+    text: text || "",
     type,
     showCancelButton: true,
     confirmButtonClass: "md-button " + classMap[type],
@@ -29,10 +29,10 @@ export const confirm = async (
 };
 
 export const promptSelect = async (
-  title,
-  text,
-  inputOptions,
-  confirmText,
+  title: string,
+  text: string,
+  inputOptions: Record<string, string>,
+  confirmText: string | null,
   type = "question"
 ) => {
   const classMap = {

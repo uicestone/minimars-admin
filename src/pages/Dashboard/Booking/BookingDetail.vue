@@ -115,286 +115,294 @@
                   md-button.md-normal.md-warning(v-else='', @click='pay(payment)') 收款
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
+import { Watch } from "vue-property-decorator";
+import { confirm } from "@/helpers/sweetAlert";
+import moment from "moment";
 import {
-  Booking,
-  BookingPrice,
+  BookingResource,
+  BookingPriceResource,
+  UserResource,
+  EventResource,
+  GiftResource,
+  PaymentResource,
+  CardResource
+} from "@/resources";
+import {
   User,
   Event,
   Gift,
-  Payment,
-  Card
-} from "@/resources";
-import { confirm } from "@/helpers/sweetAlert";
-import moment from "moment";
+  Card,
+  Store,
+  Booking,
+  BookingType,
+  BookingStatus,
+  Payment
+} from "@/resources/interfaces";
 
-export default {
-  data() {
-    return {
-      booking: {
-        id: "",
-        type: "play",
-        status: "pending",
-        customer: null,
-        event: null,
-        gift: null,
-        date: moment().format("YYYY-MM-DD"),
-        checkInAt: moment().format("HH:mm:ss"),
-        adultsCount: 1,
-        kidsCount: 1,
-        socksCount: 1,
-        store: this.$user.store,
-        card: null
-      },
-      price: null,
-      priceInPoints: null,
-      customers: [],
-      customerSearchTerm: "",
-      events: [],
-      gifts: [],
-      customerCards: [],
-      eventSearchTerm: null,
-      giftSearchTerm: null,
-      paymentGateway: null
-    };
-  },
-  methods: {
-    async save() {
-      if (this.$route.params.id === "add") {
-        const { paymentGateway } = this;
-        this.booking = (
-          await Booking.save({ paymentGateway }, this.booking)
-        ).body;
-      } else {
-        this.booking = (
-          await Booking.update(
-            {
-              id: this.$route.params.id
-            },
-            this.booking
-          )
-        ).body;
-      }
-      this.$notify({
-        message: "保存成功",
-        icon: "check",
-        horizontalAlign: "center",
-        verticalAlign: "bottom",
-        type: "success"
-      });
-      if (this.$route.params.id === "add") {
-        this.$router.replace(`/booking/${this.booking.id}`);
-      }
-    },
-    async remove() {
-      if (
-        !(await confirm(
-          "确定要删除这个预约？",
-          `这个操作不可撤销，并且将删除这个预约和他的所有支付记录`,
-          "确定删除",
-          "error"
-        ))
-      )
-        return;
-      await Booking.delete({ id: this.booking.id });
-      this.$router.go(-1);
-    },
-    async getCustomers(q) {
-      if (
-        !q ||
-        q.length < 4 ||
-        (this.booking.customer && q === this.booking.customer.name)
-      ) {
-        if (this.customers.length) {
-          this.customers = [];
-        }
-      } else this.customers = (await User.get({ keyword: q })).body;
-      return this.customers;
-    },
-    selectCustomer(item) {
-      this.booking.customer = item;
-      this.customerSearchTerm = item.name;
-    },
-    updateCustomer(term) {
-      if (!term) {
-        this.booking.customer = null;
-      }
-    },
-    async getEvents(q) {
-      if (typeof this.booking.store === "object") return;
-      this.events = (
-        await Event.get({ keyword: q, store: this.booking.store })
-      ).body;
-      return this.events;
-    },
-    selectEvent(item) {
-      this.booking.event = item;
-      this.eventSearchTerm = item.title;
-    },
-    async getGifts(q) {
-      if (typeof this.booking.store === "object") return;
-      this.gifts = (
-        await Gift.get({ keyword: q, store: this.booking.store })
-      ).body;
-      return this.gifts;
-    },
-    selectGift(item) {
-      this.booking.gift = item;
-      this.giftSearchTerm = item.title;
-    },
-    goCustomerDetail() {
-      this.$router.push(`/user/${this.booking.customer.id}`);
-    },
-    async updateBookingPrice() {
-      if (!this.booking.customer) return;
-      const { price, priceInPoints } = (
-        await BookingPrice.update(this.booking)
-      ).body;
-      this.price = price || null;
-      this.priceInPoints = priceInPoints || null;
-    },
-    useCard(card) {
-      if (!card) {
-        this.booking.card = null;
-      } else {
-        this.booking.card = card;
-      }
-    },
-    async pay(payment) {
-      if (
-        !(await confirm(
-          `确定已收款 ¥${payment.amount.toFixed(2)}`,
-          null,
-          "确定已收款"
-        ))
-      )
-        return;
-      await Payment.update({ id: payment.id }, { paid: true });
-      this.booking = (await Booking.get({ id: this.booking.id })).body;
-      this.$notify({
-        message:
-          "收款成功，预约状态现在是：" +
-          this.$bookingStatusNames[this.booking.status],
-        icon: "add_alert",
-        horizontalAlign: "center",
-        verticalAlign: "bottom",
-        type: "success"
-      });
-    },
-    async getCustomerCards() {
-      this.customerCards = (
-        await Card.get({
-          customer: this.booking.customer.id,
-          status: "activated"
-        })
-      ).body;
-    },
-    async checkIn() {
-      this.booking.status = "in_service";
-      this.booking = (
-        await Booking.update({ id: this.booking.id }, this.booking)
-      ).body;
+export default class BookingDetail extends Vue {
+  booking: Partial<Booking> = {
+    type: BookingType.PLAY,
+    status: BookingStatus.PENDING,
+    date: moment().format("YYYY-MM-DD"),
+    checkInAt: moment().format("HH:mm:ss"),
+    adultsCount: 1,
+    kidsCount: 1,
+    socksCount: 1,
+    store: this.$user.store
+  };
+  price: number | null = null;
+  priceInPoints: number | null = null;
+  customers: User[] = [];
+  customerSearchTerm = "";
+  events: Event[] = [];
+  gifts: Gift[] = [];
+  customerCards: Card[] = [];
+  eventSearchTerm: string | null = null;
+  giftSearchTerm: string | null = null;
+  paymentGateway: string | null = null;
+
+  async save() {
+    const { paymentGateway } = this;
+    this.booking = await BookingResource.save(this.booking, { paymentGateway });
+    this.$notify({
+      message: "保存成功",
+      icon: "check",
+      horizontalAlign: "center",
+      verticalAlign: "bottom",
+      type: "success"
+    });
+    if (this.$route.params.id === "add") {
+      this.$router.replace(`/booking/${this.booking.id}`);
     }
-  },
-  watch: {
-    "$user.store"(s) {
-      this.booking.store = s;
-    },
-    booking: {
-      handler(b, p) {
-        if (!b.id) {
-          this.updateBookingPrice();
-        }
-      },
-      deep: true
-    },
-    "booking.customer"() {
-      this.getCustomerCards();
-      this.booking.card = null;
-      this.paymentGateway = null;
-    },
-    "booking.type"(t) {
-      this.booking.card = null;
-      this.paymentGateway = null;
-      if (t === "event") {
-        this.getEvents();
+  }
+
+  async remove() {
+    if (!this.booking.id) return;
+    if (
+      !(await confirm(
+        "确定要删除这个预约？",
+        `这个操作不可撤销，并且将删除这个预约和他的所有支付记录`,
+        "确定删除",
+        "error"
+      ))
+    )
+      return;
+    await BookingResource.delete({ id: this.booking.id });
+    this.$router.go(-1);
+  }
+
+  async getCustomers(q: string) {
+    if (
+      !q ||
+      q.length < 4 ||
+      (this.booking.customer && q === this.booking.customer.name)
+    ) {
+      if (this.customers.length) {
+        this.customers = [];
       }
-      if (t !== "event") {
-        this.booking.event = null;
-        this.eventSearchTerm = null;
-      }
-      if (t === "gift") {
-        this.getGifts();
-        this.booking.quantity = 1;
-      }
-      if (t !== "gift") {
-        this.booking.gift = null;
-        this.giftSearchTerm = null;
-        this.booking.quantity = undefined;
-      }
-    },
-    "booking.store"(v, p) {
-      if (typeof v === "object" && v) {
-        this.booking.store = this.booking.store.id;
-      } else if (v === false) {
-        this.booking.store = null;
-      }
-      if (typeof v === "string" && typeof p === "object") {
-        return;
-      }
-      if (typeof v !== "string") {
-        return;
-      }
-      this.booking.card = null;
-      this.paymentGateway = null;
-      if (this.booking.type === "event") {
-        this.getEvents();
-        this.booking.event = null;
-        this.eventSearchTerm = null;
-      }
-      if (this.booking.type === "gift") {
-        console.log(v, p);
-        this.getGifts();
-        this.booking.gift = null;
-        this.giftSearchTerm = null;
-      }
-    },
-    eventSearchTerm(t) {
-      if (t === null) return;
-      this.getEvents(t);
-      if (!t) {
-        this.booking.event = null;
-      }
-    },
-    giftSearchTerm(t) {
-      if (t === null) return;
-      this.getGifts(t);
-      if (!t) {
-        this.booking.gift = null;
-      }
-    },
-    priceInPoints() {
-      if (this.priceInPoints && !this.price) {
-        this.paymentGateway = "points";
-      } else if (!this.priceInPoints && this.paymentGateway === "points") {
-        this.paymentGateway = null;
-      }
+    } else this.customers = await UserResource.query({ keyword: q });
+    return this.customers;
+  }
+
+  selectCustomer(item: User) {
+    this.booking.customer = item;
+    this.customerSearchTerm = item.name || "";
+  }
+
+  updateCustomer(term: string) {
+    if (!term) {
+      this.booking.customer = null;
     }
-  },
+  }
+
+  async getEvents(q?: string) {
+    if (typeof this.booking.store === "object") return;
+    this.events = await EventResource.query({
+      keyword: q,
+      store: this.booking.store
+    });
+    return this.events;
+  }
+
+  selectEvent(item: Event) {
+    this.booking.event = item;
+    this.eventSearchTerm = item.title;
+  }
+
+  async getGifts(q?: string) {
+    if (typeof this.booking.store === "object") return;
+    this.gifts = await GiftResource.query({
+      keyword: q,
+      store: this.booking.store
+    });
+    return this.gifts;
+  }
+
+  selectGift(item: Gift) {
+    (this.booking as Booking).gift = item;
+    this.giftSearchTerm = item.title;
+  }
+
+  goCustomerDetail() {
+    if (!this.booking.customer) return;
+    this.$router.push(`/user/${this.booking.customer.id}`);
+  }
+
+  async updateBookingPrice() {
+    if (!this.booking.customer) return;
+    const { price, priceInPoints } = await BookingPriceResource.create(
+      this.booking
+    );
+    this.price = price || null;
+    this.priceInPoints = priceInPoints || null;
+  }
+
+  useCard(card: Card) {
+    if (!card) {
+      this.booking.card = null;
+    } else {
+      this.booking.card = card;
+    }
+  }
+
+  async pay(payment: Payment) {
+    const booking = this.booking as Booking;
+    if (
+      !(await confirm(
+        `确定已收款 ¥${payment.amount.toFixed(2)}`,
+        null,
+        "确定已收款"
+      ))
+    )
+      return;
+    await PaymentResource.update({ id: payment.id }, { paid: true });
+    this.booking = await BookingResource.get({ id: booking.id });
+    this.$notify({
+      message:
+        "收款成功，预约状态现在是：" + this.$bookingStatusNames[booking.status],
+      icon: "add_alert",
+      horizontalAlign: "center",
+      verticalAlign: "bottom",
+      type: "success"
+    });
+  }
+
+  async getCustomerCards() {
+    if (!this.booking.customer) return;
+    this.customerCards = await CardResource.query({
+      customer: this.booking.customer.id,
+      status: "activated"
+    });
+  }
+
+  async checkIn() {
+    this.booking.status = BookingStatus.IN_SERVICE;
+    this.booking = await BookingResource.save(this.booking);
+  }
+
+  @Watch("$user.store") onUserStoreUpdate(s: Store) {
+    this.booking.store = s;
+  }
+
+  @Watch("booking", { deep: true })
+  onBookingUpdate(b: Booking) {
+    if (!b.id) {
+      this.updateBookingPrice();
+    }
+  }
+  @Watch("booking.customer") onBookingCustomerUpdate() {
+    this.getCustomerCards();
+    this.booking.card = null;
+    this.paymentGateway = null;
+  }
+  @Watch("booking.type") onBookingTypeUpdate(t: BookingType) {
+    this.booking.card = null;
+    this.paymentGateway = null;
+    if (t === "event") {
+      this.getEvents();
+    }
+    if (t !== "event") {
+      this.booking.event = null;
+      this.eventSearchTerm = null;
+    }
+    if (t === "gift") {
+      this.getGifts();
+      this.booking.quantity = 1;
+    }
+    if (t !== "gift") {
+      this.booking.gift = null;
+      this.giftSearchTerm = null;
+      this.booking.quantity = undefined;
+    }
+  }
+  @Watch("booking.store") onBookingStoreUpdate(
+    v: Store | string | boolean,
+    p: Store | string | boolean
+  ) {
+    if (typeof v === "object" && v) {
+      // @ts-ignore
+      this.booking.store = this.booking.store.id;
+    } else if (v === false) {
+      this.booking.store = null;
+    }
+    if (typeof v === "string" && typeof p === "object") {
+      return;
+    }
+    if (typeof v !== "string") {
+      return;
+    }
+    this.booking.card = null;
+    this.paymentGateway = null;
+    if (this.booking.type === "event") {
+      this.getEvents();
+      this.booking.event = null;
+      this.eventSearchTerm = null;
+    }
+    if (this.booking.type === "gift") {
+      console.log(v, p);
+      this.getGifts();
+      this.booking.gift = null;
+      this.giftSearchTerm = null;
+    }
+  }
+  @Watch("eventSearchTerm") onEventSearchTermUpdate(t: string) {
+    if (t === null) return;
+    this.getEvents(t);
+    if (!t) {
+      this.booking.event = null;
+    }
+  }
+  @Watch("giftSearchTerm") onGiftSearchTermUpdate(t: string) {
+    if (t === null) return;
+    this.getGifts(t);
+    if (!t) {
+      this.booking.gift = null;
+    }
+  }
+  @Watch("priceInPoints") onPriceInPointsUpdate() {
+    if (this.priceInPoints && !this.price) {
+      this.paymentGateway = "points";
+    } else if (!this.priceInPoints && this.paymentGateway === "points") {
+      this.paymentGateway = null;
+    }
+  }
+
   async mounted() {
     if (this.$route.params.id !== "add") {
-      this.booking = (await Booking.get({ id: this.$route.params.id })).body;
+      this.booking = await BookingResource.get({ id: this.$route.params.id });
       if (this.booking.customer)
-        this.customerSearchTerm = this.booking.customer.name;
+        this.customerSearchTerm = this.booking.customer.name || "";
       if (this.booking.event) this.eventSearchTerm = this.booking.event.title;
       if (this.booking.gift) this.giftSearchTerm = this.booking.gift.title;
     } else {
       const { type } = this.$route.query;
-      if (type) this.booking.type = type;
+      if (type) this.booking.type = type as BookingType;
       this.updateBookingPrice();
     }
   }
-};
+}
 </script>
 <style lang="scss">
 .md-datepicker-body .md-dialog-actions {

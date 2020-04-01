@@ -56,102 +56,15 @@
         pagination.pagination-no-border.pagination-primary(v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
 </template>
 
-<script>
-import { Pagination } from "@/components";
-import { User } from "@/resources";
+<script lang="ts">
+import { Component } from "vue-property-decorator";
+import { UserResource } from "@/resources";
+import { User } from "@/resources/interfaces";
+import List from "@/components/List";
 
-export default {
-  components: {
-    Pagination
-  },
-  data() {
-    return {
-      currentSort: "createdAt",
-      currentSortOrder: "desc",
-      pagination: {
-        perPage: 10,
-        currentPage: 1,
-        total: 0
-      },
-      searchQuery: { role: "customer" },
-      searchDelayTimeout: null,
-      queriedData: [],
-      totalBalance: null
-    };
-  },
-  mounted() {
-    this.queryData();
-  },
-  computed: {
-    query() {
-      const searchQuery = {
-        ...this.searchQuery,
-        limit: this.pagination.perPage,
-        skip: (this.pagination.currentPage - 1) * this.pagination.perPage,
-        order: this.currentSort
-          ? `${this.currentSortOrder === "desc" ? "-" : ""}${this.currentSort}`
-          : undefined
-      };
-
-      if (searchQuery.keyword && searchQuery.keyword.length < 4) {
-        delete searchQuery.keyword;
-      }
-
-      return searchQuery;
-    },
-    from() {
-      return Math.min(
-        this.pagination.perPage * (this.pagination.currentPage - 1) + 1,
-        this.total
-      );
-    },
-    to() {
-      return Math.min(this.from + this.pagination.perPage - 1, this.total);
-    },
-    total() {
-      return this.pagination.total;
-    }
-  },
-  methods: {
-    async queryData() {
-      const response = await User.get(this.query);
-      this.queriedData = response.body;
-      this.pagination.total = Number(response.headers.map["items-total"][0]);
-      this.totalBalance = Number(response.headers.map["total-balance"][0]);
-    },
-    showDetail(item) {
-      this.$router.push(`/user/${item.id}`);
-    },
-    showCreate() {
-      this.$router.push("/user/add");
-    },
-    noop() {}
-  },
-  watch: {
-    "pagination.currentPage"() {
-      this.queryData();
-    },
-    searchQuery: {
-      handler() {
-        if (this.searchQuery.role !== "customer") {
-          delete this.searchQuery.membership;
-        }
-        clearTimeout(this.searchDelayTimeout);
-        this.searchDelayTimeout = setTimeout(() => {
-          this.queryData();
-        }, 200);
-      },
-      deep: true
-    },
-    currentSort() {
-      this.queryData();
-    },
-    currentSortOrder() {
-      this.queryData();
-    }
-  },
+@Component({
   filters: {
-    roleName(role) {
+    roleName(role: "admin" | "manager" | "customer") {
       const roleName = {
         admin: "管理员",
         manager: "店员",
@@ -160,7 +73,17 @@ export default {
       return roleName[role];
     }
   }
-};
+})
+export default class UserList extends List<User> {
+  name = "user";
+  resource = UserResource;
+  totalBalance: number | null = null;
+  async queryData() {
+    const queriedData = await super.queryData();
+    this.totalBalance = Number(queriedData.$headers["total-balance"][0]);
+    return queriedData;
+  }
+}
 </script>
 
 <style lang="css" scoped>

@@ -32,7 +32,7 @@ const NotificationStore = {
   }
 };
 
-var NotificationsPlugin = {
+const NotificationsPlugin = {
   // @ts-ignore
   install(Vue) {
     Vue.mixin({

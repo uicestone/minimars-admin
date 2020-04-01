@@ -6,7 +6,7 @@ import DashboardPlugin from "./material-dashboard";
 
 // Plugins
 import App from "./App.vue";
-//@ts-ignore
+// @ts-ignore
 import Chartist from "chartist";
 
 // router setup
@@ -111,7 +111,9 @@ Object.defineProperty(Vue.prototype, "$bookingStatusNames", {
     return {
       pending: "待付款",
       booked: "已确认",
+      // eslint-disable-next-line
       in_service: "已入场",
+      // eslint-disable-next-line
       pending_refund: "待退款",
       finished: "已完成",
       canceled: "已取消"

@@ -15,65 +15,27 @@
               | {{ item.updatedAt | date }}
 </template>
 
-<script>
-import { Config } from "@/resources";
+<script lang="ts">
+import Component from "vue-class-component";
+import List from "@/components/List";
+import { ConfigItemResource } from "@/resources";
+import { ConfigItem } from "@/resources/interfaces";
 
-export default {
-  data() {
-    return {
-      currentSort: "_id",
-      currentSortOrder: "desc",
-      searchQuery: {},
-      searchDelayTimeout: null,
-      queriedData: []
-    };
-  },
-  mounted() {
-    this.queryData();
-  },
-  computed: {
-    query() {
-      return Object.assign({}, this.searchQuery, {
-        seperate: true,
-        order: this.currentSort
-          ? `${this.currentSortOrder === "desc" ? "-" : ""}${this.currentSort}`
-          : undefined
-      });
-    }
-  },
-  methods: {
-    async queryData() {
-      const response = await Config.get(this.query);
-      this.queriedData = response.body;
-    },
-    showDetail(item) {
-      this.$router.push(`/config/${Object.keys(item)[0]}`);
-    },
-    noop() {}
-  },
+@Component({
   filters: {
-    key(input) {
+    key(input: string) {
       return Object.keys(input)[0];
     }
-  },
-  watch: {
-    searchQuery: {
-      handler() {
-        clearTimeout(this.searchDelayTimeout);
-        this.searchDelayTimeout = setTimeout(() => {
-          this.queryData();
-        }, 1000);
-      },
-      deep: true
-    },
-    currentSort() {
-      this.queryData();
-    },
-    currentSortOrder() {
-      this.queryData();
-    }
   }
-};
+})
+export default class ConfigList extends List<ConfigItem> {
+  name = "config";
+  resource = ConfigItemResource;
+
+  showDetail(item: ConfigItem) {
+    this.$router.push(`/config/${Object.keys(item)[0]}`);
+  }
+}
 </script>
 
 <style lang="css" scoped>

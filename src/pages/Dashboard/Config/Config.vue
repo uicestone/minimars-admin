@@ -16,47 +16,51 @@
 
 </template>
 
-<script>
-import { Config } from "@/resources";
+<script lang="ts">
+import Vue from "vue";
+import { Component } from "vue-property-decorator";
+// @ts-ignore
 import vueJsonEditor from "vue-json-editor";
+import { ConfigItemResource } from "@/resources";
 
-export default {
+@Component({
   components: {
     vueJsonEditor
-  },
-  data() {
-    return {
-      key: this.$route.params.key,
-      value: {}
-    };
-  },
-  methods: {
-    async save() {
-      this.value = (
-        await Config.update({ key: this.$route.params.key }, this.value)
-      ).body[this.key];
+  }
+})
+export default class Config extends Vue {
+  key = this.$route.params.key;
+  value = {};
+  async save() {
+    this.value = (
+      await ConfigItemResource.update(
+        { key: this.$route.params.key },
+        this.value
+      )
+    )[this.key];
 
-      if (typeof this.value !== "object") {
-        this.value = { [this.key]: this.value };
-      }
-
-      this.$notify({
-        message: "保存成功",
-        icon: "check",
-        horizontalAlign: "center",
-        verticalAlign: "bottom",
-        type: "success"
-      });
+    if (typeof this.value !== "object") {
+      this.value = { [this.key]: this.value };
     }
-  },
+
+    this.$notify({
+      message: "保存成功",
+      icon: "check",
+      horizontalAlign: "center",
+      verticalAlign: "bottom",
+      type: "success"
+    });
+  }
   async mounted() {
-    const config = (await Config.get({ key: this.$route.params.key })).body;
+    const config = await ConfigItemResource.get({
+      key: this.$route.params.key
+    });
     this.value = config[this.key];
     if (typeof this.value !== "object") {
       this.value = { [this.key]: this.value };
     }
   }
-};
+}
 </script>
 <style lang="scss">
 .md-datepicker-body .md-dialog-actions {

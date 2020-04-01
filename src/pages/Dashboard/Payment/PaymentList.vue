@@ -50,114 +50,45 @@
         pagination.pagination-no-border.pagination-primary(v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
 </template>
 
-<script>
-import moment from "moment";
-import { Pagination } from "@/components";
-import { Payment } from "@/resources";
+<script lang="ts">
+import { PaymentResource } from "@/resources";
+import List from "@/components/List";
+import { Payment, User } from "@/resources/interfaces";
 
-export default {
-  components: {
-    Pagination
-  },
-  data() {
-    return {
-      currentSort: "updatedAt",
-      currentSortOrder: "desc",
-      pagination: {
-        perPage: 10,
-        currentPage: 1,
-        total: 0
-      },
-      searchQuery: {
-        date: moment().format("YYYY-MM-DD"),
-        paid: true,
-        attach: ["booking"]
-      },
-      searchDelayTimeout: null,
-      queriedData: [],
-      totalAmount: null
-    };
-  },
-  activated() {
-    this.queryData();
-  },
-  computed: {
-    query() {
-      return Object.assign({}, this.searchQuery, {
-        limit: this.pagination.perPage,
-        skip: (this.pagination.currentPage - 1) * this.pagination.perPage,
-        order: this.currentSort
-          ? `${this.currentSortOrder === "desc" ? "-" : ""}${this.currentSort}`
-          : undefined
-      });
-    },
-    from() {
-      return Math.min(
-        this.pagination.perPage * (this.pagination.currentPage - 1) + 1,
-        this.total
-      );
-    },
-    to() {
-      return Math.min(this.from + this.pagination.perPage - 1, this.total);
-    },
-    total() {
-      return this.pagination.total;
-    }
-  },
-  methods: {
-    async queryData() {
-      const response = await Payment.get(this.query);
-      this.queriedData = response.body;
-      this.pagination.total = Number(response.headers.map["items-total"][0]);
-      this.totalAmount = Number(response.headers.map["total-amount"][0]);
-    },
-    showCreate() {
-      // this.$router.push("/payment/add");
-    },
-    goToCustomer(customer) {
-      this.$router.push(`/user/${customer.id}`);
-    },
-    goToRelatedItem(item) {
-      const attach = item.attach.split(" ");
-      switch (attach[0]) {
-        case "booking":
-          return this.$router.push(`/booking/${attach[1]}`);
-        case "deposit":
-          return this.$router.push(`/user/${attach[1]}`);
-      }
-    },
-    relatedItem(item) {
-      const attach = item.attach.split(" ");
-      switch (attach[0]) {
-        case "booking":
-          return "预约";
-        case "deposit":
-          return "充值";
-      }
-    },
-    noop() {}
-  },
-  watch: {
-    "pagination.currentPage"() {
-      this.queryData();
-    },
-    searchQuery: {
-      handler() {
-        clearTimeout(this.searchDelayTimeout);
-        this.searchDelayTimeout = setTimeout(() => {
-          this.queryData();
-        }, 200);
-      },
-      deep: true
-    },
-    currentSort() {
-      this.queryData();
-    },
-    currentSortOrder() {
-      this.queryData();
+export default class PaymentList extends List<Payment> {
+  name = "payment";
+  resource = PaymentResource;
+  totalAmount: number | null = null;
+  async queryData() {
+    const queriedData = await super.queryData();
+    this.totalAmount = Number(queriedData.$headers["total-amount"]);
+    return queriedData;
+  }
+  showCreate() {
+    // this.$router.push("/payment/add");
+  }
+  goToCustomer(customer: User) {
+    this.$router.push(`/user/${customer.id}`);
+  }
+  goToRelatedItem(item: Payment) {
+    const attach = item.attach.split(" ");
+    switch (attach[0]) {
+      case "booking":
+        return this.$router.push(`/booking/${attach[1]}`);
+      case "deposit":
+        return this.$router.push(`/user/${attach[1]}`);
     }
   }
-};
+  relatedItem(item: Payment) {
+    const attach = item.attach.split(" ");
+    switch (attach[0]) {
+      case "booking":
+        return "预约";
+      case "deposit":
+        return "充值";
+    }
+  }
+}
 </script>
 
 <style lang="css" scoped>

@@ -62,129 +62,75 @@
       md-card
         .md-layout-item.md-size-100.md-xsmall-size-100.pb-2
           h4.card-title 封面图
-          .file-input.mx-auto(style='display:block')
-            .image-container.mx-auto
-              img(:src="event.posterUrl || posterImage || '/img/image_placeholder.jpg'")
-            .button-container
-              md-button.md-danger.md-round(@click='removeImage', v-if='posterImage || event.posterUrl') 移除
-              md-button.md-success.md-round.md-fileinput
-                template(v-if='!posterImage && !event.posterUrl') 选择图片
-                template(v-else='') 更换
-                input(type='file', @change='onFileChange', ref='file-input')
+          poster(v-model="event.posterUrl")
 </template>
 
-<script>
-import { Event, Booking } from "@/resources";
-import { Editor } from "@/components";
+<script lang="ts">
+import Vue from "vue";
+import { Component, Watch } from "vue-property-decorator";
+import { EventResource, BookingResource } from "@/resources";
+import { Event, Booking } from "@/resources/interfaces";
+import { Editor, Poster } from "@/components";
 import { confirm } from "@/helpers/sweetAlert";
 
-export default {
+@Component({
   components: {
-    Editor
-  },
-  data() {
-    return {
-      event: { id: "", store: null },
-      posterImage: "",
-      bookings: []
-    };
-  },
-  methods: {
-    async save() {
-      if (this.$route.params.id === "add") {
-        this.event = (await Event.save(this.event)).body;
-      } else {
-        this.event = (
-          await Event.update(
-            {
-              id: this.$route.params.id,
-              bypassBandIdsCheck: true,
-              authBands: false
-            },
-            this.event
-          )
-        ).body;
-      }
-      this.$notify({
-        message: "保存成功",
-        icon: "check",
-        horizontalAlign: "center",
-        verticalAlign: "bottom",
-        type: "success"
-      });
-      if (this.$route.params.id === "add") {
-        this.$router.replace(`/event/${this.event.id}`);
-      }
-    },
-    async remove() {
-      if (
-        !(await confirm(
-          "确定要删除这个活动",
-          `这个操作不可撤销，该活动的报名数据将被清空`,
-          "确定删除",
-          "error"
-        ))
-      )
-        return;
-      await Event.delete({ id: this.event.id });
-      this.$router.go(-1);
-    },
-    onFileChange(e) {
-      let files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
-    },
-    createImage(file, type) {
-      let reader = new FileReader();
-      let vm = this;
-
-      reader.onload = e => {
-        vm.posterImage = e.target.result;
-      };
-      reader.readAsDataURL(file);
-      this.uploadImage(file);
-    },
-    async uploadImage(file) {
-      const formData = new FormData();
-      formData.append("file", file);
-      const fileObject = (
-        await this.$http.post("file", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-      ).body;
-      this.event.posterUrl = fileObject.url;
-    },
-    removeImage: function(type) {
-      this.posterImage = "";
-      this.event.posterUrl = null;
-      this.$refs["file-input"].value = "";
-    }
-  },
-  watch: {
-    "event.date"(v) {
-      if (!v.constructor || v.constructor.name !== "Date") {
-        this.event.date = new Date(this.event.date);
-      }
-    },
-    "event.store"(v) {
-      if (typeof v === "object" && v) {
-        this.event.store = this.event.store.id;
-      } else if (v === false) {
-        this.event.store = null;
-      }
-    }
-  },
-  async mounted() {
-    if (this.$route.params.id !== "add") {
-      this.event = (await Event.get({ id: this.$route.params.id })).body;
-      this.bookings = (
-        await Booking.get({ event: this.$route.params.id })
-      ).body;
+    Editor,
+    Poster
+  }
+})
+export default class EventDetail extends Vue {
+  event: Partial<Event> = {};
+  bookings: Booking[] = [];
+  async save() {
+    this.event = await EventResource.save(this.event);
+    this.$notify({
+      message: "保存成功",
+      icon: "check",
+      horizontalAlign: "center",
+      verticalAlign: "bottom",
+      type: "success"
+    });
+    if (this.$route.params.id === "add") {
+      this.$router.replace(`/event/${this.event.id}`);
     }
   }
-};
+  async remove() {
+    if (
+      !(await confirm(
+        "确定要删除这个活动",
+        `这个操作不可撤销，该活动的报名数据将被清空`,
+        "确定删除",
+        "error"
+      ))
+    )
+      return;
+    await EventResource.delete({ id: this.event.id });
+    this.$router.go(-1);
+  }
+
+  @Watch("event.date") onEventDateUpdate(v: Date | string) {
+    if (!v.constructor || v.constructor.name !== "Date") {
+      this.event.date = new Date((this.event as Event).date);
+    }
+  }
+  @Watch("event.store") onEventStoreUpdate(v: string | false) {
+    if (typeof v === "object" && v) {
+      // @ts-ignore
+      this.event.store = this.event.store.id;
+    } else if (v === false) {
+      this.event.store = null;
+    }
+  }
+  async mounted() {
+    if (this.$route.params.id !== "add") {
+      this.event = await EventResource.get({ id: this.$route.params.id });
+      this.bookings = await BookingResource.query({
+        event: this.$route.params.id
+      });
+    }
+  }
+}
 </script>
 <style lang="scss">
 .md-datepicker-body .md-dialog-actions {

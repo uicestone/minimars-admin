@@ -70,121 +70,46 @@
         pagination.pagination-no-border.pagination-primary(v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
 </template>
 
-<script>
-import { Pagination } from "@/components";
-import { Booking } from "@/resources";
+<script lang="ts">
 import moment from "moment";
+import List from "@/components/List";
+import Component from "vue-class-component";
+import { BookingResource } from "@/resources";
+import {
+  Payment,
+  BookingQuery,
+  Booking,
+  BookingType,
+  User
+} from "@/resources/interfaces";
 
-export default {
-  components: {
-    Pagination
-  },
-  data() {
-    const customer = this.$route.query.customer;
-    return {
-      currentSort: "createdAt",
-      currentSortOrder: "desc",
-      pagination: {
-        perPage: 10,
-        currentPage: 1,
-        total: 0
-      },
-      searchQuery: {
-        date: customer ? null : moment().format("YYYY-MM-DD"),
-        customer
-      },
-      searchDelayTimeout: null,
-      queriedData: []
-    };
-  },
-  activated() {
-    this.queryData();
-  },
-  computed: {
-    query() {
-      const searchQuery = {
-        ...this.searchQuery,
-        limit: this.pagination.perPage,
-        skip: (this.pagination.currentPage - 1) * this.pagination.perPage,
-        order: this.currentSort
-          ? `${this.currentSortOrder === "desc" ? "-" : ""}${this.currentSort}`
-          : undefined
-      };
-
-      if (
-        searchQuery.customerKeyword &&
-        searchQuery.customerKeyword.length < 4
-      ) {
-        delete searchQuery.customerKeyword;
-      }
-
-      for (const field in searchQuery) {
-        if (Array.isArray(searchQuery[field])) {
-          searchQuery[field] = searchQuery[field].join(",");
-        }
-      }
-
-      return searchQuery;
-    },
-    from() {
-      return Math.min(
-        this.pagination.perPage * (this.pagination.currentPage - 1) + 1,
-        this.total
-      );
-    },
-    to() {
-      return Math.min(this.from + this.pagination.perPage - 1, this.total);
-    },
-    total() {
-      return this.pagination.total;
-    }
-  },
-  methods: {
-    async queryData() {
-      const response = await Booking.get(this.query);
-      this.queriedData = response.body;
-      this.pagination.total = Number(response.headers.map["items-total"][0]);
-    },
-    showDetail(item) {
-      this.$router.push(`/booking/${item.id}`);
-    },
-    showCreate(type) {
-      this.$router.push("/booking/add" + (type ? `?type=${type}` : ""));
-    },
-    goToCustomer(customer) {
-      this.$router.push(`/user/${customer.id}`);
-    },
-    noop() {}
-  },
-  watch: {
-    "pagination.currentPage"() {
-      this.queryData();
-    },
-    searchQuery: {
-      handler() {
-        clearTimeout(this.searchDelayTimeout);
-        this.searchDelayTimeout = setTimeout(() => {
-          this.queryData();
-        }, 200);
-      },
-      deep: true
-    },
-    currentSort() {
-      this.queryData();
-    },
-    currentSortOrder() {
-      this.queryData();
-    }
-  },
+@Component({
   filters: {
-    paidAmount(payments) {
+    paidAmount(payments: Payment[]) {
       return payments
         .filter(p => p.paid)
         .map(p => p.amount)
         .reduce((sum, amount) => sum + amount, 0);
     }
   }
-};
+})
+export default class BookingList extends List<Booking> {
+  name = "booking";
+  resource = BookingResource;
+  searchQuery: BookingQuery = {
+    date: this.$route.query.customer
+      ? undefined
+      : moment().format("YYYY-MM-DD"),
+    customer: this.$route.query.customer as string,
+    customerKeyword: ""
+  };
+  showCreate(type?: BookingType) {
+    this.$router.push("/booking/add" + (type ? `?type=${type}` : ""));
+  }
+  goToCustomer(customer: User) {
+    this.$router.push(`/user/${customer.id}`);
+  }
+}
 </script>
 
 <style lang="scss" scoped>

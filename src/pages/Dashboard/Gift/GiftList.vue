@@ -32,105 +32,17 @@
         pagination.pagination-no-border.pagination-primary(v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
 </template>
 
-<script>
-import { Pagination } from "@/components";
-import { Gift } from "@/resources";
+<script lang="ts">
+import List from "@/components/List";
+import { GiftResource } from "@/resources";
+import { Gift } from "@/resources/interfaces";
 
-export default {
-  components: {
-    Pagination
-  },
-  data() {
-    return {
-      currentSort: "title",
-      currentSortOrder: "asc",
-      pagination: {
-        perPage: 10,
-        currentPage: 1,
-        total: 0
-      },
-      searchQuery: {},
-      searchDelayTimeout: null,
-      queriedData: []
-    };
-  },
-  activated() {
-    this.queryData();
-  },
-  computed: {
-    query() {
-      const searchQuery = {
-        ...this.searchQuery,
-        limit: this.pagination.perPage,
-        skip: (this.pagination.currentPage - 1) * this.pagination.perPage,
-        order: this.currentSort
-          ? `${this.currentSortOrder === "desc" ? "-" : ""}${this.currentSort}`
-          : undefined
-      };
-
-      if (
-        searchQuery.customerKeyword &&
-        searchQuery.customerKeyword.length < 4
-      ) {
-        delete searchQuery.customerKeyword;
-      }
-
-      for (let field in searchQuery) {
-        if (Array.isArray(searchQuery[field])) {
-          searchQuery[field] = searchQuery[field].join(",");
-        }
-      }
-
-      return searchQuery;
-    },
-    from() {
-      return Math.min(
-        this.pagination.perPage * (this.pagination.currentPage - 1) + 1,
-        this.total
-      );
-    },
-    to() {
-      return Math.min(this.from + this.pagination.perPage - 1, this.total);
-    },
-    total() {
-      return this.pagination.total;
-    }
-  },
-  methods: {
-    async queryData() {
-      const response = await Gift.get(this.query);
-      this.queriedData = response.body;
-      this.pagination.total = Number(response.headers.map["items-total"][0]);
-    },
-    showDetail(item) {
-      this.$router.push(`/gift/${item.id}`);
-    },
-    showCreate() {
-      this.$router.push("/gift/add");
-    },
-    noop() {}
-  },
-  watch: {
-    "pagination.currentPage"() {
-      this.queryData();
-    },
-    searchQuery: {
-      handler() {
-        clearTimeout(this.searchDelayTimeout);
-        this.searchDelayTimeout = setTimeout(() => {
-          this.queryData();
-        }, 200);
-      },
-      deep: true
-    },
-    currentSort() {
-      this.queryData();
-    },
-    currentSortOrder() {
-      this.queryData();
-    }
-  }
-};
+export default class GiftList extends List<Gift> {
+  name = "gift";
+  resource = GiftResource;
+  currentSort = "title";
+  currentSortOrder = "asc";
+}
 </script>
 
 <style lang="scss" scoped>

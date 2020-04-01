@@ -42,118 +42,66 @@
       md-card
         .md-layout-item.md-size-100.md-xsmall-size-100.pb-2
           h4.card-title 封面图
-          .file-input.mx-auto(style='display:block')
-            .image-container.mx-auto
-              img(:src="gift.posterUrl || posterImage || '/img/image_placeholder.jpg'")
-            .button-container
-              md-button.md-danger.md-round(@click='removeImage', v-if='posterImage || gift.posterUrl') 移除
-              md-button.md-success.md-round.md-fileinput
-                template(v-if='!posterImage && !gift.posterUrl') 选择图片
-                template(v-else) 更换
-                input(type='file', @change='onFileChange', ref='file-input')
+          poster(v-model="gift.posterUrl")
 </template>
 
-<script>
-import { Gift } from "@/resources";
-import { Editor } from "@/components";
+<script lang="ts">
+import Vue from "vue";
+import { Component, Watch } from "vue-property-decorator";
+import { Gift, Store } from "@/resources/interfaces";
+import { GiftResource } from "@/resources";
+import { Editor, Poster } from "@/components";
 import { confirm } from "@/helpers/sweetAlert";
 
-export default {
+@Component({
   components: {
-    Editor
-  },
-  data() {
-    return {
-      gift: { id: "", store: null },
-      posterImage: ""
-    };
-  },
-  methods: {
-    async save() {
-      if (this.$route.params.id === "add") {
-        this.gift = (await Gift.save(this.gift)).body;
-      } else {
-        this.gift = (
-          await Gift.update(
-            {
-              id: this.$route.params.id
-            },
-            this.gift
-          )
-        ).body;
-      }
-      this.$notify({
-        message: "保存成功",
-        icon: "check",
-        horizontalAlign: "center",
-        verticalAlign: "bottom",
-        type: "success"
-      });
-      if (this.$route.params.id === "add") {
-        this.$router.replace(`/gift/${this.gift.id}`);
-      }
-    },
-    async remove() {
-      if (
-        !(await confirm(
-          "确定要删除这个礼品",
-          `这个操作不可撤销`,
-          "确定删除",
-          "error"
-        ))
-      )
-        return;
-      await Gift.delete({ id: this.gift.id });
-      this.$router.go(-1);
-    },
-    onFileChange(e) {
-      let files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
-    },
-    createImage(file, type) {
-      let reader = new FileReader();
-      let vm = this;
-
-      reader.onload = e => {
-        vm.posterImage = e.target.result;
-      };
-      reader.readAsDataURL(file);
-      this.uploadImage(file);
-    },
-    async uploadImage(file) {
-      const formData = new FormData();
-      formData.append("file", file);
-      const fileObject = (
-        await this.$http.post("file", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-      ).body;
-      this.gift.posterUrl = fileObject.url;
-    },
-    removeImage: function(type) {
-      this.posterImage = "";
-      this.gift.posterUrl = null;
-      this.$refs["file-input"].value = "";
-    }
-  },
-  watch: {
-    "gift.store"(v) {
-      if (typeof v === "object" && v) {
-        this.gift.store = this.gift.store.id;
-      } else if (v === false) {
-        this.gift.store = null;
-      }
-    }
-  },
-  async mounted() {
-    if (this.$route.params.id !== "add") {
-      this.gift = (await Gift.get({ id: this.$route.params.id })).body;
+    Editor,
+    Poster
+  }
+})
+export default class GiftDetail extends Vue {
+  gift: Partial<Gift> = { id: "", store: null };
+  posterImage = "";
+  async save() {
+    this.gift = await GiftResource.save(this.gift);
+    this.$notify({
+      message: "保存成功",
+      icon: "check",
+      horizontalAlign: "center",
+      verticalAlign: "bottom",
+      type: "success"
+    });
+    if (this.$route.params.id === "add") {
+      this.$router.replace(`/gift/${this.gift.id}`);
     }
   }
-};
+  async remove() {
+    if (
+      !(await confirm(
+        "确定要删除这个礼品",
+        `这个操作不可撤销`,
+        "确定删除",
+        "error"
+      ))
+    )
+      return;
+    await GiftResource.delete({ id: this.gift.id });
+    this.$router.go(-1);
+  }
+  @Watch("gift.store") onGiftStoreUpdate(v: Store | false) {
+    if (typeof v === "object" && v) {
+      // @ts-ignore
+      this.gift.store = this.gift.store.id;
+    } else if (v === false) {
+      this.gift.store = null;
+    }
+  }
+  async mounted() {
+    if (this.$route.params.id !== "add") {
+      this.gift = await GiftResource.get({ id: this.$route.params.id });
+    }
+  }
+}
 </script>
 <style lang="scss">
 .md-datepicker-body .md-dialog-actions {

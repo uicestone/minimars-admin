@@ -155,159 +155,114 @@
                 md-button.md-normal.md-warning(v-else='', @click='pay(payment)') 收款
 </template>
 
-<script>
-import { Booking, User, Payment, Card } from "@/resources";
+<script lang="ts">
+import Vue from "vue";
+import { Component, Watch } from "vue-property-decorator";
+import {
+  BookingResource,
+  PaymentResource,
+  CardResource,
+  UserResource
+} from "@/resources";
+import {
+  User,
+  Card,
+  Store,
+  CardType,
+  Payment,
+  Booking
+} from "@/resources/interfaces";
 import { promptSelect, confirm } from "@/helpers/sweetAlert";
 
-export default {
-  data() {
-    return {
-      user: {
-        name: "",
-        roles: []
+export default class UserProfile extends Vue {
+  user: Partial<User> = {};
+  cards: Card[] = [];
+  cardPayments: Payment[] = [];
+  userBookings: Booking[] = [];
+  async save() {
+    this.user = await UserResource.save(this.user);
+    this.$notify({
+      message: "保存成功",
+      icon: "check",
+      horizontalAlign: "center",
+      verticalAlign: "bottom",
+      type: "success"
+    });
+    if (this.$route.params.id === "add") {
+      this.$router.replace(`/user/${this.user.id}`);
+    }
+  }
+  goCustomerBookings() {
+    this.$router.push(`/booking?customer=${this.user.id}`);
+  }
+  async getCardPayments() {
+    this.cardPayments = await PaymentResource.query({
+      customer: this.user.id,
+      attach: "card"
+    });
+  }
+  async createCard(cardType: CardType) {
+    const paymentGateway = await promptSelect(
+      "购买" + cardType.title,
+      `请选择支付方式`,
+      {
+        cash: "现金刷卡",
+        scan: "现场扫码"
       },
-      cards: [],
-      cardPayments: [],
-      userBookings: []
-    };
-  },
-  methods: {
-    async save() {
-      if (this.$route.params.id === "add") {
-        this.user = (await User.save(this.user)).body;
-      } else {
-        this.user = (
-          await User.update({ id: this.$route.params.id }, this.user)
-        ).body;
-      }
-      this.$notify({
-        message: "保存成功",
-        icon: "check",
-        horizontalAlign: "center",
-        verticalAlign: "bottom",
-        type: "success"
-      });
-      if (this.$route.params.id === "add") {
-        this.$router.replace(`/user/${this.user.id}`);
-      }
-    },
-    goCustomerBookings() {
-      this.$router.push(`/booking?customer=${this.user.id}`);
-    },
-    getClass(headerColor) {
-      return "md-card-header-" + headerColor + "";
-    },
-    onFileChange(e) {
-      let files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
-    },
-    createImage(file) {
-      let reader = new FileReader();
-      let vm = this;
+      "确定购买"
+    );
+    if (!paymentGateway) return;
+    const card = await CardResource.save(
+      // @ts-ignore
+      { customer: (this.user as User).id, ...cardType },
+      { paymentGateway }
+    );
+    this.cards.push(card);
+    this.getCardPayments();
+  }
+  async getCards() {
+    this.cards = await CardResource.query({
+      customer: this.user.id,
+      status: "valid,activated,expired"
+    });
+  }
+  async pay(payment: Payment) {
+    if (
+      !(await confirm(
+        `确定已收款 ¥${payment.amount.toFixed(2)}`,
+        null,
+        "确定已收款"
+      ))
+    )
+      return;
+    await PaymentResource.update({ id: payment.id }, { paid: true });
+    this.getCardPayments();
+    this.getCards();
+  }
 
-      reader.onload = e => {
-        vm.user.avatarUrl = e.target.result;
-      };
-      reader.readAsDataURL(file);
-      this.uploadImage(file);
-    },
-    async uploadImage(file) {
-      const formData = new FormData();
-      formData.append("file", file);
-      const fileObject = (
-        await this.$http.post("file", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-      ).body;
-      this.user.avatarUri = fileObject.uri;
-      this.user.avatarUrl = fileObject.url;
-      this.$user.avatarUrl = fileObject.url;
-    },
-    removeImage() {
-      this.user.avatarUri = null;
-      this.user.avatarUrl = null;
-      this.$user.avatarUrl = null;
-      this.$refs.avatarFileInput.value = "";
-    },
-    selectStore(item) {
-      this.user.store = item;
-      this.storeSearchTerm = item.name;
-    },
-    async getCardPayments() {
-      this.cardPayments = (
-        await Payment.get({
-          customer: this.user.id,
-          attach: "card"
-        })
-      ).body;
-    },
-    async createCard(cardType) {
-      const paymentGateway = await promptSelect(
-        "购买" + cardType.title,
-        `请选择支付方式`,
-        {
-          cash: "现金刷卡",
-          scan: "现场扫码"
-        },
-        "确定购买"
-      );
-      if (!paymentGateway) return;
-      const card = (
-        await Card.save(
-          { paymentGateway },
-          { customer: this.user.id, ...cardType }
-        )
-      ).body;
-      this.cards.push(card);
-      this.getCardPayments();
-    },
-    async getCards() {
-      this.cards = (
-        await Card.get({
-          customer: this.user.id,
-          status: "valid,activated,expired"
-        })
-      ).body;
-    },
-    async pay(payment) {
-      if (
-        !(await confirm(
-          `确定已收款 ¥${payment.amount.toFixed(2)}`,
-          null,
-          "确定已收款"
-        ))
-      )
-        return;
-      await Payment.update({ id: payment.id }, { paid: true });
-      this.getCardPayments();
-      this.getCards();
+  @Watch("user.store") onUserStoreUpdate(store: Store | false) {
+    if (typeof store === "object" && store) {
+      // @ts-ignore
+      this.user.store = this.user.store.id;
+    } else if (store === false) {
+      this.user.store = null;
     }
-  },
-  watch: {
-    "user.store"(store) {
-      if (typeof store === "object" && store) {
-        this.user.store = this.user.store.id;
-      } else if (store === false) {
-        this.user.store = null;
-      }
-    }
-  },
+  }
   async mounted() {
     if (this.$route.params.id !== "add") {
       if (this.$route.params.id === this.$user.id) {
         this.user = this.$user;
       } else {
-        this.user = (await User.get({ id: this.$route.params.id })).body;
+        this.user = await UserResource.get({ id: this.$route.params.id });
       }
       this.getCardPayments();
-      this.userBookings = (await Booking.get({ customer: this.user.id })).body;
+      this.userBookings = await BookingResource.query({
+        customer: this.user.id
+      });
       this.getCards();
     }
   }
-};
+}
 </script>
 <style lang="scss">
 .payments-card,

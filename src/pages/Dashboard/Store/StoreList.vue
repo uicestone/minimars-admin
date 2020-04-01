@@ -25,107 +25,15 @@
         pagination.pagination-no-border.pagination-primary(v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
 </template>
 
-<script>
-import { Pagination } from "@/components";
-import { Store } from "@/resources";
+<script lang="ts">
+import { StoreResource } from "@/resources";
+import { Store } from "@/resources/interfaces";
+import List from "@/components/List";
 
-export default {
-  components: {
-    Pagination
-  },
-  data() {
-    return {
-      currentSort: "name",
-      currentSortOrder: "asc",
-      pagination: {
-        perPage: 10,
-        currentPage: 1,
-        total: 0
-      },
-      searchQuery: {},
-      searchDelayTimeout: null,
-      queriedData: []
-    };
-  },
-  mounted() {
-    this.queryData();
-  },
-  computed: {
-    query() {
-      return Object.assign({}, this.searchQuery, {
-        limit: this.pagination.perPage,
-        skip: (this.pagination.currentPage - 1) * this.pagination.perPage,
-        order: this.currentSort
-          ? `${this.currentSortOrder === "desc" ? "-" : ""}${this.currentSort}`
-          : undefined
-      });
-    },
-    from() {
-      return Math.min(
-        this.pagination.perPage * (this.pagination.currentPage - 1) + 1,
-        this.total
-      );
-    },
-    to() {
-      return Math.min(this.from + this.pagination.perPage - 1, this.total);
-    },
-    total() {
-      return this.pagination.total;
-    }
-  },
-  methods: {
-    async queryData() {
-      const response = await Store.get(this.query);
-      this.queriedData = response.body;
-      this.pagination.total = Number(response.headers.map["items-total"][0]);
-    },
-    showDetail(item) {
-      // this.$router.push(`/store/${item.id}`);
-    },
-    showCreate() {
-      this.$router.push("/store/add");
-    },
-    noop() {}
-  },
-  filters: {
-    localServer(input) {
-      if (!input) return;
-      const statusLabel = {
-        disconnected: "已断开",
-        connected: "已连接",
-        died: "连接异常"
-      };
-      let text = "";
-      if (input.status && statusLabel[input.status]) {
-        text = statusLabel[input.status];
-      }
-      if (input.ip) {
-        text += ` ${input.ip.replace("::ffff:", "")}`;
-      }
-      return text;
-    }
-  },
-  watch: {
-    "pagination.currentPage"() {
-      this.queryData();
-    },
-    searchQuery: {
-      handler() {
-        clearTimeout(this.searchDelayTimeout);
-        this.searchDelayTimeout = setTimeout(() => {
-          this.queryData();
-        }, 1000);
-      },
-      deep: true
-    },
-    currentSort() {
-      this.queryData();
-    },
-    currentSortOrder() {
-      this.queryData();
-    }
-  }
-};
+export default class StoreList extends List<Store> {
+  name = "list";
+  resource = StoreResource;
+}
 </script>
 
 <style lang="css" scoped>

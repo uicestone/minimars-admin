@@ -3,22 +3,25 @@ import AuthLayout from "@/pages/Dashboard/Pages/AuthLayout.vue";
 
 // Dashboard pages
 import Dashboard from "@/pages/Dashboard/Dashboard.vue";
+import { RouteConfig } from "vue-router";
 
 // Pages
-const User = () => import("@/pages/Dashboard/User/UserProfile.vue");
+const UserProfile = () => import("@/pages/Dashboard/User/UserProfile.vue");
 const UserList = () => import("@/pages/Dashboard/User/UserList.vue");
-const Booking = () => import("@/pages/Dashboard/Booking/BookingDetail.vue");
+const BookingDetail = () =>
+  import("@/pages/Dashboard/Booking/BookingDetail.vue");
 const BookingList = () => import("@/pages/Dashboard/Booking/BookingList.vue");
-const CardType = () => import("@/pages/Dashboard/CardType/CardTypeDetail.vue");
+const CardTypeDetail = () =>
+  import("@/pages/Dashboard/CardType/CardTypeDetail.vue");
 const CardTypeList = () =>
   import("@/pages/Dashboard/CardType/CardTypeList.vue");
-const Event = () => import("@/pages/Dashboard/Event/EventDetail.vue");
+const EventDetail = () => import("@/pages/Dashboard/Event/EventDetail.vue");
 const EventList = () => import("@/pages/Dashboard/Event/EventList.vue");
-const Gift = () => import("@/pages/Dashboard/Gift/GiftDetail.vue");
+const GiftDetail = () => import("@/pages/Dashboard/Gift/GiftDetail.vue");
 const GiftList = () => import("@/pages/Dashboard/Gift/GiftList.vue");
 // const Payment = () => import("@/pages/Dashboard/Payment/PaymentDetail.vue");
 const PaymentList = () => import("@/pages/Dashboard/Payment/PaymentList.vue");
-const Post = () => import("@/pages/Dashboard/Post/PostDetail.vue");
+const PostDetail = () => import("@/pages/Dashboard/Post/PostDetail.vue");
 const PostList = () => import("@/pages/Dashboard/Post/PostList.vue");
 // const Store = () => import("@/pages/Dashboard/Store/StoreDetail.vue");
 const StoreList = () => import("@/pages/Dashboard/Store/StoreList.vue");
@@ -26,7 +29,7 @@ const ConfigList = () => import("@/pages/Dashboard/Config/ConfigList.vue");
 const Config = () => import("@/pages/Dashboard/Config/Config.vue");
 const Login = () => import("@/pages/Dashboard/Pages/Login.vue");
 
-let bookingMenu = {
+const bookingMenu = {
   path: "/booking",
   component: DashboardLayout,
   redirect: "/booking/index",
@@ -42,12 +45,12 @@ let bookingMenu = {
     {
       path: ":id",
       name: "预约详情",
-      component: Booking
+      component: BookingDetail
     }
   ]
 };
 
-let cardTypeMenu = {
+const cardTypeMenu = {
   path: "/card-type",
   component: DashboardLayout,
   redirect: "/card-type/index",
@@ -63,12 +66,12 @@ let cardTypeMenu = {
     {
       path: ":id",
       name: "卡种详情",
-      component: CardType
+      component: CardTypeDetail
     }
   ]
 };
 
-let eventMenu = {
+const eventMenu = {
   path: "/event",
   component: DashboardLayout,
   redirect: "/event/index",
@@ -84,12 +87,12 @@ let eventMenu = {
     {
       path: ":id",
       name: "活动详情",
-      component: Event
+      component: EventDetail
     }
   ]
 };
 
-let giftMenu = {
+const giftMenu = {
   path: "/gift",
   component: DashboardLayout,
   redirect: "/gift/index",
@@ -105,12 +108,12 @@ let giftMenu = {
     {
       path: ":id",
       name: "礼品详情",
-      component: Gift
+      component: GiftDetail
     }
   ]
 };
 
-let paymentMenu = {
+const paymentMenu = {
   path: "/payment",
   component: DashboardLayout,
   redirect: "/payment/index",
@@ -131,7 +134,7 @@ let paymentMenu = {
   ]
 };
 
-let postMenu = {
+const postMenu = {
   path: "/post",
   component: DashboardLayout,
   redirect: "/post/index",
@@ -147,12 +150,12 @@ let postMenu = {
     {
       path: ":id",
       name: "文章详情",
-      component: Post
+      component: PostDetail
     }
   ]
 };
 
-let storeMenu = {
+const storeMenu = {
   path: "/store",
   component: DashboardLayout,
   redirect: "/store/index",
@@ -173,7 +176,7 @@ let storeMenu = {
   ]
 };
 
-let configMenu = {
+const configMenu = {
   path: "/config",
   component: DashboardLayout,
   redirect: "/config/index",
@@ -194,7 +197,7 @@ let configMenu = {
   ]
 };
 
-let userMenu = {
+const userMenu = {
   path: "/user",
   component: DashboardLayout,
   redirect: "/user/index",
@@ -210,12 +213,12 @@ let userMenu = {
     {
       path: ":id",
       name: "用户详情",
-      component: User
+      component: UserProfile
     }
   ]
 };
 
-let authPages = {
+const authPages = {
   path: "/",
   component: AuthLayout,
   name: "Authentication",
@@ -228,7 +231,7 @@ let authPages = {
   ]
 };
 
-const routes = [
+const routes: RouteConfig[] = [
   {
     path: "/",
     redirect: "/dashboard",
