@@ -96,18 +96,21 @@ import {
 export default class BookingList extends List<Booking> {
   name = "booking";
   resource = BookingResource;
-  searchQuery: BookingQuery = {
-    date: this.$route.query.customer
-      ? undefined
-      : moment().format("YYYY-MM-DD"),
-    customer: this.$route.query.customer as string,
-    customerKeyword: ""
-  };
+  searchQuery: BookingQuery = {};
   showCreate(type?: BookingType) {
     this.$router.push("/booking/add" + (type ? `?type=${type}` : ""));
   }
   goToCustomer(customer: User) {
     this.$router.push(`/user/${customer.id}`);
+  }
+  created() {
+    this.searchQuery = {
+      date: this.$route.query.customer
+        ? undefined
+        : moment().format("YYYY-MM-DD"),
+      customer: this.$route.query.customer as string,
+      customerKeyword: ""
+    };
   }
 }
 </script>
