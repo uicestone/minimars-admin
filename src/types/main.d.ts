@@ -1,5 +1,4 @@
 import Vue from "vue";
-import { Http, Resource } from "vue-resource/types/vue_resource";
 import { User, Store, CardType, Config } from "@/resources/interfaces";
 
 declare module "vue/types/vue" {
@@ -17,9 +16,5 @@ declare module "vue/types/vue" {
     $gatewayNames: any;
     $notify: any;
     $material: any;
-  }
-  interface VueConstructor {
-    http: Http;
-    resource: Resource;
   }
 }
