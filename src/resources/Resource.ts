@@ -5,33 +5,41 @@ import injectUriParams from "./injectUriParams";
 export default class Resource<T extends Model> {
   constructor(public http: AxiosInstance, public uri: string) {}
 
-  query(
+  async query(
     paramsInput: Record<string, any> = {}
   ): Promise<T[] & { $headers: Record<string, string> }> {
     const { uri, params } = injectUriParams(this.uri, paramsInput);
-    return this.http.get(uri, { params });
+    const res = await this.http.get(uri, { params });
+    const data = res.data;
+    data.$headers = res.headers;
+    return data;
   }
 
-  create(body: Partial<T>, paramsInput: Record<string, any> = {}): Promise<T> {
+  async create(
+    body: Partial<T>,
+    paramsInput: Record<string, any> = {}
+  ): Promise<T> {
     const { uri, params } = injectUriParams(this.uri, paramsInput);
-    return this.http.post(uri, body, {
-      params
-    });
+    return (
+      await this.http.post(uri, body, {
+        params
+      })
+    ).data;
   }
 
-  update(paramsInput: Record<string, any>, body: Partial<T>): Promise<T> {
+  async update(paramsInput: Record<string, any>, body: Partial<T>): Promise<T> {
     const { uri, params } = injectUriParams(this.uri, paramsInput);
-    return this.http.put(uri, body, { params });
+    return (await this.http.put(uri, body, { params })).data;
   }
 
-  get(paramsInput: Record<string, any>): Promise<T> {
+  async get(paramsInput: Record<string, any>): Promise<T> {
     const { uri, params } = injectUriParams(this.uri, paramsInput);
-    return this.http.get(uri, { params });
+    return (await this.http.get(uri, { params })).data;
   }
 
-  delete(paramsInput: Record<string, any>): Promise<T> {
+  async delete(paramsInput: Record<string, any>): Promise<T> {
     const { uri, params } = injectUriParams(this.uri, paramsInput);
-    return this.http.delete(uri, { params });
+    return (await this.http.delete(uri, { params })).data;
   }
 
   save(body: Partial<T>, params: Record<string, any> = {}): Promise<T> {
