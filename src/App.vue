@@ -11,9 +11,91 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
+import { http } from "@/resources";
 
 @Component
-export default class App extends Vue {}
+export default class App extends Vue {
+  async created() {
+    http.interceptors.request.use(this.requestFullfilled);
+    http.interceptors.response.use(
+      this.responseFullfilled,
+      this.responseRejected
+    );
+
+    try {
+      this.$config = (await http.get("config")).data;
+      this.$stores = (await http.get("store")).data;
+      this.$user = (await http.get("auth/user")).data;
+      this.$cardTypes = (await http.get("card-type")).data;
+    } catch (e) {
+      console.warn(e);
+    }
+  }
+
+  requestFullfilled(request: AxiosRequestConfig) {
+    this.$isLoading = true;
+
+    const token = window.localStorage.getItem("token");
+
+    if (token) {
+      request.headers["Authorization"] = token;
+    }
+    // stop request and return 401 response when no token exist except for login request
+    if (
+      !["auth/login", "config", "store"].includes(request.url || "") &&
+      !window.localStorage.getItem("token")
+    ) {
+      window.location.hash = "#/login";
+      this.$isLoading = false;
+      return Promise.reject("No token exists, login required.");
+    }
+    return request;
+  }
+  responseFullfilled(response: AxiosResponse) {
+    this.$isLoading = false;
+    return response;
+  }
+  responseRejected(err: any) {
+    this.$isLoading = false;
+    const { response } = err;
+    if (!response) {
+      if (err.message === "Network Error") {
+        const message = "网络连接错误";
+        this.$notify({
+          message,
+          icon: "add_alert",
+          horizontalAlign: "center",
+          verticalAlign: "bottom",
+          type: "danger"
+        });
+      }
+      return Promise.reject(err.message || err);
+    }
+    if (response.status >= 500) {
+      const message = "服务器内部错误";
+
+      return Promise.reject(new Error(message));
+    } else if (response.status >= 400) {
+      // redirect to login page on any 401 response
+      if (response.status === 401) {
+        window.location.hash = "#/login";
+        window.localStorage.removeItem("token");
+      }
+      const message = response.data.message || response.statusText;
+      this.$notify({
+        message,
+        icon: "add_alert",
+        horizontalAlign: "center",
+        verticalAlign: "bottom",
+        type: "warning"
+      });
+
+      return Promise.reject(new Error(message));
+    }
+    return response;
+  }
+}
 </script>
 
 <style lang="scss">

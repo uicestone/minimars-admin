@@ -17,6 +17,7 @@
 </template>
 <script>
 import { LoginCard } from "@/components";
+import { http } from "@/resources";
 export default {
   components: {
     LoginCard
@@ -31,8 +32,8 @@ export default {
     async submitLogin() {
       const { login, password } = this;
       const {
-        body: { user, token }
-      } = await this.$http.post("auth/login", {
+        data: { user, token }
+      } = await http.post("auth/login", {
         login,
         password
       });
