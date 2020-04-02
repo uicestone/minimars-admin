@@ -11,7 +11,8 @@ export enum BookingType {
   PLAY = "play",
   PARTY = "party",
   EVENT = "event",
-  GIFT = "gift"
+  GIFT = "gift",
+  FOOD = "food"
 }
 
 export enum CardStatus {

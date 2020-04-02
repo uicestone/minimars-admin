@@ -98,7 +98,8 @@ Object.defineProperty(Vue.prototype, "$bookingTypeNames", {
       play: "门票",
       // party: "派对",
       event: "活动",
-      gift: "礼品兑换"
+      gift: "礼品兑换",
+      food: "餐饮消费"
     };
   }
 });
