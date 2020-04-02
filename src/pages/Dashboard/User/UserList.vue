@@ -58,9 +58,9 @@
 
 <script lang="ts">
 import { Component } from "vue-property-decorator";
+import List from "@/components/List";
 import { UserResource } from "@/resources";
 import { User } from "@/resources/interfaces";
-import List from "@/components/List";
 
 @Component({
   filters: {
@@ -79,9 +79,14 @@ export default class UserList extends List<User> {
   resource = UserResource;
   totalBalance: number | null = null;
   async queryData() {
-    const queriedData = await super.queryData();
+    const queriedData = await (List as any).options.methods.queryData.call(
+      this
+    );
     this.totalBalance = Number(queriedData.$headers["total-balance"][0]);
     return queriedData;
+  }
+  created() {
+    this.searchQuery.role = "customer";
   }
 }
 </script>
