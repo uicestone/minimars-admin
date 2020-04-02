@@ -65,11 +65,12 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Watch } from "vue-property-decorator";
+import { Watch, Component } from "vue-property-decorator";
 import { confirm } from "@/helpers/sweetAlert";
 import { CardType, Store } from "@/resources/interfaces";
 import { CardTypeResource } from "@/resources";
 
+@Component
 export default class CardTypeDetail extends Vue {
   cardType: Partial<CardType> = {
     id: "",
@@ -123,7 +124,7 @@ export default class CardTypeDetail extends Vue {
       this.cardType.end = new Date((this.cardType as CardType).end);
     }
   }
-  @Watch("cardType.store") onCardTypeStoreUpdate(v: Store | string | boolean) {
+  @Watch("cardType.store") onCardTypeStoreUpdate(v: Store | false) {
     if (typeof v === "object" && v) {
       // @ts-ignore
       this.cardType.store = this.cardType.store.id;

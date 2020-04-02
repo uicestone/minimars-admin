@@ -157,7 +157,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Watch } from "vue-property-decorator";
+import { Watch, Component } from "vue-property-decorator";
 import {
   BookingResource,
   PaymentResource,
@@ -174,6 +174,7 @@ import {
 } from "@/resources/interfaces";
 import { promptSelect, confirm } from "@/helpers/sweetAlert";
 
+@Component
 export default class UserProfile extends Vue {
   user: Partial<User> = {};
   cards: Card[] = [];

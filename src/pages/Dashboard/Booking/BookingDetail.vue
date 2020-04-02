@@ -11,7 +11,7 @@
             h4.title {{ booking.id.substr(-6).toUpperCase() }}
           md-card-content.md-layout
             .md-layout-item.md-small-size-100.md-size-25
-              md-autocomplete(v-model='customerSearchTerm', :md-options='getCustomers(customerSearchTerm)', @md-selected='selectCustomer', @md-changed='updateCustomer', @keypress.enter.native.prevent, :disabled="booking.status && booking.status !== 'pending'" autocomplete="off")
+              md-autocomplete(v-model='customerSearchTerm', :md-options='customers', @md-selected='selectCustomer', @md-changed='getCustomers(customerSearchTerm)', @keypress.enter.native.prevent, :disabled="booking.status && booking.status !== 'pending'" autocomplete="off")
                 label 客户
                 template(slot='md-autocomplete-item', slot-scope='{ item }')
                   | {{ item.name }}
@@ -58,7 +58,7 @@
                   label 儿童
                   md-input(v-model='booking.kidsCount', type='number', min='0')
                   span.md-suffix 位
-              .md-layout-item(v-if="booking.type==='play'", style="flex:1;min-width:33%")
+              //- .md-layout-item(v-if="booking.type==='play'", style="flex:1;min-width:33%")
                 md-field
                   label 袜子
                   md-input(v-model='booking.socksCount', type='number', min='0')
@@ -117,7 +117,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Watch } from "vue-property-decorator";
+import { Watch, Component } from "vue-property-decorator";
 import { confirm } from "@/helpers/sweetAlert";
 import moment from "moment";
 import {
@@ -141,8 +141,10 @@ import {
   Payment
 } from "@/resources/interfaces";
 
+@Component
 export default class BookingDetail extends Vue {
   booking: Partial<Booking> = {
+    id: "",
     type: BookingType.PLAY,
     status: BookingStatus.PENDING,
     date: moment().format("YYYY-MM-DD"),
@@ -194,6 +196,9 @@ export default class BookingDetail extends Vue {
   }
 
   async getCustomers(q: string) {
+    if (!q) {
+      this.booking.customer = null;
+    }
     if (
       !q ||
       q.length < 4 ||
@@ -209,12 +214,6 @@ export default class BookingDetail extends Vue {
   selectCustomer(item: User) {
     this.booking.customer = item;
     this.customerSearchTerm = item.name || "";
-  }
-
-  updateCustomer(term: string) {
-    if (!term) {
-      this.booking.customer = null;
-    }
   }
 
   async getEvents(q?: string) {
