@@ -24,10 +24,16 @@ export default class App extends Vue {
     );
 
     try {
-      this.$config = (await http.get("config")).data;
-      this.$stores = (await http.get("store")).data;
-      this.$user = (await http.get("auth/user")).data;
-      this.$cardTypes = (await http.get("card-type")).data;
+      const [config, store, authUser, cardType] = await Promise.all([
+        http.get("config"),
+        http.get("store"),
+        http.get("auth/user"),
+        http.get("card-type")
+      ]);
+      this.$config = config.data;
+      this.$stores = store.data;
+      this.$user = authUser.data;
+      this.$cardTypes = cardType.data;
     } catch (e) {
       console.warn(e);
     }

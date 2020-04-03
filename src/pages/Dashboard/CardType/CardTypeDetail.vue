@@ -49,10 +49,10 @@
                 label 面值
                 md-input(type='number', v-model='cardType.balance')
             .md-layout-item.md-small-size-100.md-size-50(v-if="cardType.type === 'period'")
-              md-datepicker(placeholder='开始日期', v-model='cardType.start', :md-model-type='Date', md-immediately='')
+              md-datepicker(placeholder='开始日期', v-model='cardType.start', :md-model-type='Date', md-immediately)
                 label 开始日期
             .md-layout-item.md-small-size-100.md-size-50(v-if="cardType.type === 'period'")
-              md-datepicker(placeholder='截止日期', v-model='cardType.end', :md-model-type='Date', md-immediately='')
+              md-datepicker(placeholder='截止日期', v-model='cardType.end', :md-model-type='Date', md-immediately)
                 label 截止日期
             .md-layout-item.md-size-100
               md-field

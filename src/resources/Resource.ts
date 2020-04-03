@@ -44,7 +44,7 @@ export default class Resource<T extends Model> {
 
   save(body: Partial<T>, params: Record<string, any> = {}): Promise<T> {
     if (body.id) {
-      return this.update(params, body);
+      return this.update({ id: body.id, ...params }, body);
     } else {
       return this.create(body, params);
     }

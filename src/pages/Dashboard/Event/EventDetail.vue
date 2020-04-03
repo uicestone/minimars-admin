@@ -14,7 +14,7 @@
                 label 标题
                 md-input(v-model='event.title')
             .md-layout-item.md-small-size-100.md-size-33
-              md-datepicker(v-model='event.date', md-immediately='')
+              md-datepicker(v-model='event.date', md-immediately)
                 label 日期
             .md-layout-item.md-small-size-100.md-size-25
               md-field

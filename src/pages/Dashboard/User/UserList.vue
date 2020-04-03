@@ -86,7 +86,7 @@ export default class UserList extends List<User> {
     return queriedData;
   }
   created() {
-    this.searchQuery.role = "customer";
+    this.searchQuery = { role: "customer" };
   }
 }
 </script>

@@ -2,7 +2,7 @@
 .md-layout
   .md-layout-item.md-size-100.md-layout.md-alignment-center-right
     .md-layout-item.md-size-20.md-xsmall-size-100.stats-date
-      md-datepicker(v-model='date', :md-model-type='String', md-immediately='')
+      md-datepicker(v-model='date', :md-model-type='String', md-immediately)
     .md-layout-item.md-size-20.md-xsmall-size-100.stats-date(style='display:flex;justify-content:space-between')
       md-button.md-info(style='flex:0', @click='addDate(-1)')
         span.md-label

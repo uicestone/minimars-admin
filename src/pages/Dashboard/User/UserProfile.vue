@@ -9,18 +9,18 @@
               md-icon perm_identity
             h4.title {{ user.name }}
           md-card-content.md-layout
-            .file-input.img-circle.md-layout-item.md-size-25.pt-4
+            //- .file-input.img-circle.md-layout-item.md-size-25.pt-4
               div(v-if='!user.avatarUrl')
                 .image-container
                   img(src='/img/placeholder.jpg', title='')
-              .image-container(v-else='')
+              .image-container(v-else)
                 img(:src='user.avatarUrl')
               .text-center
                 md-button.md-danger.md-round.md-just-icon(@click="removeImage('circle')", v-if='user.avatarUrl')
                   md-icon close
                 md-button.md-success.md-round.md-fileinput(:class="{ 'md-just-icon': user.avatarUrl }")
                   div(v-if='!user.avatarUrl') 选择头像
-                  div(v-else='')
+                  div(v-else)
                     md-icon refresh
                   input(type='file', ref='avatarFileInput', @change='onFileChange', accept='image/jpeg,image/png')
             .md-layout-item.md-size-75.md-layout.md-alignment-vertical
@@ -152,7 +152,7 @@
               md-table-cell(md-label='描述', md-sort-by='title', style='width:35%') {{ payment.title }}
               md-table-cell(md-label='收款')
                 md-button.md-success.md-normal(disabled='', v-if='payment.paid') 已收款
-                md-button.md-normal.md-warning(v-else='', @click='pay(payment)') 收款
+                md-button.md-normal.md-warning(v-else, @click='pay(payment)') 收款
 </template>
 
 <script lang="ts">

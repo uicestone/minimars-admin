@@ -34,6 +34,19 @@
         padding-left: 15px;
         padding-right: 15px;
       }
+
+      .md-list-item-text {
+        // top: auto;
+        // left: auto;
+        // right: 0;
+        // padding-left: 15px;
+        // padding-right: 15px;
+        display: block !important;
+        position: static !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+
     }
   }
 

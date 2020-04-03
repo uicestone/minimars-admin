@@ -11,7 +11,7 @@
           .md-layout-item(style='flex:0;flex-basis:200px')
             | 总金额：{{ totalAmount | currency }}
           .md-layout.md-layout-item.md-alignment-center-right.search-query
-            md-datepicker.md-layout-item.md-size-20.md-xsmall-size-100(v-model='searchQuery.date', :md-model-type='String', md-immediately='')
+            md-datepicker.md-layout-item.md-size-20.md-xsmall-size-100(v-model='searchQuery.date', :md-model-type='String', md-immediately)
               label 日期
             md-field.md-layout-item.md-size-15.md-xsmall-size-25
               label 完成

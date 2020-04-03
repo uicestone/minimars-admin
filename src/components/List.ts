@@ -78,7 +78,7 @@ export default class List<M extends Model> extends Vue {
     return this.queriedData;
   }
   showDetail(item: M) {
-    this.$router.push(`/booking/${item.id}`);
+    this.$router.push(`/${this.name}/${item.id}`);
   }
   showCreate() {
     this.$router.push(`/${this.name}/add`);

@@ -21,7 +21,7 @@
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
           .md-layout
-            md-datepicker.md-layout-item.md-size-25.md-xsmall-size-100(v-model='searchQuery.date', :md-model-type='String', md-immediately='')
+            md-datepicker.md-layout-item.md-size-25.md-xsmall-size-100(v-model='searchQuery.date', :md-model-type='String', md-immediately)
               label 日期
             md-field.md-layout-item.md-size-20.md-xsmall-size-100(v-if='!searchQuery.customer')
               label 搜索客户
@@ -63,7 +63,7 @@
               span(v-if='item.coupon') {{ item.coupon | couponName }}
               span(v-else-if='item.code')
                 | {{ `${item.code.title} ${item.code.id.substr(-6).toUpperCase()}` }}
-              span(v-else='') -
+              span(v-else) -
             md-table-cell(md-label='创建时间', md-sort-by='createdAt')
               | {{ item.createdAt | date }}
       md-card-actions(md-alignment='space-between')

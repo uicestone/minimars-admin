@@ -6,7 +6,7 @@
     md-button.md-danger.md-round(@click='removeImage', v-if='preview || value') 移除
     md-button.md-success.md-round.md-fileinput
       template(v-if='!preview && !value') 选择图片
-      template(v-else='') 更换
+      template(v-else) 更换
       input(type='file', @change='onFileChange', ref='file-input')
 </template>
 
