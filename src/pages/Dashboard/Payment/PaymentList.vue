@@ -22,7 +22,7 @@
               label 类型
               md-select(v-model='searchQuery.attach')
                 md-option(value='') 全部
-                md-option(v-for="(name, attach) in { booking: '预约', card: '会员卡' }", :key='attach', :value='attach') {{ name }}
+                md-option(v-for="(name, attach) in { booking: '消费', card: '充值' }", :key='attach', :value='attach') {{ name }}
             md-field.md-layout-item.md-size-15.md-xsmall-size-25
               label 方向
               md-select(v-model='searchQuery.direction')
@@ -42,7 +42,7 @@
             md-table-cell(md-label='完成', md-sort-by='paid') {{ item.paid ? "是" : "否" }}
             md-table-cell(md-label='描述', md-sort-by='title', style='min-width:25em') {{ item.title }}
             md-table-cell(md-label='通道', md-sort-by='gateway') {{ item.gateway | paymentGatewayName }}
-            md-table-cell(md-label='更新时间', md-sort-by='updatedAt') {{ item.createdAt | date }}
+            md-table-cell(md-label='时间', md-sort-by='createdAt') {{ item.createdAt | date }}
             md-table-cell(md-label='相关链接', @click.native.stop='goToRelatedItem(item)') {{ relatedItem(item) }}
       md-card-actions(md-alignment='space-between')
         div
@@ -51,16 +51,21 @@
 </template>
 
 <script lang="ts">
+import moment from "moment";
+import Component from "vue-class-component";
 import { PaymentResource } from "@/resources";
 import List from "@/components/List";
 import { Payment, User } from "@/resources/interfaces";
 
+@Component
 export default class PaymentList extends List<Payment> {
   name = "payment";
   resource = PaymentResource;
   totalAmount: number | null = null;
   async queryData() {
-    const queriedData = await super.queryData();
+    const queriedData = await (List as any).options.methods.queryData.call(
+      this
+    );
     this.totalAmount = Number(queriedData.$headers["total-amount"]);
     return queriedData;
   }
@@ -87,6 +92,12 @@ export default class PaymentList extends List<Payment> {
       case "deposit":
         return "充值";
     }
+  }
+  created() {
+    this.searchQuery = {
+      date: moment().format("YYYY-MM-DD"),
+      paid: true
+    };
   }
 }
 </script>
