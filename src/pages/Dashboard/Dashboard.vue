@@ -13,7 +13,7 @@
         md-icon keyboard_arrow_right
     //- .md-layout-item.md-size-10.md-xsmall-size-100
     //-   md-button.md-info(:href="$http.options.root + 'daily-report/' + date", style='width:100%') 下载日报表
-  .md-layout-item.md-medium-size-50.md-xsmall-size-100.md-size-33
+  .md-layout-item.md-medium-size-50.md-xsmall-size-100.md-size-25
     stats-card(header-color='primary')
       template(slot='header')
         .card-icon
@@ -21,12 +21,25 @@
         p.category 当日门票收入
         h3.title
           | ¥
-          animated-number(:value='stats.paidAmount')
+          animated-number(:value='stats.playAmount')
       template(slot='footer')
         .stats
           md-icon bookmark_border
-          | 含现场支付、余额消费和次卡核销
-  .md-layout-item.md-medium-size-50.md-xsmall-size-100.md-size-33
+          | 含会员卡核销和小程序支付
+  .md-layout-item.md-medium-size-50.md-xsmall-size-100.md-size-25
+    stats-card(header-color='green')
+      template(slot='header')
+        .card-icon
+          md-icon fastfood
+        p.category 当日餐饮收入
+        h3.title
+          | ¥
+          animated-number(:value='stats.foodAmount')
+      template(slot='footer')
+        .stats
+          md-icon bookmark_border
+          | 仅包括账户余额核销收入
+  .md-layout-item.md-medium-size-50.md-xsmall-size-100.md-size-25
     stats-card(header-color='warning')
       template(slot='header')
         .card-icon
@@ -40,8 +53,8 @@
           md-icon bookmark_border
           | 其中次卡 ¥
           animated-number(:value='stats.codeDepositAmount')
-  .md-layout-item.md-medium-size-50.md-xsmall-size-100.md-size-33
-    stats-card(header-color='green')
+  .md-layout-item.md-medium-size-50.md-xsmall-size-100.md-size-25
+    stats-card(header-color='rose')
       template(slot='header')
         .card-icon
           md-icon store
