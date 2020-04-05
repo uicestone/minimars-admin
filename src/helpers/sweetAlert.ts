@@ -3,8 +3,8 @@ import Swal from "sweetalert2";
 
 export const confirm = async (
   title: string,
-  text: string | null,
-  confirmText: string | null,
+  text: string | null = null,
+  confirmText: string | null = null,
   type = "question"
 ) => {
   const classMap = {

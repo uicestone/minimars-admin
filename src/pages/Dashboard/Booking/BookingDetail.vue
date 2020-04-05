@@ -25,7 +25,7 @@
               md-autocomplete(v-model='customerSearchTerm', :md-options='getCustomers(customerSearchTerm)', @md-selected='selectCustomer' @keypress.enter.native.prevent, :disabled="booking.status && booking.status !== 'pending'" autocomplete="none")
                 label 客户
                 template(slot='md-autocomplete-item', slot-scope='{ item }') {{ item.name }}
-            .md-layout-item.md-small-size-100.md-size-25
+            .md-layout-item.md-small-size-50.md-size-25
               md-field
                 label 门店
                 md-select(v-model='booking.store', @keypress.enter.prevent :disabled='!!booking.id || $user.role !== "admin"')
@@ -35,7 +35,7 @@
                 label 类型
                 md-select(v-model='booking.type', @keydown.enter.prevent)
                   md-option(v-for='(name, type) in $bookingTypeNames', :key='type', :value='type') {{ name }}
-            .md-layout-item.md-small-size-100.md-size-25
+            .md-layout-item.md-small-size-50.md-size-25
               md-field
                 label 状态
                 md-select(v-model='booking.status', @keydown.enter.prevent='', :disabled='!!booking.id || $user.role !== "admin"')
@@ -76,9 +76,10 @@
                   label 数量
                   md-input(v-model='booking.quantity', type='number', min='0', :disabled='!!booking.id')
             .md-layout-item.md-layout.md-small-size-100.md-size-50.p-0
-              .md-layout-item.md-small-size-100.md-size-60
+              .md-layout-item.md-small-size-60.md-size-60
                 md-datepicker(v-model='booking.date', :md-model-type='String', md-immediately)
-              .md-layout-item.md-small-size-100.md-size-40
+                  label 日期
+              .md-layout-item.md-small-size-40.md-size-40
                 md-field
                   label(v-if='["play","party","event"].includes(booking.type)') 入场时间
                   label(v-if='["gift"].includes(booking.type)') 领取时间
@@ -108,11 +109,12 @@
                   span(v-if='priceInPoints !== null') {{ priceInPoints }} 积分
               .md-layout.md-alignment-bottom-right
                 md-button.md-simple.md-danger(type='button', @click='remove', v-if='this.booking.id') 删除
-                md-button.md-raised.md-primary(type='submit' v-if='booking.type==="play"') 保存
-                md-button.md-raised.md-warning(type='submit' v-if='booking.type==="event"') 保存
-                md-button.md-raised.md-rose(type='submit' v-if='booking.type==="gift"') 保存
-                md-button.md-raised.md-success(type='submit' v-if='booking.type==="food"') 保存
+                md-button.md-primary(type='submit' v-if='booking.type==="play"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
+                md-button.md-warning(type='submit' v-if='booking.type==="event"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
+                md-button.md-rose(type='submit' v-if='booking.type==="gift"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
+                md-button.md-success(type='submit' v-if='booking.type==="food"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
                 md-button.md-raised.md-warning.ml-2(v-if="booking.status === 'booked' && ['play','event'].includes(booking.type)" @click="checkIn") 入场
+                md-button.md-raised.md-rose.ml-2(v-if="booking.status === 'booked' && ['gift'].includes(booking.type)" @click="redeem") 兑换
         md-card.payments-card(v-if="booking.payments.length")
           md-card-header.md-card-header-icon.md-card-header-danger
             .card-icon
@@ -133,6 +135,7 @@
                 md-table-cell(md-label='收款')
                   md-button.md-success.md-normal(disabled='', v-if='payment.paid') 已收款
                   md-button.md-normal.md-warning(v-else, @click='pay(payment)') 收款
+        md-button.md-success.md-block.md-raised(v-if='booking.type==="food" && booking.status==="finished"' @click="createAnother") 继续收款
 </template>
 
 <script lang="ts">
@@ -309,8 +312,19 @@ export default class BookingDetail extends Vue {
   }
 
   async checkIn() {
+    if (!(await confirm("确定已入场"))) return;
     this.booking.status = BookingStatus.IN_SERVICE;
     this.booking = await BookingResource.save(this.booking);
+  }
+
+  async redeem() {
+    if (!(await confirm("确定已兑换"))) return;
+    this.booking.status = BookingStatus.FINISHED;
+    this.booking = await BookingResource.save(this.booking);
+  }
+
+  createAnother() {
+    this.$router.push(`/booking/${this.$route.params.type}/add`);
   }
 
   @Watch("$user.store") onUserStoreUpdate(s: Store) {
