@@ -9,24 +9,26 @@
               md-icon card_membership
             h4.title {{ cardType.title }}
           md-card-content.md-layout
-            .md-layout-item.md-size-50
+            .md-layout-item.md-size-35
               md-field
                 label 名称
                 md-input(v-model='cardType.title')
-            .md-layout-item.md-size-25
+            .md-layout-item.md-size-20
               md-field
                 label 代号
                 md-input(v-model='cardType.slug')
-            .md-layout-item.md-small-size-100.md-size-25
+            .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 门店
                 md-select(v-model='cardType.store')
                   md-option 不绑定门店
                   md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
             .md-layout-item.md-small-size-100.md-size-25
+              md-switch.md-primary(v-model="cardType.isGift") 可转赠
+            .md-layout-item.md-small-size-100.md-size-25
               md-field
                 label 类型
-                md-select(v-model='cardType.type', @keydown.enter.prevent='')
+                md-select(v-model='cardType.type', @keydown.enter.prevent)
                   md-option(v-for='(name, type) in $cardTypeNames', :key='type', :value='type') {{ name }}
             .md-layout-item.md-small-size-100.md-size-25
               md-field

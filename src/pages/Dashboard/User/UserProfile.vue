@@ -31,7 +31,7 @@
               .md-layout-item.md-small-size-100.md-size-25(v-if="user.role !== 'customer' || $user.can('manage-user')")
                 md-field
                   label 角色
-                  md-select(v-model='user.role', @keydown.enter.prevent='', :disabled="!$user.can('manage-user')")
+                  md-select(v-model='user.role', @keydown.enter.prevent, :disabled="!$user.can('manage-user')")
                     md-option(value='admin') 管理员
                     md-option(value='manager') 店员
                     md-option(value='customer') 客户
@@ -44,7 +44,7 @@
               .md-layout-item.md-small-size-100.md-size-25
                 md-field
                   label 性别
-                  md-select(v-model='user.gender', @keydown.enter.prevent='', :disabled="!$user.can('manage-user')")
+                  md-select(v-model='user.gender', @keydown.enter.prevent, :disabled="!$user.can('manage-user')")
                     md-option(value='男') 男
                     md-option(value='女') 女
                     md-option(value='未知') 未知
@@ -71,11 +71,11 @@
               .md-layout-item.md-small-size-100.md-size-50(v-if="user.role === 'customer'")
                 md-field
                   label 余额
-                  md-input(v-model='user.balance', type='text', disabled='')
+                  md-input(v-model='user.balance', type='text', disabled)
               .md-layout-item.md-small-size-100.md-size-50(v-if="user.role === 'customer'")
                 md-field
                   label 积分
-                  md-input(v-model='user.points', type='text', disabled='')
+                  md-input(v-model='user.points', type='text', disabled)
               .md-layout-item.md-small-size-100.md-size-50(v-if="user.role !== 'customer'")
                 md-field
                   label 通行证
@@ -129,8 +129,9 @@
           md-table.table-full-width
             md-table-row(v-for='card in cards', :key='card.id', :class="{ 'table-warning': card.status === 'pending' }")
               md-table-cell(md-label='卡名') {{ card.title }}
-              md-table-cell(md-label='状态')
-                | {{ card.status | cardStatusName }}
+              md-table-cell(md-label='状态' style="text-align:center")
+                span(v-if="card.status!=='valid'") {{ card.status | cardStatusName }}
+                md-button.md-normal.md-success.md-xs(v-else @click="activateCard(card)" style="width:48px !important") 激活
               md-table-cell(md-label='购卡日期')
                 | {{ card.createdAt | date("YYYY-MM-DD") }}
               md-table-cell(md-label='剩余次数', v-if="card.type === 'times'") {{ card.timesLeft }}
@@ -138,6 +139,8 @@
                 | {{ card.start | date("MM-DD") }} -
                 br
                 | {{ card.end | date("MM-DD") }}
+              md-table-cell(md-label='面值', v-if="card.type === 'balance'")
+                | {{ card.balance }}
       md-card.payments-card
         md-card-header.md-card-header-icon.md-card-header-danger
           .card-icon
@@ -151,7 +154,7 @@
               md-table-cell(md-label='金额', md-sort-by='amount') ¥{{ payment.amount }}
               md-table-cell(md-label='描述', md-sort-by='title', style='width:35%') {{ payment.title }}
               md-table-cell(md-label='收款')
-                md-button.md-success.md-normal(disabled='', v-if='payment.paid') 已收款
+                md-button.md-success.md-normal(disabled, v-if='payment.paid') 已收款
                 md-button.md-normal.md-warning(v-else, @click='pay(payment)') 收款
 </template>
 
@@ -170,7 +173,8 @@ import {
   Store,
   CardType,
   Payment,
-  Booking
+  Booking,
+  CardStatus
 } from "@/resources/interfaces";
 import { promptSelect, confirm } from "@/helpers/sweetAlert";
 
@@ -180,6 +184,7 @@ export default class UserProfile extends Vue {
   cards: Card[] = [];
   cardPayments: Payment[] = [];
   userBookings: Booking[] = [];
+
   async save() {
     this.user = await UserResource.save(this.user);
     this.$notify({
@@ -193,15 +198,18 @@ export default class UserProfile extends Vue {
       this.$router.replace(`/user/${this.user.id}`);
     }
   }
+
   goCustomerBookings() {
     this.$router.push(`/booking?customer=${this.user.id}`);
   }
+
   async getCardPayments() {
     this.cardPayments = await PaymentResource.query({
       customer: this.user.id,
       attach: "card"
     });
   }
+
   async createCard(cardType: CardType) {
     const paymentGateway = await promptSelect(
       "购买" + cardType.title,
@@ -215,18 +223,20 @@ export default class UserProfile extends Vue {
     if (!paymentGateway) return;
     const card = await CardResource.save(
       // @ts-ignore
-      { customer: (this.user as User).id, ...cardType },
+      { customer: (this.user as User).id, ...cardType, id: undefined },
       { paymentGateway }
     );
     this.cards.push(card);
     this.getCardPayments();
   }
+
   async getCards() {
     this.cards = await CardResource.query({
       customer: this.user.id,
       status: "valid,activated,expired"
     });
   }
+
   async pay(payment: Payment) {
     if (
       !(await confirm(
@@ -239,6 +249,19 @@ export default class UserProfile extends Vue {
     await PaymentResource.update({ id: payment.id }, { paid: true });
     this.getCardPayments();
     this.getCards();
+  }
+
+  async activateCard(card: Card) {
+    if (
+      !(await confirm(
+        "确认激活这张充值卡",
+        `将为${this.user.name}增加账户余额${card.balance}元`
+      ))
+    )
+      return;
+    await CardResource.save({ ...card, status: CardStatus.ACTIVATED });
+    await this.getCards();
+    this.user = await UserResource.get({ id: this.$route.params.id });
   }
 
   @Watch("user.store") onUserStoreUpdate(store: Store | false) {

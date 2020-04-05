@@ -38,7 +38,7 @@
             .md-layout-item.md-small-size-50.md-size-25
               md-field
                 label 状态
-                md-select(v-model='booking.status', @keydown.enter.prevent='', :disabled='!!booking.id || $user.role !== "admin"')
+                md-select(v-model='booking.status', @keydown.enter.prevent, :disabled='!!booking.id || $user.role !== "admin"')
                   md-option(v-for='(name, status) in $bookingStatusNames', :key='status', :value='status') {{ name }}
             .md-layout-item.md-small-size-100.md-size-100(v-if="booking.type === 'event'")
               md-autocomplete(v-model='eventSearchTerm', :md-options='events', @md-selected='selectEvent' @keypress.enter.native.prevent :disabled='!!booking.id' autocomplete="off")
@@ -133,7 +133,7 @@
                 md-table-cell(md-label='创建时间', md-sort-by='createdAt')
                   | {{ payment.createdAt | date }}
                 md-table-cell(md-label='收款')
-                  md-button.md-success.md-normal(disabled='', v-if='payment.paid') 已收款
+                  md-button.md-success.md-normal(disabled, v-if='payment.paid') 已收款
                   md-button.md-normal.md-warning(v-else, @click='pay(payment)') 收款
         md-button.md-success.md-block.md-raised(v-if='booking.type==="food" && booking.status==="finished"' @click="createAnother") 继续收款
 </template>
