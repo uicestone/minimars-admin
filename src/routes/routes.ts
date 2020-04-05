@@ -29,14 +29,42 @@ const ConfigList = () => import("@/pages/Dashboard/Config/ConfigList.vue");
 const Config = () => import("@/pages/Dashboard/Config/Config.vue");
 const Login = () => import("@/pages/Dashboard/Pages/Login.vue");
 
-const bookingMenu = {
+const bookingMenu: RouteConfig = {
   path: "/booking",
   component: DashboardLayout,
-  redirect: "/booking/index",
+  redirect: "/booking/play",
   children: [
     {
-      path: "index",
-      name: "预约列表",
+      alias: "play",
+      path: ":type",
+      name: "票务管理",
+      component: BookingList,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      alias: "event",
+      path: ":type",
+      name: "活动预约",
+      component: BookingList,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      alias: "gift",
+      path: ":type",
+      name: "礼品兑换",
+      component: BookingList,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      alias: "food",
+      path: ":type",
+      name: "餐饮消费",
       component: BookingList,
       meta: {
         keepAlive: true
@@ -50,7 +78,7 @@ const bookingMenu = {
   ]
 };
 
-const cardTypeMenu = {
+const cardTypeMenu: RouteConfig = {
   path: "/card-type",
   component: DashboardLayout,
   redirect: "/card-type/index",
@@ -71,7 +99,7 @@ const cardTypeMenu = {
   ]
 };
 
-const eventMenu = {
+const eventMenu: RouteConfig = {
   path: "/event",
   component: DashboardLayout,
   redirect: "/event/index",
@@ -92,7 +120,7 @@ const eventMenu = {
   ]
 };
 
-const giftMenu = {
+const giftMenu: RouteConfig = {
   path: "/gift",
   component: DashboardLayout,
   redirect: "/gift/index",
@@ -113,7 +141,7 @@ const giftMenu = {
   ]
 };
 
-const paymentMenu = {
+const paymentMenu: RouteConfig = {
   path: "/payment",
   component: DashboardLayout,
   redirect: "/payment/index",
@@ -134,7 +162,7 @@ const paymentMenu = {
   ]
 };
 
-const postMenu = {
+const postMenu: RouteConfig = {
   path: "/post",
   component: DashboardLayout,
   redirect: "/post/index",
@@ -155,7 +183,7 @@ const postMenu = {
   ]
 };
 
-const storeMenu = {
+const storeMenu: RouteConfig = {
   path: "/store",
   component: DashboardLayout,
   redirect: "/store/index",
@@ -176,7 +204,7 @@ const storeMenu = {
   ]
 };
 
-const configMenu = {
+const configMenu: RouteConfig = {
   path: "/config",
   component: DashboardLayout,
   redirect: "/config/index",
@@ -197,7 +225,7 @@ const configMenu = {
   ]
 };
 
-const userMenu = {
+const userMenu: RouteConfig = {
   path: "/user",
   component: DashboardLayout,
   redirect: "/user/index",

@@ -110,9 +110,7 @@ export default class BookingList extends List<Booking> {
     this.$router.push(`/user/${customer.id}`);
   }
   created() {
-    if (this.$route.query.type) {
-      this.type = this.$route.query.type as BookingType;
-    }
+    this.type = this.$route.params.type as BookingType;
     this.searchQuery = {
       type: this.type,
       date: this.$route.query.customer
