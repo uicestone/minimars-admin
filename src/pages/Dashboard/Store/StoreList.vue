@@ -31,7 +31,7 @@ import { Store } from "@/resources/interfaces";
 import List from "@/components/List";
 
 export default class StoreList extends List<Store> {
-  name = "list";
+  name = "store";
   resource = StoreResource;
 }
 </script>

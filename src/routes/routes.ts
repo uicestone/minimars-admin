@@ -23,7 +23,7 @@ const GiftList = () => import("@/pages/Dashboard/Gift/GiftList.vue");
 const PaymentList = () => import("@/pages/Dashboard/Payment/PaymentList.vue");
 const PostDetail = () => import("@/pages/Dashboard/Post/PostDetail.vue");
 const PostList = () => import("@/pages/Dashboard/Post/PostList.vue");
-// const Store = () => import("@/pages/Dashboard/Store/StoreDetail.vue");
+const StoreDetail = () => import("@/pages/Dashboard/Store/StoreDetail.vue");
 const StoreList = () => import("@/pages/Dashboard/Store/StoreList.vue");
 const ConfigList = () => import("@/pages/Dashboard/Config/ConfigList.vue");
 const Config = () => import("@/pages/Dashboard/Config/Config.vue");
@@ -167,12 +167,12 @@ const storeMenu = {
       meta: {
         keepAlive: true
       }
+    },
+    {
+      path: ":id",
+      name: "门店详情",
+      component: StoreDetail
     }
-    // {
-    //   path: ":id",
-    //   name: "门店详情",
-    //   component: Store
-    // }
   ]
 };
 

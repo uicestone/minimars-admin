@@ -196,6 +196,8 @@ export interface Store extends Model {
   name: string;
   address: string;
   phone: string;
+  content: string;
+  posterUrl: string;
   partyRooms: number;
   ip: string;
 }

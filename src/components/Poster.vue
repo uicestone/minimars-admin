@@ -17,7 +17,10 @@ import { File } from "@/resources/interfaces";
 import { http } from "@/resources";
 
 @Component({
-  name: "poster"
+  name: "poster",
+  props: {
+    value: String
+  }
 })
 export default class Poster extends Vue {
   preview = "";
