@@ -22,7 +22,7 @@
             h4.title 餐饮消费 {{ booking.id.substr(-6).toUpperCase() }}
           md-card-content.md-layout
             .md-layout-item.md-small-size-100.md-size-50
-              md-autocomplete(v-model='customerSearchTerm', :md-options='getCustomers(customerSearchTerm)', @md-selected='selectCustomer' @keypress.enter.native.prevent, :disabled="booking.status && booking.status !== 'pending'" autocomplete="off")
+              md-autocomplete(v-model='customerSearchTerm', :md-options='getCustomers(customerSearchTerm)', @md-selected='selectCustomer' @keypress.enter.native.prevent, :disabled="booking.status && booking.status !== 'pending'" autocomplete="none")
                 label 客户
                 template(slot='md-autocomplete-item', slot-scope='{ item }') {{ item.name }}
             .md-layout-item.md-small-size-100.md-size-25
@@ -94,7 +94,7 @@
                   md-field
                     label 支付方式
                     md-select.payment-gateway-select(v-model='paymentGateway')
-                      md-option(v-for='card in customerCards', v-if='card.store === booking.store', :key='card.id', :value='card.id', @click.native='useCard(card)')
+                      md-option(v-for='card in customerCards', v-if='booking.type === "play" && card.store === booking.store', :key='card.id', :value='card.id', @click.native='useCard(card)')
                         | {{ card.title }} {{card.timesLeft?'剩余'+card.timesLeft+'次':''}}
                       md-option(value='points', @click.native='useCard(false)', v-if='priceInPoints') 账户积分 {{ booking.customer ? booking.customer.points : ''}}
                       md-option(value='balance', @click.native='useCard(false)', v-if='booking.customer && booking.customer.balance') 账户余额 {{ booking.customer.balance }}
@@ -102,8 +102,10 @@
                 md-button.mt-2.md-simple.md-info.md-btn-link(type='button', @click='goCustomerDetail', v-if='booking.id && booking.customer')
                   | 客户：{{ booking.customer.name }}
                   span(v-if='booking.customer.mobile') ({{ booking.customer.mobile.substr(-4) }})
-                md-button.md-simple.md-warning.mt-2.md-btn-link(v-if='price !== null') {{ price | currency }}
-                md-button.md-simple.md-warning.mt-2.md-btn-link(v-if='priceInPoints !== null') {{ priceInPoints }} 积分
+                md-button.md-simple.md-warning.mt-2.md-btn-link(v-if="price || priceInPoints")
+                  span {{ price | currency }}
+                  span.ml-1.mr-1(v-if='priceInPoints !== null') /
+                  span(v-if='priceInPoints !== null') {{ priceInPoints }} 积分
               .md-layout.md-alignment-bottom-right
                 md-button.md-simple.md-danger(type='button', @click='remove', v-if='this.booking.id') 删除
                 md-button.md-raised.md-primary(type='submit' v-if='booking.type==="play"') 保存
@@ -184,7 +186,7 @@ export default class BookingDetail extends Vue {
       type: "success"
     });
     if (this.$route.params.id === "add") {
-      this.$router.replace(`/booking/${this.booking.id}`);
+      this.$router.replace(`/booking/${this.booking.type}/${this.booking.id}`);
     }
   }
 
@@ -387,7 +389,7 @@ export default class BookingDetail extends Vue {
       card: null,
       event: null,
       gift: null,
-      type: (this.$route.query.type as BookingType) || BookingType.PLAY,
+      type: (this.$route.params.type as BookingType) || BookingType.PLAY,
       status: BookingStatus.PENDING,
       date: moment().format("YYYY-MM-DD"),
       checkInAt: moment().format("HH:mm:ss"),

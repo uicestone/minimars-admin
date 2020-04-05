@@ -31,7 +31,7 @@
               md-select(v-model='searchQuery.status', multiple='')
                 md-option(v-for='(name, status) in $bookingStatusNames', :key='status', :value='status') {{ name }}
           .toolbar-actions
-            md-button.md-primary(v-if='type==="play"', @click='showCreate()')
+            md-button.md-primary(v-if='type==="play"', @click='showCreate("play")')
               | 创建门票预约
             md-button.md-warning(v-if='type==="event"', @click='showCreate("event")')
               | 创建活动预约
@@ -103,8 +103,11 @@ export default class BookingList extends List<Booking> {
   resource = BookingResource;
   type: BookingType = BookingType.PLAY;
   searchQuery: BookingQuery = {};
+  showDetail(item: Booking) {
+    this.$router.push(`/booking/${item.type}/${item.id}`);
+  }
   showCreate(type?: BookingType) {
-    this.$router.push("/booking/add" + (type ? `?type=${type}` : ""));
+    this.$router.push(`/booking/${type}/add`);
   }
   goToCustomer(customer: User) {
     this.$router.push(`/user/${customer.id}`);

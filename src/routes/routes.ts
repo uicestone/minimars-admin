@@ -71,7 +71,7 @@ const bookingMenu: RouteConfig = {
       }
     },
     {
-      path: ":id",
+      path: ":type/:id",
       name: "预约详情",
       component: BookingDetail
     }
