@@ -125,6 +125,7 @@
               md-button.md-info.md-sm(md-menu-trigger='') 购卡
               md-menu-content
                 md-menu-item(v-for='cardType in $cardTypes', :key='cardType.id', @click='createCard(cardType)') {{ cardType.title }}
+                md-menu-item(@click="receiveGiftCard") 接收礼品卡
         md-card-content.md-layout
           md-table.table-full-width
             md-table-row(v-for='card in cards', :key='card.id', :class="{ 'table-warning': card.status === 'pending' }")
@@ -176,7 +177,7 @@ import {
   Booking,
   CardStatus
 } from "@/resources/interfaces";
-import { promptSelect, confirm } from "@/helpers/sweetAlert";
+import { promptSelect, confirm, promptInput } from "@/helpers/sweetAlert";
 
 @Component
 export default class UserProfile extends Vue {
@@ -262,6 +263,14 @@ export default class UserProfile extends Vue {
     await CardResource.save({ ...card, status: CardStatus.ACTIVATED });
     await this.getCards();
     this.user = await UserResource.get({ id: this.$route.params.id });
+  }
+
+  async receiveGiftCard() {
+    const giftCode = await promptInput("填写礼品码");
+    if (!giftCode) return;
+    // @ts-ignore
+    await CardResource.save({ giftCode, customer: this.user.id });
+    await this.getCards();
   }
 
   @Watch("user.store") onUserStoreUpdate(store: Store | false) {

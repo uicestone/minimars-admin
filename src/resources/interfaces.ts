@@ -70,6 +70,7 @@ export interface Card extends Model {
   num?: string;
   status: CardStatus;
   payments?: Payment[];
+  giftCode?: string;
   title: string;
   slug: string;
   type: string;
