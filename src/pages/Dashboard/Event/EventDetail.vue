@@ -37,11 +37,13 @@
               md-field.md-has-value.mt-4
                 label 内容
                 editor(v-model='event.content')
-            .md-layout-item.md-size-100.text-right
-              md-button.md-raised.md-primary.mt-4(type='submit') 保存
-              md-button.mt-4.ml-2.md-simple.md-danger(type='button', @click='remove', v-if='this.event.id') 删除
-              md-button.mt-4.md-simple.md-info.md-btn-link(type='button' v-if="event.kidsCountLeft || event.kidsCountLeft === 0")
-                | 剩余儿童名额：{{ event.kidsCountLeft }}
+            .md-layout-item.md-size-100.md-layout.md-alignment-bottom-space-between
+              .md-layout.md-alignment-bottom-left.pl-0(style='flex:1;flex-wrap:nowrap')
+                md-button.mt-4.md-simple.md-info.md-btn-link(type='button' v-if="event.kidsCountLeft || event.kidsCountLeft === 0")
+                  | 剩余儿童名额：{{ event.kidsCountLeft }}
+              .md-layout.md-alignment-bottom-right
+                md-button.mt-4.ml-2.md-simple.md-danger(type='button', @click='remove', v-if='this.event.id') 删除
+                md-button.md-primary.mt-4(type='submit' :class='{"md-simple": event.id,"md-raised": !event.id}') 保存
         md-card.bookings-card
           md-card-header.md-card-header-icon.md-card-header-blue
             .card-icon
@@ -99,7 +101,7 @@ export default class EventDetail extends Vue {
     if (
       !(await confirm(
         "确定要删除这个活动",
-        `这个操作不可撤销，该活动的报名数据将被清空`,
+        `这个操作不可撤销`,
         "确定删除",
         "error"
       ))
