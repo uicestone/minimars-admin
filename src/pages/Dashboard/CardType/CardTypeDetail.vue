@@ -63,6 +63,12 @@
             .md-layout-item.md-size-100.text-right
               md-button.md-raised.md-primary.mt-4(type='submit') 保存
               md-button.mt-4.ml-2.md-simple.md-danger(type='button', @click='remove', v-if='this.cardType.id') 删除
+    .md-layout-item.md-size-33.md-small-size-100
+      md-card
+        .md-layout-item.md-size-100.md-xsmall-size-100.pb-2
+          h4.card-title 封面图
+          poster(v-model="cardType.posterUrl")
+
 </template>
 
 <script lang="ts">
@@ -71,8 +77,13 @@ import { Watch, Component } from "vue-property-decorator";
 import { confirm } from "@/helpers/sweetAlert";
 import { CardType, Store } from "@/resources/interfaces";
 import { CardTypeResource } from "@/resources";
+import { Poster } from "@/components";
 
-@Component
+@Component({
+  components: {
+    Poster
+  }
+})
 export default class CardTypeDetail extends Vue {
   cardType: Partial<CardType> = {
     id: "",

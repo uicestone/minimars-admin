@@ -67,7 +67,7 @@ export default class StoreDetail extends Vue {
   async remove() {
     if (
       !(await confirm(
-        "确定要删除这篇文章",
+        "确定要删除这个门店",
         `这个操作不可撤销`,
         "确定删除",
         "error"
@@ -75,7 +75,7 @@ export default class StoreDetail extends Vue {
     )
       return;
     await StoreResource.delete({ id: this.store.id });
-    this.$router.go(-1);
+    this.$router.back();
   }
   async mounted() {
     if (this.$route.params.id !== "add") {
