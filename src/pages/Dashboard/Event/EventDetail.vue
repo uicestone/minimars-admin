@@ -33,6 +33,8 @@
               md-field
                 label 最大儿童人数
                 md-input(type='number', v-model='event.kidsCountMax')
+            .md-layout-item.md-size-100
+              md-chips.md-primary.shake-on-error(@keypress.native.enter.prevent, v-model='event.tags', md-placeholder='添加标签', md-check-duplicated)
             .md-layout-item.md-small-size-100
               md-field.md-has-value.mt-4
                 label 内容
