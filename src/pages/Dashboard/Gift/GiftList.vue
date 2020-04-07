@@ -36,7 +36,9 @@
 import List from "@/components/List";
 import { GiftResource } from "@/resources";
 import { Gift } from "@/resources/interfaces";
+import Component from "vue-class-component";
 
+@Component
 export default class GiftList extends List<Gift> {
   name = "gift";
   resource = GiftResource;

@@ -29,7 +29,9 @@
 import { StoreResource } from "@/resources";
 import { Store } from "@/resources/interfaces";
 import List from "@/components/List";
+import Component from "vue-class-component";
 
+@Component
 export default class StoreList extends List<Store> {
   name = "store";
   resource = StoreResource;

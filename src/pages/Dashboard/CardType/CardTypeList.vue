@@ -30,7 +30,9 @@
 import List from "@/components/List";
 import { CardTypeResource } from "@/resources";
 import { CardType } from "@/resources/interfaces";
+import Component from "vue-class-component";
 
+@Component
 export default class CardTypeList extends List<CardType> {
   name = "card-type";
   resource = CardTypeResource;
