@@ -26,6 +26,8 @@ export default class List<M extends Model> extends Vue {
     { $headers: {} },
     []
   );
+  minQueryInterval = 1000;
+  queryCoolingDown = false;
   activated() {
     this.queryData();
   }
@@ -71,7 +73,14 @@ export default class List<M extends Model> extends Vue {
   get total() {
     return this.pagination.total;
   }
-  async queryData() {
+  async queryData(): Promise<
+    (M[] & { $headers: Record<string, string> }) | undefined
+  > {
+    if (this.queryCoolingDown) return;
+    this.queryCoolingDown = true;
+    setTimeout(() => {
+      this.queryCoolingDown = false;
+    }, this.minQueryInterval);
     if (!this.resource) throw Error("invalid_resource");
     this.queriedData = await this.resource.query(this.query);
     this.pagination.total = Number(this.queriedData.$headers["items-total"][0]);

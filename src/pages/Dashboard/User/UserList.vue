@@ -82,6 +82,7 @@ export default class UserList extends List<User> {
     const queriedData = await (List as any).options.methods.queryData.call(
       this
     );
+    if (!queriedData) return;
     this.totalBalance = Number(queriedData.$headers["total-balance"][0]);
     return queriedData;
   }

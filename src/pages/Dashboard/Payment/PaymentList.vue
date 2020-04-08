@@ -66,6 +66,7 @@ export default class PaymentList extends List<Payment> {
     const queriedData = await (List as any).options.methods.queryData.call(
       this
     );
+    if (!queriedData) return;
     this.totalAmount = Number(queriedData.$headers["total-amount"]);
     return queriedData;
   }
