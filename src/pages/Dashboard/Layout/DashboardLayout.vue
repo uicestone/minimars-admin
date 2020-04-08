@@ -20,6 +20,7 @@
   .main-panel
     top-navbar
     div(:class='{ content: !$route.meta.hideContent }', @click='toggleSidebar')
+      //- transition(name='fade')
       keep-alive
         router-view(:key='$route.fullPath', v-if='$route.meta.keepAlive')
       router-view(:key='$route.fullPath', v-if='!$route.meta.keepAlive')
@@ -91,6 +92,11 @@ export default class DashboardLayout extends Vue {
       docClasses.add("perfect-scrollbar-off");
     }
   }
+
+  // beforeRouteEnter(to: any, from: any, next: any) {
+  //   console.log(to, from);
+  //   next();
+  // }
 
   @Watch("sidebarMini") onSidebarMiniUpdate() {
     this.minimizeSidebar();
