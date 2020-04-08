@@ -4,7 +4,6 @@ import { User, Store, CardType, Config } from "@/resources/interfaces";
 declare module "vue/types/vue" {
   interface Vue {
     $Chartist: any;
-    $isLoading: boolean;
     $config: Config;
     $user: User;
     $stores: Store[];

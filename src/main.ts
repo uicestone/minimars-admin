@@ -37,12 +37,13 @@ Object.defineProperty(Vue.prototype, "$Chartist", {
   }
 });
 
-Object.defineProperty(Vue.prototype, "$isLoading", {
+Object.defineProperty(Vue.prototype, "$pendingRequests", {
   get() {
-    return this.$root.isLoading;
+    if (!this.$root.pendingRequests) this.$root.pendingRequests = 0;
+    return this.$root.pendingRequests;
   },
   set(val) {
-    this.$root.isLoading = val;
+    this.$root.pendingRequests = val;
   }
 });
 
@@ -76,7 +77,8 @@ Object.defineProperty(Vue.prototype, "$user", {
 
 Object.defineProperty(Vue.prototype, "$stores", {
   get() {
-    return this.$root.stores || [];
+    if (!this.$root.stores) this.$root.stores = [];
+    return this.$root.stores;
   },
   set(val) {
     this.$root.stores = val;

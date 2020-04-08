@@ -2,7 +2,7 @@
   <div>
     <md-progress-bar
       md-mode="indeterminate"
-      v-if="$isLoading"
+      v-if="pendingRequests > 0"
     ></md-progress-bar>
     <router-view></router-view>
   </div>
@@ -16,6 +16,8 @@ import { http } from "@/resources";
 
 @Component
 export default class App extends Vue {
+  pendingRequests = 0;
+  configFetched = false;
   async created() {
     http.interceptors.request.use(this.requestFullfilled);
     http.interceptors.response.use(
@@ -23,24 +25,30 @@ export default class App extends Vue {
       this.responseRejected
     );
 
-    try {
-      const [config, store, authUser, cardType] = await Promise.all([
-        http.get("config"),
-        http.get("store"),
-        http.get("auth/user"),
-        http.get("card-type")
-      ]);
-      this.$config = config.data;
-      this.$stores = store.data;
-      this.$user = authUser.data;
-      this.$cardTypes = cardType.data;
-    } catch (e) {
-      console.warn(e);
-    }
+    this.$router.beforeResolve(async (to, from, next) => {
+      if (this.configFetched) next();
+      else
+        try {
+          const [config, store, authUser, cardType] = await Promise.all([
+            http.get("config"),
+            http.get("store"),
+            http.get("auth/user"),
+            http.get("card-type")
+          ]);
+          this.$config = config.data;
+          this.$stores = store.data;
+          this.$user = authUser.data;
+          this.$cardTypes = cardType.data;
+          this.configFetched = true;
+        } catch (e) {
+          console.warn(e);
+        }
+      next();
+    });
   }
 
   requestFullfilled(request: AxiosRequestConfig) {
-    this.$isLoading = true;
+    this.pendingRequests++;
 
     const token = window.localStorage.getItem("token");
 
@@ -53,17 +61,17 @@ export default class App extends Vue {
       !window.localStorage.getItem("token")
     ) {
       window.location.hash = "#/login";
-      this.$isLoading = false;
+      this.pendingRequests--;
       return Promise.reject("No token exists, login required.");
     }
     return request;
   }
   responseFullfilled(response: AxiosResponse) {
-    this.$isLoading = false;
+    this.pendingRequests--;
     return response;
   }
   responseRejected(err: any) {
-    this.$isLoading = false;
+    this.pendingRequests--;
     const { response } = err;
     if (!response) {
       if (err.message === "Network Error") {
