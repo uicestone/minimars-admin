@@ -110,9 +110,10 @@ import {
   Link,
   Strike,
   Underline,
-  History,
-  Image
+  History
 } from "tiptap-extensions";
+import ImageUpload from "@/helpers/ImageUpload";
+import { http } from "@/resources";
 
 export default {
   name: "editor",
@@ -127,6 +128,20 @@ export default {
   },
   props: {
     value: { type: String, default: "" }
+  },
+  methods: {
+    async uploadImage(file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      const fileObject = (
+        await http.post("file", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+      ).data;
+      return fileObject.url;
+    }
   },
   mounted() {
     this.editor = new Editor({
@@ -148,12 +163,33 @@ export default {
         new Strike(),
         new Underline(),
         new History(),
-        new Image()
+        new ImageUpload({
+          uploader: image => {
+            // Method that handles the image upload and returns a url(string)
+            return this.uploadImage(image);
+          }
+        })
       ],
       content: this.value,
       onUpdate: ({ getHTML }) => {
         // get new content on update
         this.$emit("input", getHTML());
+        // getHTML()
+        //   .match(/src="(data:image.*?)"/g)
+        //   .map(async src => {
+        //     const dataUri = src.match(/src="(data:image.*?)"/)[1];
+        //     const file = dataUriToBlob(dataUri);
+        //     const formData = new FormData();
+        //     formData.append("file", file);
+        //     const fileObject = (
+        //       await http.post("file", formData, {
+        //         headers: {
+        //           "Content-Type": "multipart/form-data"
+        //         }
+        //       })
+        //     ).data;
+        //     console.log(fileObject);
+        //   });
       }
     });
   },
