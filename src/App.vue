@@ -18,7 +18,7 @@ import { http } from "@/resources";
 export default class App extends Vue {
   pendingRequests = 0;
   configFetched = false;
-  async created() {
+  created() {
     http.interceptors.request.use(this.requestFullfilled);
     http.interceptors.response.use(
       this.responseFullfilled,
@@ -26,25 +26,11 @@ export default class App extends Vue {
     );
 
     this.$router.beforeResolve(async (to, from, next) => {
-      if (this.configFetched) next();
-      else
-        try {
-          const [config, store, authUser, cardType] = await Promise.all([
-            http.get("config"),
-            http.get("store"),
-            http.get("auth/user"),
-            http.get("card-type")
-          ]);
-          this.$config = config.data;
-          this.$stores = store.data;
-          this.$user = authUser.data;
-          this.$cardTypes = cardType.data;
-          this.configFetched = true;
-        } catch (e) {
-          console.warn(e);
-        }
+      await this.initAppData();
       next();
     });
+
+    this.initAppData();
   }
 
   requestFullfilled(request: AxiosRequestConfig) {
@@ -66,10 +52,12 @@ export default class App extends Vue {
     }
     return request;
   }
+
   responseFullfilled(response: AxiosResponse) {
     this.pendingRequests--;
     return response;
   }
+
   responseRejected(err: any) {
     this.pendingRequests--;
     const { response } = err;
@@ -108,6 +96,25 @@ export default class App extends Vue {
       return Promise.reject(new Error(message));
     }
     return response;
+  }
+
+  async initAppData() {
+    if (this.configFetched) return;
+    try {
+      const [config, store, authUser, cardType] = await Promise.all([
+        http.get("config"),
+        http.get("store"),
+        http.get("auth/user"),
+        http.get("card-type")
+      ]);
+      this.$config = config.data;
+      this.$stores = store.data;
+      this.$user = authUser.data;
+      this.$cardTypes = cardType.data;
+      this.configFetched = true;
+    } catch (e) {
+      console.warn(e);
+    }
   }
 }
 </script>
