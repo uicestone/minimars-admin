@@ -20,6 +20,7 @@
               md-field
                 label 门店
                 md-select(v-model='event.store')
+                  md-option 不绑定门店
                   md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
             .md-layout-item.md-small-size-100.md-size-25
               md-field
