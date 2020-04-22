@@ -83,7 +83,7 @@ export default class UserList extends List<User> {
       this
     );
     if (!queriedData) return;
-    this.totalBalance = Number(queriedData.$headers["total-balance"][0]);
+    this.totalBalance = Number(queriedData.$headers["total-balance"]);
     return queriedData;
   }
   created() {

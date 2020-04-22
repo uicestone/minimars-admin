@@ -108,7 +108,7 @@ export default {
   },
   data() {
     return {
-      defaultPagesToDisplay: 5
+      defaultPagesToDisplay: 10
     };
   },
   methods: {
