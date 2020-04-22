@@ -151,7 +151,7 @@
       template(slot='content')
         .md-layout
           .md-layout-item.md-size-100
-            md-table(v-model='stats.cardTypesCount')
+            //- md-table(v-model='stats.cardTypesCount')
               md-table-row(slot='md-table-row', slot-scope='{ item }')
                 md-table-cell {{ item.desc }}
                 md-table-cell {{ item.count }}
@@ -254,7 +254,7 @@ export default class Dashboard extends Vue {
       .filter(p => p.amount);
   }
 
-  dailyCustomersChart() {
+  get dailyCustomersChart() {
     const values = this.stats.dailyCustomers.map(
       d => d.adultsCount + d.kidsCount
     );
@@ -284,7 +284,7 @@ export default class Dashboard extends Vue {
     };
   }
 
-  dailyBookingPaymentChart() {
+  get dailyBookingPaymentChart() {
     const values = this.stats.dailyBookingPayment.map(d => d.amount);
     const labels = this.stats.dailyBookingPayment.map(
       d => this.weekdayMapping[d.day]
@@ -312,7 +312,7 @@ export default class Dashboard extends Vue {
     };
   }
 
-  dailyCardPaymentChart() {
+  get dailyCardPaymentChart() {
     const values = this.stats.dailyCardPayment.map(d => d.amount);
     const labels = this.stats.dailyCardPayment.map(
       d => this.weekdayMapping[d.day]
