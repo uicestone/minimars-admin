@@ -1,7 +1,7 @@
 <template lang="pug">
 .content
   .md-layout
-    .md-layout-item.md-medium-size-100.md-size-66.mx-auto
+    .md-layout-item.md-medium-size-100.md-size-60.mx-auto
       form(@submit.prevent='save')
         md-card
           md-card-header.md-card-header-icon.md-card-header-green
@@ -114,7 +114,7 @@
                 | {{ booking.coupon | couponName }}
               md-table-cell(md-label='状态', md-sort-by='status')
                 | {{ booking.status | bookingStatusName }}
-    .md-layout-item.md-medium-size-100.md-size-33.mx-auto(v-if="user.role === 'customer'")
+    .md-layout-item.md-medium-size-100.md-size-40.mx-auto(v-if="user.role === 'customer'")
       md-card.codes-card
         md-card-header.md-card-header-icon.md-card-header-blue
           .card-icon
@@ -137,9 +137,9 @@
                 | {{ card.createdAt | date("YYYY-MM-DD") }}
               md-table-cell(md-label='剩余次数', v-if="card.type === 'times'") {{ card.timesLeft }}
               md-table-cell(md-label='日期区间', v-if="card.type === 'period'")
-                | {{ card.start | date("MM-DD") }} -
+                | {{ card.start | date("YY-MM-DD") }} -
                 br
-                | {{ card.end | date("MM-DD") }}
+                | {{ card.end | date("YY-MM-DD") }}
               md-table-cell(md-label='面值', v-if="card.type === 'balance'")
                 | {{ card.balance }}
       md-card.payments-card
