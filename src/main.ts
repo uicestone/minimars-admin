@@ -12,6 +12,11 @@ import Chartist from "chartist";
 import routes from "./routes/routes";
 
 // import { remote } from "electron";
+//@ts-ignore
+console.log(window.remote);
+//@ts-ignore
+const remote = window.remote;
+remote.dialog.showErrorBox("title", "content");
 
 // plugin setup
 Vue.use(VueRouter);
@@ -85,11 +90,12 @@ const router = new VueRouter({
 });
 
 // global library setup
-// Object.defineProperty(Vue.prototype, "$electron", {
-//   get() {
-//     return remote;
-//   }
-// });
+Object.defineProperty(Vue.prototype, "$electron", {
+  get() {
+    //@ts-ignore
+    return window.remote;
+  }
+});
 
 Object.defineProperty(Vue.prototype, "$Chartist", {
   get() {
@@ -120,7 +126,7 @@ Object.defineProperty(Vue.prototype, "$config", {
 
 Object.defineProperty(Vue.prototype, "$user", {
   get() {
-    this.$root.user.can = function(cap: string) {
+    this.$root.user.can = function (cap: string) {
       const roleCaps: Record<string, string> = {
         admin: ".*",
         manager: "view-(booking|user)"
