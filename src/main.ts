@@ -23,7 +23,6 @@ Vue.use(VueRouter);
 Vue.use(DashboardPlugin);
 
 moment.locale("zh-cn");
-
 (Vue as any).material.locale = {
   startYear: 1900,
   endYear: 2099,
