@@ -327,6 +327,10 @@ export default class BookingDetail extends Vue {
     this.$router.push(`/booking/${this.$route.params.type}/add`);
   }
 
+  printBand() {
+    this.$electron.printBand({ data1: "data1", data2: "data2" });
+  }
+
   @Watch("$user.store") onUserStoreUpdate(s: Store) {
     this.booking.store = s;
   }

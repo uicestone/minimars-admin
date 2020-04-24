@@ -11,6 +11,8 @@ import Chartist from "chartist";
 // router setup
 import routes from "./routes/routes";
 
+// import { remote } from "electron";
+
 // plugin setup
 Vue.use(VueRouter);
 Vue.use(DashboardPlugin);
@@ -83,6 +85,12 @@ const router = new VueRouter({
 });
 
 // global library setup
+// Object.defineProperty(Vue.prototype, "$electron", {
+//   get() {
+//     return remote;
+//   }
+// });
+
 Object.defineProperty(Vue.prototype, "$Chartist", {
   get() {
     return this.$root.Chartist;
