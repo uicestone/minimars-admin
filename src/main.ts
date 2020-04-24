@@ -11,13 +11,6 @@ import Chartist from "chartist";
 // router setup
 import routes from "./routes/routes";
 
-// import { remote } from "electron";
-//@ts-ignore
-console.log(window.remote);
-//@ts-ignore
-const remote = window.remote;
-remote.dialog.showErrorBox("title", "content");
-
 // plugin setup
 Vue.use(VueRouter);
 Vue.use(DashboardPlugin);

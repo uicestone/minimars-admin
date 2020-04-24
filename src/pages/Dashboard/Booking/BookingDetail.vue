@@ -107,13 +107,13 @@
                   span {{ price | currency }}
                   span.ml-1.mr-1(v-if='priceInPoints !== null') /
                   span(v-if='priceInPoints !== null') {{ priceInPoints }} 积分
-              .md-layout.md-alignment-bottom-right
+              .md-layout.md-alignment-bottom-right(style='flex:1;flex-wrap:nowrap')
                 md-button.md-simple.md-danger(type='button', @click='remove', v-if='this.booking.id') 删除
                 md-button.md-primary(type='submit' v-if='booking.type==="play"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
                 md-button.md-warning(type='submit' v-if='booking.type==="event"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
                 md-button.md-rose(type='submit' v-if='booking.type==="gift"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
                 md-button.md-success(type='submit' v-if='booking.type==="food"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
-                md-button.md-raised.md-warning.ml-2(v-if="booking.status === 'booked' && ['play','event'].includes(booking.type)" @click="checkIn") 入场
+                md-button.md-raised.md-warning.ml-2(v-if="booking.status === 'booked' && ['play','event'].includes(booking.type)" @click="checkIn") 打印手环入场
                 md-button.md-raised.md-rose.ml-2(v-if="booking.status === 'booked' && ['gift'].includes(booking.type)" @click="redeem") 兑换
         md-card.payments-card(v-if="booking.payments.length")
           md-card-header.md-card-header-icon.md-card-header-danger
@@ -315,6 +315,7 @@ export default class BookingDetail extends Vue {
     if (!(await confirm("确定已入场"))) return;
     this.booking.status = BookingStatus.IN_SERVICE;
     this.booking = await BookingResource.save(this.booking);
+    this.printBands();
   }
 
   async redeem() {
@@ -327,8 +328,15 @@ export default class BookingDetail extends Vue {
     this.$router.push(`/booking/${this.$route.params.type}/add`);
   }
 
-  printBand() {
-    this.$electron.printBand({ data1: "data1", data2: "data2" });
+  printBands() {
+    this.$electron?.printBands(
+      {
+        data1: this.booking.customer?.mobile || "",
+        data2:
+          this.booking.date + " " + this.booking.checkInAt?.substr(0, 5) || ""
+      },
+      (this.booking.adultsCount || 0) + (this.booking.kidsCount || 0)
+    );
   }
 
   @Watch("$user.store") onUserStoreUpdate(s: Store) {

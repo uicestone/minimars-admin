@@ -1,8 +1,10 @@
 {
   "vetur.format.defaultFormatter.html": "prettier",
   "prettier.disableLanguages": [
-    "html"
+    "html",
+    "scss"
   ],
   "prettier.arrowParens": "avoid",
-  "prettier.trailingComma": "none"
+  "prettier.trailingComma": "none",
+  "vetur.format.defaultFormatter.scss": "none"
 }
