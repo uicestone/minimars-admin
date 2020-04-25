@@ -23,7 +23,7 @@
                   div(v-else)
                     md-icon refresh
                   input(type='file', ref='avatarFileInput', @change='onFileChange', accept='image/jpeg,image/png')
-            .md-layout-item.md-size-75.md-layout.md-alignment-vertical
+            .md-layout-item.md-size-100.md-layout.md-alignment-vertical
               .md-layout-item.md-small-size-100.md-size-25
                 md-field
                   label 姓名
@@ -76,10 +76,10 @@
                 md-field
                   label 积分
                   md-input(v-model='user.points', type='text', disabled)
-              .md-layout-item.md-small-size-100.md-size-50(v-if="user.role !== 'customer'")
+              .md-layout-item.md-size-100
                 md-field
-                  label 通行证
-                  md-input(v-model='user.passNo')
+                  label 备注
+                  md-textarea(v-model='user.remarks')
             .md-layout-item.md-layout.mt-2(v-if="user.role !== 'customer'")
               .md-layout-item.md-small-size-100.md-size-50
                 md-field
