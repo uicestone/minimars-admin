@@ -24,7 +24,7 @@
             .md-layout-item.md-small-size-100.md-size-50
               md-autocomplete(v-model='customerSearchTerm', :md-options='getCustomers(customerSearchTerm)', @md-selected='selectCustomer' @keypress.enter.native.prevent, :disabled="booking.status && booking.status !== 'pending'" autocomplete="none")
                 label 客户
-                template(slot='md-autocomplete-item', slot-scope='{ item }') {{ item.name }}
+                template(slot='md-autocomplete-item', slot-scope='{ item }') {{ item.name || item.mobile }}
             .md-layout-item.md-small-size-50.md-size-25
               md-field
                 label 门店
@@ -91,7 +91,7 @@
                 md-textarea.no-padding(v-model='booking.remarks')
             .md-layout-item.md-layout.md-alignment-bottom-space-between.md-size-100.text-right.mt-2
               .md-layout.md-alignment-bottom-left.pl-0(style='flex:1;flex-wrap:nowrap')
-                div(style='padding-left:0;width:150px', v-if='!booking.id && booking.customer')
+                div(style='padding-left:0;width:150px', v-if='!booking.id')
                   md-field
                     label 支付方式
                     md-select.payment-gateway-select(v-model='paymentGateway')
@@ -123,7 +123,7 @@
           md-card-content.md-layout
             md-table
               md-table-row(v-for='payment in booking.payments', :key='payment.id')
-                md-table-cell(md-label='描述', md-sort-by='title', style='width:40%') {{ payment.title }}
+                md-table-cell(md-label='描述', md-sort-by='title', style='width:35%') {{ payment.title }}
                 md-table-cell(md-label='通道', md-sort-by='gateway')
                   | {{ payment.gateway | paymentGatewayName }}
                 md-table-cell(md-label='金额', md-sort-by='amount')
@@ -132,7 +132,7 @@
                     | {{ payment.amountInPoints }}
                 md-table-cell(md-label='创建时间', md-sort-by='createdAt')
                   | {{ payment.createdAt | date }}
-                md-table-cell(md-label='收款')
+                md-table-cell(md-label='收款' style="width:86px")
                   md-button.md-success.md-normal(disabled, v-if='payment.paid') 已收款
                   md-button.md-normal.md-warning(v-else, @click='pay(payment)') 收款
         md-button.md-success.md-block.md-raised(v-if='booking.type==="food" && booking.status==="finished"' @click="createAnother") 继续收款
@@ -180,7 +180,10 @@ export default class BookingDetail extends Vue {
 
   async save() {
     const { paymentGateway } = this;
-    this.booking = await BookingResource.save(this.booking, { paymentGateway });
+    this.booking = await BookingResource.save(this.booking, {
+      paymentGateway,
+      customerKeyword: this.customerSearchTerm
+    });
     this.$notify({
       message: "保存成功",
       icon: "check",
@@ -220,13 +223,17 @@ export default class BookingDetail extends Vue {
       if (this.customers.length) {
         this.customers = [];
       }
-    } else this.customers = await UserResource.query({ keyword: q });
+    } else
+      this.customers = await UserResource.query({
+        role: "customer",
+        keyword: q
+      });
     return this.customers;
   }
 
   selectCustomer(item: User) {
     this.booking.customer = item;
-    this.customerSearchTerm = item.name || "";
+    this.customerSearchTerm = item.name || item.mobile || "";
   }
 
   async getEvents(q?: string) {
@@ -445,7 +452,8 @@ export default class BookingDetail extends Vue {
     } else {
       this.booking = await BookingResource.get({ id: this.$route.params.id });
       if (this.booking.customer)
-        this.customerSearchTerm = this.booking.customer.name || "";
+        this.customerSearchTerm =
+          this.booking.customer.name || this.booking.customer.mobile || "";
       if (this.booking.event) this.eventSearchTerm = this.booking.event.title;
       if (this.booking.gift) this.giftSearchTerm = this.booking.gift.title;
     }

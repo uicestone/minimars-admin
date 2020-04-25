@@ -101,18 +101,20 @@
         md-card-content.md-layout
           md-table
             md-table-row(v-for='booking in userBookings', :key='booking.id')
-              md-table-cell(md-label='日期', md-sort-by='date')
+              md-table-cell(md-label='日期')
                 | {{ booking.date }}
-              md-table-cell(md-label='时间', md-sort-by='checkInAt')
+              md-table-cell(md-label='时间')
                 | {{ booking.checkInAt }}
-              md-table-cell(md-label='类型', md-sort-by='type')
+              md-table-cell(md-label='类型')
                 | {{ booking.type | bookingTypeName }}
-              md-table-cell(md-label='大/小', md-sort-by='kidsCount')
+              md-table-cell(md-label='大/小')
                 | {{ booking.adultsCount }} /
                 | {{ booking.kidsCount }}
-              md-table-cell(md-label='优惠', md-sort-by='coupon', style='min-width:150px')
+              //- md-table-cell(md-label='优惠', style='min-width:150px')
                 | {{ booking.coupon | couponName }}
-              md-table-cell(md-label='状态', md-sort-by='status')
+              md-table-cell(md-label='门店')
+                | {{ booking.store.name }}
+              md-table-cell(md-label='状态')
                 | {{ booking.status | bookingStatusName }}
     .md-layout-item.md-medium-size-100.md-size-40.mx-auto(v-if="user.role === 'customer'")
       md-card.codes-card
@@ -151,7 +153,7 @@
           md-table
             md-table-row(v-for='payment in cardPayments', :key='payment.id')
               md-table-cell(md-label='创建时间', md-sort-by='createdAt')
-                | {{ payment.createdAt | date("MM/DD") }}
+                | {{ payment.createdAt | date("YY/MM/DD") }}
               md-table-cell(md-label='金额', md-sort-by='amount') ¥{{ payment.amount }}
               md-table-cell(md-label='描述', md-sort-by='title', style='width:35%') {{ payment.title }}
               md-table-cell(md-label='收款')
