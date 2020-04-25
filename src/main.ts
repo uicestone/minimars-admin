@@ -118,7 +118,7 @@ Object.defineProperty(Vue.prototype, "$config", {
 
 Object.defineProperty(Vue.prototype, "$user", {
   get() {
-    this.$root.user.can = function (cap: string) {
+    this.$root.user.can = function(cap: string) {
       const roleCaps: Record<string, string> = {
         admin: ".*",
         manager: "view-(booking|user)"
@@ -172,7 +172,7 @@ Object.defineProperty(Vue.prototype, "$bookingStatusNames", {
       // eslint-disable-next-line
       in_service: "已入场",
       // eslint-disable-next-line
-      pending_refund: "待退款",
+      pending_refund: "已冻结",
       finished: "已完成",
       canceled: "已取消"
     };

@@ -26,9 +26,13 @@
             .md-layout-item.md-size-100.md-layout.md-alignment-vertical
               .md-layout-item.md-small-size-100.md-size-25
                 md-field
-                  label 姓名
+                  label 会员姓名
                   md-input(v-model='user.name')
-              .md-layout-item.md-small-size-100.md-size-25(v-if="user.role !== 'customer' || $user.can('manage-user')")
+              .md-layout-item.md-small-size-100.md-size-25
+                md-field
+                  label 孩子姓名
+                  md-input(v-model='user.childName')
+              .md-layout-item.md-small-size-100.md-size-25(v-if="user.role !== 'customer' && $user.can('manage-user')")
                 md-field
                   label 角色
                   md-select(v-model='user.role', @keydown.enter.prevent, :disabled="!$user.can('manage-user')")
@@ -37,17 +41,17 @@
                     md-option(value='customer') 客户
               .md-layout-item.md-small-size-100.md-size-25
                 md-field
-                  label 门店
-                  md-select(v-model='user.store')
-                    md-option 不绑定门店
-                    md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
-              .md-layout-item.md-small-size-100.md-size-25
-                md-field
                   label 性别
                   md-select(v-model='user.gender', @keydown.enter.prevent, :disabled="!$user.can('manage-user')")
                     md-option(value='男') 男
                     md-option(value='女') 女
                     md-option(value='未知') 未知
+              .md-layout-item.md-small-size-100.md-size-25
+                md-field
+                  label 首选门店
+                  md-select(v-model='user.store')
+                    md-option 不绑定门店
+                    md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
               .md-layout-item.md-small-size-100.md-size-50
                 md-field
                   label 手机号
