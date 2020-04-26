@@ -240,7 +240,7 @@ export default class UserProfile extends Vue {
   async getCards() {
     this.cards = await CardResource.query({
       customer: this.user.id,
-      status: "valid,activated,expired"
+      status: "pending,valid,activated,expired"
     });
   }
 
