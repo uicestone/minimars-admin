@@ -1,30 +1,30 @@
 <template lang="pug">
 .content
   .md-layout
-    .md-layout-item.md-size-66.md-small-size-100.mx-auto
+    .md-layout-item.md-size-60.md-small-size-100.mx-auto
       form(@submit.prevent='save', ref='form')
         md-card
           md-card-header.md-card-header-icon.md-card-header-primary(v-if="booking.type==='play'")
             .card-icon
               md-icon timer
-            h4.title 购票预约 {{ booking.id.substr(-6).toUpperCase() }}
+            h4.title 购票预约 {{ booking.id.substr(-4).toUpperCase() }}
           md-card-header.md-card-header-icon.md-card-header-warning(v-if="booking.type==='event'")
             .card-icon
               md-icon event
-            h4.title 活动预约 {{ booking.id.substr(-6).toUpperCase() }}
+            h4.title 活动预约 {{ booking.id.substr(-4).toUpperCase() }}
           md-card-header.md-card-header-icon.md-card-header-rose(v-if="booking.type==='gift'")
             .card-icon
               md-icon card_giftcard
-            h4.title 礼品兑换 {{ booking.id.substr(-6).toUpperCase() }}
+            h4.title 礼品兑换 {{ booking.id.substr(-4).toUpperCase() }}
           md-card-header.md-card-header-icon.md-card-header-green(v-if="booking.type==='food'")
             .card-icon
               md-icon fastfood
-            h4.title 餐饮消费 {{ booking.id.substr(-6).toUpperCase() }}
+            h4.title 餐饮消费 {{ booking.id.substr(-4).toUpperCase() }}
           md-card-content.md-layout
             .md-layout-item.md-small-size-100.md-size-50
-              md-autocomplete(v-model='customerSearchTerm', :md-options='getCustomers(customerSearchTerm)', @md-selected='selectCustomer' @keypress.enter.native.prevent, :disabled="booking.status && booking.status !== 'pending'" autocomplete="none")
+              md-autocomplete(v-model='customerSearchTerm', :md-options='booking.id?[]:getCustomers(customerSearchTerm)', @md-selected='selectCustomer' @keypress.enter.native.prevent, :disabled="!!booking.id" autocomplete="none")
                 label 客户
-                template(slot='md-autocomplete-item', slot-scope='{ item }') {{ item.name || item.mobile }}
+                template(slot='md-autocomplete-item', slot-scope='{ item }') {{ item.mobile + (item.name ? ` ${item.name}` : '') }}
             .md-layout-item.md-small-size-50.md-size-25
               md-field
                 label 门店
@@ -54,12 +54,12 @@
               .md-layout-item(style="flex:1;min-width:33%" v-if="['play','event'].includes(booking.type)")
                 md-field
                   label 成人
-                  md-input(v-model='booking.adultsCount', type='number', min='0', :disabled='!!booking.id')
+                  md-input(v-model='booking.adultsCount', type='number', min='0')
                   span.md-suffix 位
               .md-layout-item(style="flex:1;min-width:33%" v-if="['play','event'].includes(booking.type)")
                 md-field
                   label 儿童
-                  md-input(v-model='booking.kidsCount', type='number', min='0', :disabled='!!booking.id')
+                  md-input(v-model='booking.kidsCount', type='number', min='0')
                   span.md-suffix 位
               .md-layout-item(style="flex:1;min-width:33%" v-if="['food'].includes(booking.type)")
                 md-field
@@ -89,24 +89,27 @@
               md-field
                 label 备注
                 md-textarea.no-padding(v-model='booking.remarks')
+            .md-layout-item.md-size-100.card.mt-4
+              div(v-if="!booking.id")
+                p(v-if="booking.customer && !customerCards.length") 无有效会员卡
+                md-button(:class="{'md-primary':usingCard(card)}" v-for='card in customerCards', v-if='booking.type === "play" && card.store === booking.store', :key='card.id', :value='card.id', @click='useCard(card)')
+                  | {{ card.title }} {{card.timesLeft?'剩余'+card.timesLeft+'次':''}}
+              div(v-else)
+                md-button.md-primary(v-if="booking.card")
+                  | {{ booking.card.title }} {{booking.card.timesLeft?'剩余'+booking.card.timesLeft+'次':''}}
             .md-layout-item.md-layout.md-alignment-bottom-space-between.md-size-100.text-right.mt-2
               .md-layout.md-alignment-bottom-left.pl-0(style='flex:1;flex-wrap:nowrap')
-                div(style='padding-left:0;width:150px', v-if='!booking.id')
-                  md-field
-                    label 支付方式
-                    md-select.payment-gateway-select(v-model='paymentGateway')
-                      md-option(v-for='card in customerCards', v-if='booking.type === "play" && card.store === booking.store', :key='card.id', :value='card.id', @click.native='useCard(card)')
-                        | {{ card.title }} {{card.timesLeft?'剩余'+card.timesLeft+'次':''}}
-                      md-option(value='points', @click.native='useCard(false)', v-if='priceInPoints') 账户积分 {{ booking.customer ? booking.customer.points : ''}}
-                      md-option(value='balance', @click.native='useCard(false)', v-if='booking.customer && booking.customer.balance') 账户余额 {{ booking.customer.balance }}
-                      md-option(value='cash', @click.native='useCard(false)') 现金刷卡
-                md-button.mt-2.md-simple.md-info.md-btn-link(type='button', @click='goCustomerDetail', v-if='booking.id && booking.customer')
-                  | 客户：{{ booking.customer.name }}
-                  span(v-if='booking.customer.mobile') ({{ booking.customer.mobile.substr(-4) }})
                 md-button.md-simple.md-warning.mt-2.md-btn-link(v-if="price || priceInPoints")
                   span {{ price | currency }}
                   span.ml-1.mr-1(v-if='priceInPoints !== null') /
                   span(v-if='priceInPoints !== null') {{ priceInPoints }} 积分
+                div(style='width:100px', v-if='!booking.id && price || priceInPoints')
+                  md-field
+                    label 支付方式
+                    md-select.payment-gateway-select(v-model='paymentGateway')
+                      md-option(value='points', v-if='priceInPoints') 账户积分 {{ booking.customer ? booking.customer.points : ''}}
+                      md-option(value='balance', v-if='booking.customer && booking.customer.balance') 账户余额 {{ booking.customer.balance }}
+                      md-option(value='cash') 现金刷卡
               .md-layout.md-alignment-bottom-right(style='flex:1;flex-wrap:nowrap')
                 md-button.md-simple.md-danger(type='button', @click='remove', v-if='this.booking.id') 删除
                 md-button.md-primary(type='submit' v-if='booking.type==="play"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
@@ -119,7 +122,7 @@
           md-card-header.md-card-header-icon.md-card-header-danger
             .card-icon
               md-icon payment
-            h4.title 付款记录
+            h4.title 收款
           md-card-content.md-layout
             md-table
               md-table-row(v-for='payment in booking.payments', :key='payment.id')
@@ -136,6 +139,10 @@
                   md-button.md-success.md-normal(disabled, v-if='payment.paid') 已收款
                   md-button.md-normal.md-warning(v-else, @click='pay(payment)') 收款
         md-button.md-success.md-block.md-raised(v-if='booking.type==="food" && booking.status==="finished"' @click="createAnother") 继续收款
+
+    .md-layout-item.md-size-40.md-small-size-100.mx-auto
+      cards-card(v-if="booking.customer" title="会员卡" :query='{customer:booking.customer.id}')
+      payments-card(v-if="booking.customer" title="充值记录" :query='{customer:booking.customer.id, attach:"card "}')
 </template>
 
 <script lang="ts">
@@ -163,8 +170,14 @@ import {
   BookingStatus,
   Payment
 } from "@/resources/interfaces";
+import { CardsCard, PaymentsCard } from "@/components";
 
-@Component
+@Component({
+  components: {
+    CardsCard,
+    PaymentsCard
+  }
+})
 export default class BookingDetail extends Vue {
   booking: Partial<Booking> = {};
   price: number | null = null;
@@ -233,7 +246,7 @@ export default class BookingDetail extends Vue {
 
   selectCustomer(item: User) {
     this.booking.customer = item;
-    this.customerSearchTerm = item.name || item.mobile || "";
+    this.customerSearchTerm = item.mobile || "";
   }
 
   async getEvents(q?: string) {
@@ -271,7 +284,12 @@ export default class BookingDetail extends Vue {
   }
 
   async updateBookingPrice() {
-    if (!this.booking.customer) return;
+    if (
+      this.booking.adultsCount === undefined ||
+      this.booking.kidsCount === undefined
+    )
+      return;
+    console.log("update booking price:", this.booking);
     const { price, priceInPoints } = await BookingPriceResource.create(
       this.booking
     );
@@ -280,12 +298,16 @@ export default class BookingDetail extends Vue {
   }
 
   useCard(card: Card) {
-    if (!card) {
+    if (!card || this.usingCard(card)) {
       console.log("UseCard null");
       this.booking.card = null;
     } else {
       this.booking.card = card;
     }
+  }
+
+  usingCard(card: Card) {
+    return this.booking.card?.id === card.id;
   }
 
   async pay(payment: Payment) {
@@ -351,13 +373,14 @@ export default class BookingDetail extends Vue {
   }
 
   @Watch("booking", { deep: true, immediate: true })
-  onBookingUpdate(b: Booking) {
-    console.log("Booking updated");
+  onBookingUpdate(b: Booking, p: Booking) {
+    console.log("Booking updated", b, p);
     if (!b.id) {
       this.updateBookingPrice();
     }
   }
   @Watch("booking.customer") onBookingCustomerUpdate() {
+    if (this.booking.id) return;
     this.getCustomerCards();
     this.booking.card = null;
     this.paymentGateway = null;
@@ -371,6 +394,7 @@ export default class BookingDetail extends Vue {
       // @ts-ignore
       this.booking.store = this.booking.store.id;
       console.log("Booking store id object, change to: ", this.booking.store);
+      return this.$nextTick();
     } else if (v === false) {
       this.booking.store = null;
     }
@@ -415,7 +439,7 @@ export default class BookingDetail extends Vue {
     }
   }
 
-  created() {
+  async created() {
     this.booking = {
       id: "",
       customer: null,
@@ -433,10 +457,7 @@ export default class BookingDetail extends Vue {
       payments: []
     };
     console.log("Created. Booking with store:", this.$user.store);
-  }
 
-  async mounted() {
-    console.log("Mounted.");
     if (this.$route.params.id === "add") {
       console.log("Add booking:", this.booking.type);
       await this.$user;
@@ -452,8 +473,7 @@ export default class BookingDetail extends Vue {
     } else {
       this.booking = await BookingResource.get({ id: this.$route.params.id });
       if (this.booking.customer)
-        this.customerSearchTerm =
-          this.booking.customer.name || this.booking.customer.mobile || "";
+        this.customerSearchTerm = this.booking.customer.mobile || "";
       if (this.booking.event) this.eventSearchTerm = this.booking.event.title;
       if (this.booking.gift) this.giftSearchTerm = this.booking.gift.title;
     }

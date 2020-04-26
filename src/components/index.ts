@@ -31,12 +31,12 @@ import WizardTab from "./Wizard/WizardTab.vue";
 import Pagination from "./Pagination.vue";
 
 import Editor from "./Editor.vue";
-
 import Poster from "./Poster.vue";
-
 import SidebarPlugin from "./SidebarPlugin";
-
 import AnimatedNumber from "./AnimatedNumber.vue";
+import CardsCard from "./CardsCard.vue";
+import PaymentsCard from "./PaymentsCard.vue";
+import BookingsCard from "./BookingsCard.vue";
 
 export {
   IconCheckbox,
@@ -65,5 +65,8 @@ export {
   AnimatedNumber,
   Collapse,
   Editor,
-  Poster
+  Poster,
+  CardsCard,
+  PaymentsCard,
+  BookingsCard
 };

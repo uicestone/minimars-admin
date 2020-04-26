@@ -24,21 +24,22 @@
                     md-icon refresh
                   input(type='file', ref='avatarFileInput', @change='onFileChange', accept='image/jpeg,image/png')
             .md-layout-item.md-size-100.md-layout.md-alignment-vertical
+              .md-layout-item.md-small-size-100.md-size-25(v-if="user.role !== 'customer' && $user.can('manage-user')")
+                md-field
+                  label 用户类型
+                  md-select(v-model='user.role', @keydown.enter.prevent, :disabled="!$user.can('manage-user')")
+                    md-option(value='admin') 管理员
+                    md-option(value='manager') 店员
+                    md-option(value='customer') 客户
               .md-layout-item.md-small-size-100.md-size-25
                 md-field
-                  label 会员姓名
+                  label(v-if="user.role === 'customer'") 会员姓名
+                  label(v-else) 姓名
                   md-input(v-model='user.name')
               .md-layout-item.md-small-size-100.md-size-25
                 md-field
                   label 孩子姓名
                   md-input(v-model='user.childName')
-              .md-layout-item.md-small-size-100.md-size-25(v-if="user.role !== 'customer' && $user.can('manage-user')")
-                md-field
-                  label 角色
-                  md-select(v-model='user.role', @keydown.enter.prevent, :disabled="!$user.can('manage-user')")
-                    md-option(value='admin') 管理员
-                    md-option(value='manager') 店员
-                    md-option(value='customer') 客户
               .md-layout-item.md-small-size-100.md-size-25
                 md-field
                   label 性别
@@ -95,99 +96,36 @@
                   md-input(v-model='user.password', type='password', autocomplete='new-password')
             .md-layout-item.md-size-100.text-right
               md-button.md-raised.md-primary.mt-4(type='submit') 保存
-      md-card.bookings-card(v-if="user.role === 'customer'")
-        md-card-header.md-card-header-icon.md-card-header-warning
-          .card-icon
-            md-icon history
-          h4.title
-            | 最近预约
-            md-button.md-warning.md-sm.pull-right(@click='goCustomerBookings') 查看所有预约
-        md-card-content.md-layout
-          md-table
-            md-table-row(v-for='booking in userBookings', :key='booking.id')
-              md-table-cell(md-label='日期')
-                | {{ booking.date }}
-              md-table-cell(md-label='时间')
-                | {{ booking.checkInAt }}
-              md-table-cell(md-label='类型')
-                | {{ booking.type | bookingTypeName }}
-              md-table-cell(md-label='大/小')
-                | {{ booking.adultsCount }} /
-                | {{ booking.kidsCount }}
-              //- md-table-cell(md-label='优惠', style='min-width:150px')
-                | {{ booking.coupon | couponName }}
-              md-table-cell(md-label='门店')
-                | {{ booking.store.name }}
-              md-table-cell(md-label='状态')
-                | {{ booking.status | bookingStatusName }}
+      bookings-card(title="近期预约" :bookings="userBookings" :customer="user" v-if="user.role === 'customer'")
     .md-layout-item.md-medium-size-100.md-size-40.mx-auto(v-if="user.role === 'customer'")
-      md-card.codes-card
-        md-card-header.md-card-header-icon.md-card-header-blue
-          .card-icon
-            md-icon card_membership
-          h4.title
-            | 会员卡
-            md-menu.pull-right
-              md-button.md-info.md-sm(md-menu-trigger='') 购卡
-              md-menu-content
-                md-menu-item(v-for='cardType in $cardTypes', :key='cardType.id', @click='createCard(cardType)') {{ cardType.title }}
-                md-menu-item(@click="receiveGiftCard") 接收礼品卡
-        md-card-content.md-layout
-          md-table.table-full-width
-            md-table-row(v-for='card in cards', :key='card.id', :class="{ 'table-warning': card.status === 'pending' }")
-              md-table-cell(md-label='卡名') {{ card.title }}
-              md-table-cell(md-label='状态' style="text-align:center")
-                span(v-if="card.status!=='valid'") {{ card.status | cardStatusName }}
-                md-button.md-normal.md-success.md-xs(v-else @click="activateCard(card)" style="width:48px !important") 激活
-              md-table-cell(md-label='购卡日期')
-                | {{ card.createdAt | date("YYYY-MM-DD") }}
-              md-table-cell(md-label='剩余次数', v-if="card.type === 'times'") {{ card.timesLeft }}
-              md-table-cell(md-label='日期区间', v-if="card.type === 'period'")
-                | {{ card.start | date("YY-MM-DD") }} -
-                br
-                | {{ card.end | date("YY-MM-DD") }}
-              md-table-cell(md-label='面值', v-if="card.type === 'balance'")
-                | {{ card.balance }}
-      md-card.payments-card
-        md-card-header.md-card-header-icon.md-card-header-danger
-          .card-icon
-            md-icon payment
-          h4.title 购卡充值记录
-        md-card-content.md-layout
-          md-table
-            md-table-row(v-for='payment in cardPayments', :key='payment.id')
-              md-table-cell(md-label='创建时间', md-sort-by='createdAt')
-                | {{ payment.createdAt | date("YY/MM/DD") }}
-              md-table-cell(md-label='金额', md-sort-by='amount') ¥{{ payment.amount }}
-              md-table-cell(md-label='描述', md-sort-by='title', style='width:35%') {{ payment.title }}
-              md-table-cell(md-label='收款')
-                md-button.md-success.md-normal(disabled, v-if='payment.paid') 已收款
-                md-button.md-normal.md-warning(v-else, @click='pay(payment)') 收款
+      cards-card(title="会员卡" :cards="cards" @updated="getCards" @activated="" @payment-updated="getCardPayments")
+      payments-card(title="充值记录" :payments="cardPayments")
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { Watch, Component } from "vue-property-decorator";
+import { BookingsCard, CardsCard, PaymentsCard } from "@/components";
 import {
   BookingResource,
   PaymentResource,
   CardResource,
   UserResource
 } from "@/resources";
-import {
-  User,
-  Card,
-  Store,
-  CardType,
-  Payment,
-  Booking,
-  CardStatus
-} from "@/resources/interfaces";
-import { promptSelect, confirm, promptInput } from "@/helpers/sweetAlert";
+import { User, Card, Store, Payment, Booking } from "@/resources/interfaces";
+import { confirm } from "@/helpers/sweetAlert";
 
-@Component
+@Component({
+  components: {
+    BookingsCard,
+    CardsCard,
+    PaymentsCard
+  }
+})
 export default class UserProfile extends Vue {
-  user: Partial<User> = {};
+  user: Partial<User> = {
+    role: this.$user.role === "manager" ? "customer" : undefined
+  };
   cards: Card[] = [];
   cardPayments: Payment[] = [];
   userBookings: Booking[] = [];
@@ -206,8 +144,9 @@ export default class UserProfile extends Vue {
     }
   }
 
-  goCustomerBookings() {
-    this.$router.push(`/booking?customer=${this.user.id}`);
+  async getUser() {
+    this.user = await UserResource.get({ id: this.$route.params.id });
+    return this.user;
   }
 
   async getCardPayments() {
@@ -215,26 +154,6 @@ export default class UserProfile extends Vue {
       customer: this.user.id,
       attach: "card"
     });
-  }
-
-  async createCard(cardType: CardType) {
-    const paymentGateway = await promptSelect(
-      "购买" + cardType.title,
-      `请选择支付方式`,
-      {
-        cash: "现金刷卡",
-        scan: "现场扫码"
-      },
-      "确定购买"
-    );
-    if (!paymentGateway) return;
-    const card = await CardResource.save(
-      // @ts-ignore
-      { customer: (this.user as User).id, ...cardType, id: undefined },
-      { paymentGateway }
-    );
-    this.cards.push(card);
-    this.getCardPayments();
   }
 
   async getCards() {
@@ -258,27 +177,6 @@ export default class UserProfile extends Vue {
     this.getCards();
   }
 
-  async activateCard(card: Card) {
-    if (
-      !(await confirm(
-        "确认激活这张充值卡",
-        `将为${this.user.name}增加账户余额${card.balance}元`
-      ))
-    )
-      return;
-    await CardResource.save({ ...card, status: CardStatus.ACTIVATED });
-    await this.getCards();
-    this.user = await UserResource.get({ id: this.$route.params.id });
-  }
-
-  async receiveGiftCard() {
-    const giftCode = await promptInput("填写礼品码");
-    if (!giftCode) return;
-    // @ts-ignore
-    await CardResource.save({ giftCode, customer: this.user.id });
-    await this.getCards();
-  }
-
   @Watch("user.store") onUserStoreUpdate(store: Store | false) {
     if (typeof store === "object" && store) {
       // @ts-ignore
@@ -292,7 +190,7 @@ export default class UserProfile extends Vue {
       if (this.$route.params.id === this.$user.id) {
         this.user = this.$user;
       } else {
-        this.user = await UserResource.get({ id: this.$route.params.id });
+        this.getUser();
       }
       this.getCardPayments();
       this.userBookings = await BookingResource.query({
@@ -304,13 +202,6 @@ export default class UserProfile extends Vue {
 }
 </script>
 <style lang="scss">
-.payments-card,
-.bookings-card,
-.codes-card {
-  .md-table {
-    width: 100%;
-  }
-}
 .bookings-card,
 .payments-card {
   margin-top: 50px;

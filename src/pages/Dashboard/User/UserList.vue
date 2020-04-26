@@ -12,7 +12,7 @@
             | 总余额：{{ totalBalance | currency }}
           .md-layout.md-layout-item.md-alignment-center-right.search-query
             md-field.md-layout-item.md-size-25.md-xsmall-size-100
-              md-input(type='search', min-length='4', clearable='', placeholder='搜索 手机/姓名/会员码', v-model='searchQuery.keyword')
+              md-input(type='search', min-length='4', clearable='', placeholder='搜索 手机/姓名', v-model='searchQuery.keyword')
             md-field.md-layout-item.md-size-20.md-xsmall-size-100
               label 筛选角色
               md-select(v-model='searchQuery.role')
