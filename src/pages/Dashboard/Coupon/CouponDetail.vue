@@ -63,7 +63,7 @@ export default class CouponDetail extends Vue {
   coupon: Partial<Coupon> = {
     id: "",
     store: null,
-    kidsCount: 0,
+    kidsCount: 1,
     price: 0
   };
   async save() {
