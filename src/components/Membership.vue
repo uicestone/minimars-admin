@@ -134,7 +134,7 @@ export default class Membership extends Vue {
   }
 
   created() {
-    console.log("created", this.customer);
+    console.log("Membership created", this.customer);
     this.customerUpdated();
   }
 }

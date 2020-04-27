@@ -18,6 +18,8 @@
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
             md-table-cell(md-label='名称', md-sort-by='title')
               | {{ item.title }}
+            md-table-cell(md-label='门店', md-sort-by='store.name')
+              | {{ item.store ? item.store.name : '-' }}
             md-table-cell(md-label='日期', md-sort-by='date')
               | {{ item.date | date("YYYY-MM-DD") }}
             md-table-cell(md-label='积分售价', md-sort-by='priceInPoints')

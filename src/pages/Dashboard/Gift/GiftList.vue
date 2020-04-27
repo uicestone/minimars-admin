@@ -21,7 +21,7 @@
             md-table-cell(md-label='库存', md-sort-by='quantity')
               | {{ item.quantity }}
             md-table-cell(md-label='门店', md-sort-by='store.name')
-              | {{ item.store.name }}
+              | {{ item.store ? item.store.name : '-' }}
             md-table-cell(md-label='积分售价', md-sort-by='priceInPoints')
               | {{ item.priceInPoints }}
             md-table-cell(md-label='收款售价', md-sort-by='price')

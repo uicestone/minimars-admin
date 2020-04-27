@@ -28,13 +28,7 @@
             .md-layout-item.md-small-size-50.md-size-25
               md-field
                 label 门店
-                md-select(v-model='booking.store', @keypress.enter.prevent :disabled='!!booking.id || $user.role !== "admin"')
-                  md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
-            //- .md-layout-item.md-small-size-100.md-size-25
-              md-field
-                label 类型
-                md-select(v-model='booking.type', @keydown.enter.prevent)
-                  md-option(v-for='(name, type) in $bookingTypeNames', :key='type', :value='type') {{ name }}
+                store-select(v-model="booking.store" :disabled='!!booking.id || $user.role !== "admin"')
             .md-layout-item.md-small-size-50.md-size-25
               md-field
                 label 状态
@@ -116,7 +110,7 @@
                   span {{ price | currency }}
                   span.ml-1.mr-1(v-if='priceInPoints !== null') /
                   span(v-if='priceInPoints !== null') {{ priceInPoints }} 积分
-                div(style='width:100px', v-if='!booking.id && price || priceInPoints')
+                div(style='width:100px', v-if='!booking.id && (price || priceInPoints)')
                   md-field
                     label 支付方式
                     md-select.payment-gateway-select(v-model='paymentGateway')
@@ -189,11 +183,12 @@ import {
   Payment,
   Coupon
 } from "@/resources/interfaces";
-import { Membership } from "@/components";
+import { Membership, StoreSelect } from "@/components";
 
 @Component({
   components: {
-    Membership
+    Membership,
+    StoreSelect
   }
 })
 export default class BookingDetail extends Vue {
@@ -220,11 +215,13 @@ export default class BookingDetail extends Vue {
 
   get priceRelatedBookingProperties() {
     return [
-      this.booking.card,
-      this.booking.coupon,
+      this.booking.card?.id,
+      this.booking.coupon?.id,
       this.booking.kidsCount,
-      this.booking.adultsCount
-    ];
+      this.booking.adultsCount,
+      this.booking.event?.id,
+      this.booking.gift?.id
+    ].join();
   }
 
   async save() {
@@ -286,11 +283,11 @@ export default class BookingDetail extends Vue {
   }
 
   async getEvents(q?: string) {
-    console.log("GetEvents with store:", this.booking.store);
-    if (typeof this.booking.store === "object") return;
+    console.log("GetEvents with store:", this.booking.store?.name);
+    if (q && q === this.booking.event?.title) return;
     this.events = await EventResource.query({
       keyword: q,
-      store: this.booking.store
+      store: this.booking.store?.id
     });
     return this.events;
   }
@@ -301,10 +298,10 @@ export default class BookingDetail extends Vue {
   }
 
   async getGifts(q?: string) {
-    if (typeof this.booking.store === "object") return;
+    if (q && q === this.booking.gift?.title) return;
     this.gifts = await GiftResource.query({
       keyword: q,
-      store: this.booking.store
+      store: this.booking.store?.id
     });
     return this.gifts;
   }
@@ -325,7 +322,10 @@ export default class BookingDetail extends Vue {
       this.booking.kidsCount === undefined
     )
       return;
-    console.log("Update booking price:", this.booking);
+    console.log(
+      "Update booking price:",
+      JSON.stringify(this.priceRelatedBookingProperties)
+    );
     const { price, priceInPoints } = await BookingPriceResource.create(
       this.booking
     );
@@ -375,7 +375,8 @@ export default class BookingDetail extends Vue {
     this.booking = await BookingResource.get({ id: booking.id });
     this.$notify({
       message:
-        "收款成功，预约状态现在是：" + this.$bookingStatusNames[booking.status],
+        "收款成功，预约状态现在是：" +
+        this.$bookingStatusNames[this.booking.status || ""],
       icon: "add_alert",
       horizontalAlign: "center",
       verticalAlign: "bottom",
@@ -435,19 +436,25 @@ export default class BookingDetail extends Vue {
   }
 
   @Watch("$user.store") onUserStoreUpdate(s: Store) {
-    this.booking.store = s;
+    if (s.id !== this.booking.store?.id) this.booking.store = s;
   }
 
   @Watch("priceRelatedBookingProperties")
   onBookingPriceUpdate(b: any, p: any) {
-    console.log("Booking updated", JSON.stringify(b), JSON.stringify(p));
+    console.log(
+      "Booking price related properties updated",
+      JSON.stringify(b),
+      JSON.stringify(p)
+    );
     // if (!b.id) {
     this.updateBookingPrice();
     // }
   }
   @Watch("booking.customer") onBookingCustomerUpdate() {
     if (this.booking.id) return;
-    this.getCustomerCards();
+    if (this.booking.type === "play") {
+      this.getCustomerCards();
+    }
     this.booking.card = null;
     this.paymentGateway = null;
   }
@@ -455,17 +462,9 @@ export default class BookingDetail extends Vue {
     v: Store | string | boolean,
     p: Store | string | boolean
   ) {
-    console.log("Booking store changed", v, p);
-    if (typeof v === "object" && v) {
-      // @ts-ignore
-      this.booking.store = this.booking.store.id;
-      console.log("Booking store id object, change to: ", this.booking.store);
-      return this.$nextTick();
-    } else if (v === false) {
+    console.log("Booking store changed", JSON.stringify(v), JSON.stringify(p));
+    if (v === false) {
       this.booking.store = null;
-    }
-    if (typeof v === "string" && typeof p === "object") {
-      return;
     }
     if (typeof v !== "string") {
       return;
@@ -474,12 +473,12 @@ export default class BookingDetail extends Vue {
     this.paymentGateway = null;
     if (this.booking.type === "event") {
       this.getEvents();
-      this.booking.event = null;
+      if (this.booking.event) this.booking.event = null;
       this.eventSearchTerm = null;
     }
     if (this.booking.type === "gift") {
       this.getGifts();
-      this.booking.gift = null;
+      if (this.booking.gift) this.booking.gift = null;
       this.giftSearchTerm = null;
     }
   }
@@ -535,12 +534,18 @@ export default class BookingDetail extends Vue {
       store: this.$user.store,
       payments: []
     };
-    console.log("Created. Booking with store:", this.$user.store);
+    console.log(
+      "Created. Booking with store:",
+      JSON.stringify(this.$user.store)
+    );
 
     if (this.$route.params.id === "add") {
       console.log("Add booking:", this.booking.type);
       await this.$user;
       const { type } = this.booking;
+      if (type === "play") {
+        this.coupons = await CouponResource.query();
+      }
       if (type === "event") {
         this.getEvents();
       }
@@ -548,7 +553,6 @@ export default class BookingDetail extends Vue {
         this.getGifts();
         this.booking.quantity = 1;
       }
-      this.coupons = await CouponResource.query();
       // this.updateBookingPrice();
     } else {
       this.booking = await BookingResource.get({ id: this.$route.params.id });
