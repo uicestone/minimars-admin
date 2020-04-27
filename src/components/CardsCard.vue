@@ -9,7 +9,7 @@ md-card.codes-card
         md-menu-content
           md-menu-item(v-for='cardType in $cardTypes', :key='cardType.id', @click='createCard(cardType)') {{ cardType.title }}
           md-menu-item(@click="receiveGiftCard") 接收礼品卡
-      md-button.pull-right.md-info.md-sm(v-if="customer" @click="goToCustomer") 转到客户：{{ customer.name || customer.mobile }}
+      md-button.pull-right.md-info.md-sm(v-else @click="goToCustomer") 转到客户：{{ customer.name || customer.mobile }}
   md-card-content.md-layout
     md-table.table-full-width
       md-table-row(v-for='card in items', :key='card.id', :class="{ 'table-warning': card.status === 'pending' }")
@@ -49,8 +49,8 @@ export default class CardsCard extends Vue {
   @Prop({ default: () => undefined })
   cards?: Card[];
 
-  @Prop({ default: () => undefined })
-  customer?: User;
+  @Prop({ required: true })
+  customer!: User;
 
   items: Card[] = [];
 
@@ -68,15 +68,17 @@ export default class CardsCard extends Vue {
       "购买" + cardType.title,
       `请选择支付方式`,
       {
-        cash: "现金刷卡",
-        scan: "现场扫码"
+        dianping: "点评POS",
+        shouqianba: "收钱吧",
+        cash: "现金",
+        pos: "银行卡"
       },
       "确定购买"
     );
     if (!paymentGateway) return;
     const card = await CardResource.save(
       // @ts-ignore
-      { customer: (this.user as User).id, ...cardType, id: undefined },
+      { customer: this.customer.id, ...cardType, id: undefined },
       { paymentGateway }
     );
     this.items?.push(card);
@@ -100,7 +102,7 @@ export default class CardsCard extends Vue {
     const giftCode = await promptInput("填写礼品码");
     if (!giftCode) return;
     // @ts-ignore
-    await CardResource.save({ giftCode, customer: this.user.id });
+    await CardResource.save({ giftCode, customer: this.customer.id });
     this.$emit("updated");
   }
 
@@ -117,8 +119,4 @@ export default class CardsCard extends Vue {
 }
 </script>
 
-<style scoped>
-.md-table.md-content {
-  width: 100%;
-}
-</style>
+<style scoped></style>

@@ -22,6 +22,7 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import { Payment, PaymentQuery } from "../resources/interfaces";
 import { PaymentResource } from "../resources";
+import { confirm } from "../helpers/sweetAlert";
 
 @Component
 export default class PaymentsCard extends Vue {
@@ -40,6 +41,19 @@ export default class PaymentsCard extends Vue {
     if (this.payments) {
       this.items = this.payments;
     }
+  }
+
+  async pay(payment: Payment) {
+    if (
+      !(await confirm(
+        `确定已收款 ¥${payment.amount.toFixed(2)}`,
+        null,
+        "确定已收款"
+      ))
+    )
+      return;
+    await PaymentResource.update({ id: payment.id }, { paid: true });
+    this.$emit("updated");
   }
 
   async mounted() {

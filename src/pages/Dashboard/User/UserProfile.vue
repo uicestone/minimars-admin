@@ -102,8 +102,8 @@
               md-button.md-raised.md-primary.mt-4(type='submit') 保存
       bookings-card(title="近期预约" :bookings="userBookings" :customer="user" v-if="user.role === 'customer'")
     .md-layout-item.md-medium-size-100.md-size-40.mx-auto(v-if="user.role === 'customer'")
-      cards-card(title="会员卡" :cards="cards" @updated="getCards" @activated="getUser" @payment-updated="getCardPayments")
-      payments-card(title="充值记录" :payments="cardPayments")
+      cards-card(title="会员卡" :customer="user" :cards="cards" @updated="getCards" @activated="getUser" @paymentUpdated="getCardPayments")
+      payments-card(title="充值记录" :payments="cardPayments" @updated="getCards();getCardPayments()")
 </template>
 
 <script lang="ts">
@@ -166,20 +166,6 @@ export default class UserProfile extends Vue {
       customer: this.user.id,
       status: "pending,valid,activated,expired"
     });
-  }
-
-  async pay(payment: Payment) {
-    if (
-      !(await confirm(
-        `确定已收款 ¥${payment.amount.toFixed(2)}`,
-        null,
-        "确定已收款"
-      ))
-    )
-      return;
-    await PaymentResource.update({ id: payment.id }, { paid: true });
-    this.getCardPayments();
-    this.getCards();
   }
 
   @Watch("user.store") onUserStoreUpdate(store: Store | false) {
