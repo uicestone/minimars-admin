@@ -19,7 +19,7 @@ md-card.payments-card
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import { Payment, PaymentQuery } from "../resources/interfaces";
 import { PaymentResource } from "../resources";
 
@@ -36,10 +36,13 @@ export default class PaymentsCard extends Vue {
   @Prop()
   query?: PaymentQuery;
 
-  async mounted() {
+  @Watch("payments") onCardsChange() {
     if (this.payments) {
       this.items = this.payments;
     }
+  }
+
+  async mounted() {
     if (!this.payments && this.query) {
       this.items = await PaymentResource.query(this.query);
     }

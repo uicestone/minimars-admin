@@ -141,7 +141,7 @@
         md-button.md-success.md-block.md-raised(v-if='booking.type==="food" && booking.status==="finished"' @click="createAnother") 继续收款
 
     .md-layout-item.md-size-40.md-small-size-100.mx-auto
-      cards-card(v-if="booking.customer" title="会员卡" :query='{customer:booking.customer.id}')
+      cards-card(v-if="booking.customer" title="会员卡" :query='{customer:booking.customer.id}' :customer="booking.customer")
       payments-card(v-if="booking.customer" title="充值记录" :query='{customer:booking.customer.id, attach:"card "}')
 </template>
 

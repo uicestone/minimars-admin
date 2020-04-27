@@ -36,7 +36,7 @@
                   label(v-if="user.role === 'customer'") 会员姓名
                   label(v-else) 姓名
                   md-input(v-model='user.name')
-              .md-layout-item.md-small-size-100.md-size-25
+              .md-layout-item.md-small-size-100.md-size-25(v-if="user.role === 'customer'")
                 md-field
                   label 孩子姓名
                   md-input(v-model='user.childName')
@@ -49,7 +49,7 @@
                     md-option(value='未知') 未知
               .md-layout-item.md-small-size-100.md-size-25
                 md-field
-                  label 首选门店
+                  label 门店
                   md-select(v-model='user.store')
                     md-option 不绑定门店
                     md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
@@ -98,7 +98,7 @@
               md-button.md-raised.md-primary.mt-4(type='submit') 保存
       bookings-card(title="近期预约" :bookings="userBookings" :customer="user" v-if="user.role === 'customer'")
     .md-layout-item.md-medium-size-100.md-size-40.mx-auto(v-if="user.role === 'customer'")
-      cards-card(title="会员卡" :cards="cards" @updated="getCards" @activated="" @payment-updated="getCardPayments")
+      cards-card(title="会员卡" :cards="cards" @updated="getCards" @activated="getUser" @payment-updated="getCardPayments")
       payments-card(title="充值记录" :payments="cardPayments")
 </template>
 

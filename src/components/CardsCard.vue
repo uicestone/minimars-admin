@@ -4,11 +4,12 @@ md-card.codes-card
     .card-icon
       md-icon card_membership
     h4.title {{ title }}
-      md-menu.pull-right
+      md-menu.pull-right(v-if="cards")
         md-button.md-info.md-sm(md-menu-trigger='') 购卡
         md-menu-content
           md-menu-item(v-for='cardType in $cardTypes', :key='cardType.id', @click='createCard(cardType)') {{ cardType.title }}
           md-menu-item(@click="receiveGiftCard") 接收礼品卡
+      md-button.pull-right.md-info.md-sm(v-if="customer" @click="goToCustomer") 转到客户：{{ customer.name || customer.mobile }}
   md-card-content.md-layout
     md-table.table-full-width
       md-table-row(v-for='card in items', :key='card.id', :class="{ 'table-warning': card.status === 'pending' }")
@@ -29,8 +30,14 @@ md-card.codes-card
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
-import { Card, CardType, CardStatus, CardQuery } from "../resources/interfaces";
+import { Component, Prop, Watch } from "vue-property-decorator";
+import {
+  Card,
+  CardType,
+  CardStatus,
+  CardQuery,
+  User
+} from "../resources/interfaces";
 import { promptSelect, confirm, promptInput } from "../helpers/sweetAlert";
 import { CardResource } from "../resources";
 
@@ -42,15 +49,15 @@ export default class CardsCard extends Vue {
   @Prop({ default: () => undefined })
   cards?: Card[];
 
+  @Prop({ default: () => undefined })
+  customer?: User;
+
   items: Card[] = [];
 
   @Prop()
   query?: CardQuery;
 
   async created() {
-    if (this.cards) {
-      this.items = this.cards;
-    }
     if (!this.cards && this.query) {
       this.items = await CardResource.query(this.query);
     }
@@ -95,6 +102,17 @@ export default class CardsCard extends Vue {
     // @ts-ignore
     await CardResource.save({ giftCode, customer: this.user.id });
     this.$emit("updated");
+  }
+
+  goToCustomer() {
+    if (!this.customer) return;
+    this.$router.push(`/user/${this.customer.id}`);
+  }
+
+  @Watch("cards") onCardsChange() {
+    if (this.cards) {
+      this.items = this.cards;
+    }
   }
 }
 </script>
