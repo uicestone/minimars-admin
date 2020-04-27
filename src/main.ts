@@ -209,7 +209,10 @@ Object.defineProperty(Vue.prototype, "$gatewayNames", {
       coupon: "团购优惠券",
       scan: "现场扫码",
       card: "会员卡",
-      cash: "现金刷卡",
+      pos: "银行卡",
+      cash: "现金",
+      shouqianba: "收钱吧",
+      dianping: "点评POS",
       wechatpay: "微信小程序",
       alipay: "支付宝",
       unionpay: "银联"

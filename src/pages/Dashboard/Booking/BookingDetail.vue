@@ -109,7 +109,10 @@
                     md-select.payment-gateway-select(v-model='paymentGateway')
                       md-option(value='points', v-if='priceInPoints') 账户积分 {{ booking.customer ? booking.customer.points : ''}}
                       md-option(value='balance', v-if='booking.customer && booking.customer.balance') 账户余额 {{ booking.customer.balance }}
-                      md-option(value='cash') 现金刷卡
+                      md-option(value='dianping') 点评POS
+                      md-option(value='shouqianba') 收钱吧
+                      md-option(value='cash') 现金
+                      md-option(value='pos') 银行卡
               .md-layout.md-alignment-bottom-right(style='flex:1;flex-wrap:nowrap')
                 md-button.md-simple.md-danger(type='button', @click='remove', v-if='this.booking.id') 删除
                 md-button.md-primary(type='submit' v-if='booking.type==="play"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
