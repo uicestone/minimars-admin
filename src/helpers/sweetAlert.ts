@@ -62,7 +62,9 @@ export const promptInput = async (
   title: string,
   text: string | null = null,
   confirmText: string | null = null,
-  type = "question"
+  type = "question",
+  inputType = "text",
+  defaultValue: any = undefined
 ) => {
   const classMap = {
     success: "md-success",
@@ -75,7 +77,8 @@ export const promptInput = async (
     title,
     text,
     type,
-    input: "text",
+    input: inputType,
+    inputValue: defaultValue,
     showCancelButton: true,
     confirmButtonClass: "md-button " + classMap[type],
     cancelButtonClass: "md-button ",

@@ -119,7 +119,8 @@
                 md-button.md-warning(type='submit' v-if='booking.type==="event"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
                 md-button.md-rose(type='submit' v-if='booking.type==="gift"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
                 md-button.md-success(type='submit' v-if='booking.type==="food"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
-                md-button.md-raised.md-warning.ml-2(v-if="booking.status === 'booked' && ['play','event'].includes(booking.type)" @click="checkIn") 打印手环入场
+                md-button.md-raised.md-info.ml-2(v-if="booking.status === 'booked' && ['play','event'].includes(booking.type)" @click="printBands") 打印手环
+                md-button.md-raised.md-warning.ml-2(v-if="booking.status === 'booked' && ['play','event'].includes(booking.type)" @click="checkIn") 入场
                 md-button.md-raised.md-rose.ml-2(v-if="booking.status === 'booked' && ['gift'].includes(booking.type)" @click="redeem") 兑换
         md-card.payments-card(v-if="booking.payments.length")
           md-card-header.md-card-header-icon.md-card-header-danger
@@ -151,7 +152,8 @@
 <script lang="ts">
 import Vue from "vue";
 import { Watch, Component } from "vue-property-decorator";
-import { confirm } from "@/helpers/sweetAlert";
+import { confirm, promptInput } from "@/helpers/sweetAlert";
+import sleep from "@/helpers/sleep";
 import moment from "moment";
 import {
   BookingResource,
@@ -347,7 +349,6 @@ export default class BookingDetail extends Vue {
     if (!(await confirm("确定已入场"))) return;
     this.booking.status = BookingStatus.IN_SERVICE;
     this.booking = await BookingResource.save(this.booking);
-    this.printBands();
   }
 
   async redeem() {
@@ -360,15 +361,26 @@ export default class BookingDetail extends Vue {
     this.$router.push(`/booking/${this.$route.params.type}/add`);
   }
 
-  printBands() {
-    this.$electron?.printBands(
-      {
-        data1: this.booking.customer?.mobile || "",
-        data2:
-          this.booking.date + " " + this.booking.checkInAt?.substr(0, 5) || ""
-      },
+  async printBands() {
+    const n = await promptInput(
+      "要打印几条手环",
+      null,
+      null,
+      "question",
+      "number",
       (this.booking.adultsCount || 0) + (this.booking.kidsCount || 0)
     );
+    if (!n) return;
+    const data = {
+      data1: this.booking.customer?.mobile || "",
+      data2:
+        this.booking.date + " " + this.booking.checkInAt?.substr(0, 5) || ""
+    };
+    for (let i = 0; i < n; i++) {
+      console.log("Call electron printBands:", data, n);
+      this.$electron?.printBands(data, n);
+      await sleep(1500);
+    }
   }
 
   @Watch("$user.store") onUserStoreUpdate(s: Store) {
