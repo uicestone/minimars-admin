@@ -154,6 +154,7 @@ export default class UserProfile extends Vue {
   }
 
   async getCardPayments() {
+    if (!this.user.id) return;
     this.cardPayments = await PaymentResource.query({
       customer: this.user.id,
       attach: "card"
@@ -194,7 +195,7 @@ export default class UserProfile extends Vue {
       if (this.$route.params.id === this.$user.id) {
         this.user = this.$user;
       } else {
-        this.getUser();
+        await this.getUser();
       }
       this.getCardPayments();
       this.userBookings = await BookingResource.query({
