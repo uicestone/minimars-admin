@@ -56,7 +56,7 @@ export interface Booking extends Model {
   price?: number;
   priceInPoints?: number;
   card?: Populated<Card>;
-  coupon?: string;
+  coupon?: Populated<Coupon>;
   event?: Populated<Event>;
   gift?: Populated<Gift>;
   quantity?: number;

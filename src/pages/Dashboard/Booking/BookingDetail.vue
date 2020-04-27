@@ -91,6 +91,14 @@
                 md-textarea.no-padding(v-model='booking.remarks')
             .md-layout-item.md-size-100.card.mt-4
               div(v-if="!booking.id")
+                md-button(:class="{'md-primary':usingCoupon(coupon)}" v-for='coupon in coupons', :key='coupon.id', :value='coupon.id', @click='useCoupon(coupon)')
+                  span {{ coupon.title }}
+                  span.ml-1(v-if="coupon.priceThirdParty")  {{ coupon.priceThirdParty }}
+              div(v-else)
+                md-button.md-primary(v-if="booking.coupon")
+                  | {{ booking.coupon.title }}
+            .md-layout-item.md-size-100.card.mt-4
+              div(v-if="!booking.id")
                 p(v-if="booking.customer && !customerCards.length") 无有效会员卡
                 md-button(:class="{'md-primary':usingCard(card)}" v-for='card in customerCards', v-if='booking.type === "play" && card.store === booking.store', :key='card.id', :value='card.id', @click='useCard(card)')
                   | {{ card.title }} {{card.timesLeft?'剩余'+card.timesLeft+'次':''}}
@@ -119,7 +127,7 @@
                 md-button.md-warning(type='submit' v-if='booking.type==="event"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
                 md-button.md-rose(type='submit' v-if='booking.type==="gift"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
                 md-button.md-success(type='submit' v-if='booking.type==="food"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
-                md-button.md-raised.md-info.ml-2(v-if="booking.status === 'booked' && ['play','event'].includes(booking.type)" @click="printBands") 打印手环
+                md-button.md-raised.md-info.ml-2(v-if="['booked','in_service'].includes(booking.status) && ['play','event'].includes(booking.type)" @click="printBands") 打印手环
                 md-button.md-raised.md-warning.ml-2(v-if="booking.status === 'booked' && ['play','event'].includes(booking.type)" @click="checkIn") 入场
                 md-button.md-raised.md-rose.ml-2(v-if="booking.status === 'booked' && ['gift'].includes(booking.type)" @click="redeem") 兑换
         md-card.payments-card(v-if="booking.payments.length")
@@ -162,7 +170,8 @@ import {
   EventResource,
   GiftResource,
   PaymentResource,
-  CardResource
+  CardResource,
+  CouponResource
 } from "@/resources";
 import {
   User,
@@ -173,7 +182,8 @@ import {
   Booking,
   BookingType,
   BookingStatus,
-  Payment
+  Payment,
+  Coupon
 } from "@/resources/interfaces";
 import { CardsCard, PaymentsCard } from "@/components";
 
@@ -191,6 +201,7 @@ export default class BookingDetail extends Vue {
   customerSearchTerm = "";
   events: Event[] = [];
   gifts: Gift[] = [];
+  coupons: Coupon[] = [];
   customerCards: Card[] = [];
   eventSearchTerm: string | null = null;
   giftSearchTerm: string | null = null;
@@ -302,17 +313,32 @@ export default class BookingDetail extends Vue {
     this.priceInPoints = priceInPoints || null;
   }
 
-  useCard(card: Card) {
+  useCard(card?: Card | false) {
     if (!card || this.usingCard(card)) {
       console.log("UseCard null");
       this.booking.card = null;
     } else {
+      this.useCoupon(false);
       this.booking.card = card;
     }
   }
 
   usingCard(card: Card) {
     return this.booking.card?.id === card.id;
+  }
+
+  useCoupon(coupon?: Coupon | false) {
+    if (!coupon || this.usingCoupon(coupon)) {
+      console.log("UseCoupon null");
+      this.booking.coupon = null;
+    } else {
+      this.useCard(false);
+      this.booking.coupon = coupon;
+    }
+  }
+
+  usingCoupon(coupon: Coupon) {
+    return this.booking.coupon?.id === coupon.id;
   }
 
   async pay(payment: Payment) {
@@ -390,9 +416,9 @@ export default class BookingDetail extends Vue {
   @Watch("booking", { deep: true, immediate: true })
   onBookingUpdate(b: Booking, p: Booking) {
     console.log("Booking updated", b, p);
-    if (!b.id) {
-      this.updateBookingPrice();
-    }
+    // if (!b.id) {
+    this.updateBookingPrice();
+    // }
   }
   @Watch("booking.customer") onBookingCustomerUpdate() {
     if (this.booking.id) return;
@@ -459,6 +485,7 @@ export default class BookingDetail extends Vue {
       id: "",
       customer: null,
       card: null,
+      coupon: null,
       event: null,
       gift: null,
       type: (this.$route.params.type as BookingType) || BookingType.PLAY,
@@ -484,6 +511,7 @@ export default class BookingDetail extends Vue {
         this.getGifts();
         this.booking.quantity = 1;
       }
+      this.coupons = await CouponResource.query();
       this.updateBookingPrice();
     } else {
       this.booking = await BookingResource.get({ id: this.$route.params.id });
