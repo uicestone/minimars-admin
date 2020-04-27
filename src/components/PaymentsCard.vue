@@ -6,7 +6,7 @@ md-card.payments-card
     h4.title {{ title }}
   md-card-content.md-layout
     md-table
-      md-table-row(v-for='payment in items', :key='payment.id')
+      md-table-row(v-for='payment in payments', :key='payment.id')
         md-table-cell(md-label='创建时间')
           | {{ payment.createdAt | date("YY/MM/DD") }}
         md-table-cell(md-label='金额') ¥{{ payment.amount }}
@@ -19,48 +19,19 @@ md-card.payments-card
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
-import { Payment, PaymentQuery } from "../resources/interfaces";
-import { PaymentResource } from "../resources";
-import { confirm } from "../helpers/sweetAlert";
+import { Component, Prop } from "vue-property-decorator";
+import { Payment } from "../resources/interfaces";
 
 @Component
 export default class PaymentsCard extends Vue {
   @Prop({ default: "付款记录" })
   title!: string;
 
-  @Prop()
-  payments?: Payment[];
+  @Prop({ default: () => [] })
+  payments!: Payment[];
 
-  items?: Payment[] = [];
-
-  @Prop()
-  query?: PaymentQuery;
-
-  @Watch("payments") onCardsChange() {
-    if (this.payments) {
-      this.items = this.payments;
-    }
-  }
-
-  async pay(payment: Payment) {
-    if (
-      !(await confirm(
-        `确定已收款 ¥${payment.amount.toFixed(2)}`,
-        null,
-        "确定已收款"
-      ))
-    )
-      return;
-    await PaymentResource.update({ id: payment.id }, { paid: true });
-    this.$emit("updated");
-  }
-
-  async mounted() {
-    if (!this.payments && this.query) {
-      this.items = await PaymentResource.query(this.query);
-    }
-  }
+  @Prop({ default: () => {} })
+  pay!: Function;
 }
 </script>
 

@@ -28,7 +28,7 @@
               md-input(type='search', clearable='', v-model='searchQuery.customerKeyword')
             md-field.md-layout-item.md-size-20.md-xsmall-size-100
               label 筛选状态
-              md-select(v-model='searchQuery.status', multiple='')
+              md-select(v-model='searchQuery.status', multiple)
                 md-option(v-for='(name, status) in $bookingStatusNames', :key='status', :value='status') {{ name }}
           .toolbar-actions
             md-button.md-primary(v-if='type==="play"', @click='showCreate("play")')
@@ -119,6 +119,7 @@ export default class BookingList extends List<Booking> {
       date: this.$route.query.customer
         ? undefined
         : moment().format("YYYY-MM-DD"),
+      status: [],
       customer: this.$route.query.customer as string,
       customerKeyword: ""
     };

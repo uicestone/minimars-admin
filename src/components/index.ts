@@ -37,6 +37,7 @@ import AnimatedNumber from "./AnimatedNumber.vue";
 import CardsCard from "./CardsCard.vue";
 import PaymentsCard from "./PaymentsCard.vue";
 import BookingsCard from "./BookingsCard.vue";
+import Membership from "./Membership.vue";
 
 export {
   IconCheckbox,
@@ -68,5 +69,6 @@ export {
   Poster,
   CardsCard,
   PaymentsCard,
-  BookingsCard
+  BookingsCard,
+  Membership
 };

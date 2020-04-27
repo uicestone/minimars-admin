@@ -26,9 +26,10 @@ export default class List<M extends Model> extends Vue {
     { $headers: {} },
     []
   );
-  minQueryInterval = 100;
+  minQueryInterval = 0;
   queryCoolingDown = false;
   activated() {
+    console.log("activated", JSON.stringify(this.searchQuery));
     this.queryData();
   }
   get query() {
@@ -94,10 +95,14 @@ export default class List<M extends Model> extends Vue {
   }
   @Watch("pagination.currentPage")
   onCurrentPageUpdate() {
+    console.log("onCurrentPageUpdate");
     this.queryData();
   }
   @Watch("searchQuery", { deep: true })
-  onSearchQueryUpdate() {
+  onSearchQueryUpdate(n: Record<string, any>, o: Record<string, any>) {
+    // for first time init, query is done in activated
+    if (Object.keys(o).length === 0) return;
+    console.log("onSearchQueryUpdate", JSON.stringify(n), JSON.stringify(o));
     clearTimeout(this.searchDelayTimeout);
     this.searchDelayTimeout = setTimeout(() => {
       this.queryData();
@@ -105,10 +110,12 @@ export default class List<M extends Model> extends Vue {
   }
   @Watch("currentSort")
   onCurrentSortUpdate() {
+    console.log("onCurrentSortUpdate");
     this.queryData();
   }
   @Watch("currentSortOrder")
   onCurrentSortOrderUpdate() {
+    console.log("onCurrentSortOrderUpdate");
     this.queryData();
   }
 }

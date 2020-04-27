@@ -19,12 +19,12 @@
                 md-option(v-for="(name, type) in { admin: '管理员', manager: '店员', customer: '客户' }", :key='type', :value='type') {{ name }}
             //- md-field.md-layout-item.md-size-20.md-xsmall-size-100(v-if="searchQuery.role === 'customer'")
               label 会员类型
-              md-select(v-model='searchQuery.membership', multiple='')
+              md-select(v-model='searchQuery.membership', multiple)
                 md-option(value='code') 次卡
                 md-option(value='deposit') 充值
             //- md-field.md-layout-item.md-size-20.md-xsmall-size-100(v-if="searchQuery.role === 'customer'")
               label 会员等级
-              md-select(v-model='searchQuery.cardTypes', multiple='')
+              md-select(v-model='searchQuery.cardTypes', multiple)
                 md-option(v-for='level in $config.depositLevels', :key='level.slug', :value='level.cardType') {{ level.cardType }}
           .toolbar-actions
             md-button.md-primary(@click='showCreate')

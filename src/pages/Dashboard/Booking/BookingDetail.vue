@@ -22,7 +22,7 @@
             h4.title 餐饮消费 {{ booking.id.substr(-4).toUpperCase() }}
           md-card-content.md-layout
             .md-layout-item.md-small-size-100.md-size-50
-              md-autocomplete(v-model='customerSearchTerm', :md-options='booking.id?[]:getCustomers(customerSearchTerm)', @md-selected='selectCustomer' @keypress.enter.native.prevent, :disabled="!!booking.id" autocomplete="none")
+              md-autocomplete(v-model='customerSearchTerm', :md-options='customers', @md-selected='selectCustomer' @keypress.enter.native.prevent, :disabled="!!booking.id" autocomplete="none")
                 label 客户
                 template(slot='md-autocomplete-item', slot-scope='{ item }') {{ item.mobile + (item.name ? ` ${item.name}` : '') }}
             .md-layout-item.md-small-size-50.md-size-25
@@ -94,21 +94,21 @@
               md-field
                 label 备注
                 md-textarea.no-padding(v-model='booking.remarks')
-            .md-layout-item.md-size-100.card.mt-4
+            .md-layout-item.md-size-100.card.mt-4(v-if="booking.type === 'play'")
               div(v-if="!booking.id")
-                md-button(:class="{'md-primary':usingCoupon(coupon)}" v-for='coupon in coupons', :key='coupon.id', :value='coupon.id', @click='useCoupon(coupon)')
+                md-button.md-lg-n.mr-1(:class="{'md-warning':usingCoupon(coupon)}" v-for='coupon in coupons', :key='coupon.id', :value='coupon.id', @click='useCoupon(coupon)')
                   span {{ coupon.title }}
                   span.ml-1(v-if="coupon.priceThirdParty")  {{ coupon.priceThirdParty }}
               div(v-else)
-                md-button.md-primary(v-if="booking.coupon")
+                md-button.md-lg-n.md-warning(v-if="booking.coupon")
                   | {{ booking.coupon.title }}
-            .md-layout-item.md-size-100.card.mt-4
+            .md-layout-item.md-size-100.card.mt-4(v-if="booking.type === 'play'")
               div(v-if="!booking.id")
                 p(v-if="booking.customer && !customerCards.length") 无有效会员卡
-                md-button(:class="{'md-primary':usingCard(card)}" v-for='card in customerCards', v-if='booking.type === "play" && card.store === booking.store', :key='card.id', :value='card.id', @click='useCard(card)')
+                md-button.md-lg-n.mr-1(:class="{'md-info':usingCard(card)}" v-for='card in customerCards', v-if='booking.type === "play" && (!card.store || card.store === booking.store)', :key='card.id', :value='card.id', @click='useCard(card)')
                   | {{ card.title }} {{card.timesLeft?'剩余'+card.timesLeft+'次':''}}
               div(v-else)
-                md-button.md-primary(v-if="booking.card")
+                md-button.md-lg-n.md-info(v-if="booking.card")
                   | {{ booking.card.title }} {{booking.card.timesLeft?'剩余'+booking.card.timesLeft+'次':''}}
             .md-layout-item.md-layout.md-alignment-bottom-space-between.md-size-100.text-right.mt-2
               .md-layout.md-alignment-bottom-left.pl-0(style='flex:1;flex-wrap:nowrap')
@@ -127,7 +127,7 @@
                       md-option(value='cash') 现金
                       md-option(value='pos') 银行卡
               .md-layout.md-alignment-bottom-right(style='flex:1;flex-wrap:nowrap')
-                md-button.md-simple.md-danger(type='button', @click='remove', v-if='this.booking.id') 删除
+                md-button.md-simple.md-danger(type='button', @click='remove', v-if='this.booking.id && $user.can("manage-booking")') 删除
                 md-button.md-primary(type='submit' v-if='booking.type==="play"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
                 md-button.md-warning(type='submit' v-if='booking.type==="event"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
                 md-button.md-rose(type='submit' v-if='booking.type==="gift"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
@@ -157,9 +157,8 @@
                   md-button.md-normal.md-warning(v-else, @click='pay(payment)') 收款
         md-button.md-success.md-block.md-raised(v-if='booking.type==="food" && booking.status==="finished"' @click="createAnother") 继续收款
 
-    .md-layout-item.md-size-40.md-small-size-100.mx-auto(v-if="booking.customer")
-      cards-card(title="会员卡" :query='{customer:booking.customer.id}' :customer="booking.customer")
-      payments-card(title="充值记录" :query='{customer:booking.customer.id, attach:"card "}')
+    .md-layout-item.md-size-40.md-small-size-100.mx-auto(v-if="booking.type==='play' && booking.customer")
+      membership(:customer="booking.customer")
 </template>
 
 <script lang="ts">
@@ -190,12 +189,11 @@ import {
   Payment,
   Coupon
 } from "@/resources/interfaces";
-import { CardsCard, PaymentsCard } from "@/components";
+import { Membership } from "@/components";
 
 @Component({
   components: {
-    CardsCard,
-    PaymentsCard
+    Membership
   }
 })
 export default class BookingDetail extends Vue {
@@ -218,6 +216,15 @@ export default class BookingDetail extends Vue {
       (this.booking.adultsCount || 0) -
       (this.booking.bandsPrinted || 0)
     );
+  }
+
+  get priceRelatedBookingProperties() {
+    return [
+      this.booking.card,
+      this.booking.coupon,
+      this.booking.kidsCount,
+      this.booking.adultsCount
+    ];
   }
 
   async save() {
@@ -318,7 +325,7 @@ export default class BookingDetail extends Vue {
       this.booking.kidsCount === undefined
     )
       return;
-    console.log("update booking price:", this.booking);
+    console.log("Update booking price:", this.booking);
     const { price, priceInPoints } = await BookingPriceResource.create(
       this.booking
     );
@@ -431,9 +438,9 @@ export default class BookingDetail extends Vue {
     this.booking.store = s;
   }
 
-  @Watch("booking", { deep: true, immediate: true })
-  onBookingUpdate(b: Booking, p: Booking) {
-    console.log("Booking updated", b, p);
+  @Watch("priceRelatedBookingProperties")
+  onBookingPriceUpdate(b: any, p: any) {
+    console.log("Booking updated", JSON.stringify(b), JSON.stringify(p));
     // if (!b.id) {
     this.updateBookingPrice();
     // }
@@ -475,6 +482,17 @@ export default class BookingDetail extends Vue {
       this.booking.gift = null;
       this.giftSearchTerm = null;
     }
+  }
+  @Watch("customerSearchTerm") onCustomerSearchTermUpdate(
+    t: string,
+    pt: string
+  ) {
+    console.log("onCustomerSearchTermUpdate", t, pt);
+    if (t === null) return;
+    this.getCustomers(t);
+    // if (!t) {
+    //   this.booking.customer = null;
+    // }
   }
   @Watch("eventSearchTerm") onEventSearchTermUpdate(t: string) {
     if (t === null) return;
@@ -531,7 +549,7 @@ export default class BookingDetail extends Vue {
         this.booking.quantity = 1;
       }
       this.coupons = await CouponResource.query();
-      this.updateBookingPrice();
+      // this.updateBookingPrice();
     } else {
       this.booking = await BookingResource.get({ id: this.$route.params.id });
       if (this.booking.customer)

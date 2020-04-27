@@ -102,36 +102,24 @@
               md-button.md-raised.md-primary.mt-4(type='submit') 保存
       bookings-card(title="近期预约" :bookings="userBookings" :customer="user" v-if="user.role === 'customer'")
     .md-layout-item.md-medium-size-100.md-size-40.mx-auto(v-if="user.role === 'customer'")
-      cards-card(title="会员卡" :customer="user" :cards="cards" @updated="getCards" @activated="getUser" @paymentUpdated="getCardPayments")
-      payments-card(title="充值记录" :payments="cardPayments" @updated="getCards();getCardPayments()")
+      membership(:customer="user" @updated="getUser")
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { Watch, Component } from "vue-property-decorator";
-import { BookingsCard, CardsCard, PaymentsCard } from "@/components";
-import {
-  BookingResource,
-  PaymentResource,
-  CardResource,
-  UserResource
-} from "@/resources";
-import { User, Card, Store, Payment, Booking } from "@/resources/interfaces";
-import { confirm } from "@/helpers/sweetAlert";
+import { BookingsCard, Membership } from "@/components";
+import { BookingResource, UserResource } from "@/resources";
+import { User, Store, Booking } from "@/resources/interfaces";
 
 @Component({
   components: {
     BookingsCard,
-    CardsCard,
-    PaymentsCard
+    Membership
   }
 })
 export default class UserProfile extends Vue {
-  user: Partial<User> = {
-    role: this.$user.role === "manager" ? "customer" : undefined
-  };
-  cards: Card[] = [];
-  cardPayments: Payment[] = [];
+  user: Partial<User> = {};
   userBookings: Booking[] = [];
 
   async save() {
@@ -153,19 +141,8 @@ export default class UserProfile extends Vue {
     return this.user;
   }
 
-  async getCardPayments() {
-    if (!this.user.id) return;
-    this.cardPayments = await PaymentResource.query({
-      customer: this.user.id,
-      attach: "card"
-    });
-  }
-
-  async getCards() {
-    this.cards = await CardResource.query({
-      customer: this.user.id,
-      status: "pending,valid,activated,expired"
-    });
+  @Watch("user") onUserUpdate(u: any, pu: any) {
+    console.log("onUserUpdate", JSON.stringify(u), JSON.stringify(pu));
   }
 
   @Watch("user.store") onUserStoreUpdate(store: Store | false) {
@@ -176,18 +153,21 @@ export default class UserProfile extends Vue {
       this.user.store = null;
     }
   }
-  async mounted() {
+
+  async created() {
+    if (this.$user.role === "manager") {
+      this.user.role = "customer";
+    }
+
     if (this.$route.params.id !== "add") {
       if (this.$route.params.id === this.$user.id) {
         this.user = this.$user;
       } else {
         await this.getUser();
       }
-      this.getCardPayments();
       this.userBookings = await BookingResource.query({
         customer: this.user.id
       });
-      this.getCards();
     }
   }
 }
