@@ -53,11 +53,15 @@
                   md-select(v-model='user.store')
                     md-option 不绑定门店
                     md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
-              .md-layout-item.md-small-size-100.md-size-50
+              .md-layout-item.md-small-size-100.md-size-33
                 md-field
                   label 手机号
                   md-input(v-model='user.mobile', type='text')
-              .md-layout-item.md-small-size-100.md-size-50
+              .md-layout-item.md-small-size-100.md-size-33(v-if="user.role === 'customer'")
+                md-field
+                  label 卡号
+                  md-input(v-model='user.cardNo')
+              .md-layout-item.md-small-size-100.md-size-33
                 md-field
                   label 身份证号
                   md-input(v-model='user.idCardNo')
