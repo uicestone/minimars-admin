@@ -102,6 +102,18 @@ export interface CardType extends Model {
   freeParentsPerKid: number;
 }
 
+export interface Coupon extends Model {
+  title: string;
+  store?: Populated<Store>;
+  content: string;
+  kidsCount: number;
+  price: number;
+  priceThirdParty: number;
+  freeParentsPerKid: number;
+  start: Date;
+  end: Date;
+}
+
 export interface Config {
   depositLevels?: {
     slug: string;

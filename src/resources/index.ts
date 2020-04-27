@@ -10,7 +10,8 @@ import {
   Payment,
   Post,
   Store,
-  ConfigItem
+  ConfigItem,
+  Coupon
 } from "./interfaces";
 
 export const http = Axios.create({
@@ -27,6 +28,8 @@ export const BookingPriceResource = new Resource<Booking>(
 export const CardResource = new Resource<Card>(http, "card/{id}");
 
 export const CardTypeResource = new Resource<CardType>(http, "card-type/{id}");
+
+export const CouponResource = new Resource<Coupon>(http, "coupon/{id}");
 
 export const ConfigItemResource = new Resource<ConfigItem>(
   http,

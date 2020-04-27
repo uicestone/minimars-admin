@@ -15,6 +15,8 @@ const CardTypeDetail = () =>
   import("@/pages/Dashboard/CardType/CardTypeDetail.vue");
 const CardTypeList = () =>
   import("@/pages/Dashboard/CardType/CardTypeList.vue");
+const CouponDetail = () => import("@/pages/Dashboard/Coupon/CouponDetail.vue");
+const CouponList = () => import("@/pages/Dashboard/Coupon/CouponList.vue");
 const EventDetail = () => import("@/pages/Dashboard/Event/EventDetail.vue");
 const EventList = () => import("@/pages/Dashboard/Event/EventList.vue");
 const GiftDetail = () => import("@/pages/Dashboard/Gift/GiftDetail.vue");
@@ -95,6 +97,27 @@ const cardTypeMenu: RouteConfig = {
       path: ":id",
       name: "卡种详情",
       component: CardTypeDetail
+    }
+  ]
+};
+
+const couponMenu: RouteConfig = {
+  path: "/coupon",
+  component: DashboardLayout,
+  redirect: "/coupon/index",
+  children: [
+    {
+      path: "index",
+      name: "优惠",
+      component: CouponList,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: ":id",
+      name: "优惠详情",
+      component: CouponDetail
     }
   ]
 };
@@ -267,6 +290,7 @@ const routes: RouteConfig[] = [
   },
   bookingMenu,
   cardTypeMenu,
+  couponMenu,
   eventMenu,
   giftMenu,
   paymentMenu,
