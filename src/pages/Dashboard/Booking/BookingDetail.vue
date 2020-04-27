@@ -407,7 +407,10 @@ export default class BookingDetail extends Vue {
       null,
       "question",
       "number",
-      this.bandsPrintable
+      this.bandsPrintable,
+      v => {
+        if (v > this.bandsPrintable) return "超过可打印手环数";
+      }
     ));
     if (!n) return;
     const data = {
