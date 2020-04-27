@@ -61,6 +61,11 @@
                   label 儿童
                   md-input(v-model='booking.kidsCount', type='number', min='0')
                   span.md-suffix 位
+              .md-layout-item(style="flex:1;min-width:33%" v-if="['play','event'].includes(booking.type)")
+                md-field.md-has-value
+                  label 已打印手环
+                  md-input(v-model='booking.bandsPrinted', type='number', min='0' disabled)
+                  span.md-suffix 条
               .md-layout-item(style="flex:1;min-width:33%" v-if="['food'].includes(booking.type)")
                 md-field
                   label 金额
@@ -127,7 +132,7 @@
                 md-button.md-warning(type='submit' v-if='booking.type==="event"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
                 md-button.md-rose(type='submit' v-if='booking.type==="gift"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
                 md-button.md-success(type='submit' v-if='booking.type==="food"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
-                md-button.md-raised.md-info.ml-2(v-if="['booked','in_service'].includes(booking.status) && ['play','event'].includes(booking.type)" @click="printBands") 打印手环
+                md-button.md-raised.md-info.ml-2(v-if="bandsPrintable > 0 && ['booked','in_service'].includes(booking.status) && ['play','event'].includes(booking.type)" @click="printBands") 打印手环
                 md-button.md-raised.md-warning.ml-2(v-if="booking.status === 'booked' && ['play','event'].includes(booking.type)" @click="checkIn") 入场
                 md-button.md-raised.md-rose.ml-2(v-if="booking.status === 'booked' && ['gift'].includes(booking.type)" @click="redeem") 兑换
         md-card.payments-card(v-if="booking.payments.length")
@@ -206,6 +211,14 @@ export default class BookingDetail extends Vue {
   eventSearchTerm: string | null = null;
   giftSearchTerm: string | null = null;
   paymentGateway: string | null = null;
+
+  get bandsPrintable() {
+    return (
+      (this.booking.kidsCount || 0) +
+      (this.booking.adultsCount || 0) -
+      (this.booking.bandsPrinted || 0)
+    );
+  }
 
   async save() {
     const { paymentGateway } = this;
@@ -372,7 +385,7 @@ export default class BookingDetail extends Vue {
   }
 
   async checkIn() {
-    if (!(await confirm("确定已入场"))) return;
+    if (!(await confirm("确定已入场", "确定至少1位客人已经入场"))) return;
     this.booking.status = BookingStatus.IN_SERVICE;
     this.booking = await BookingResource.save(this.booking);
   }
@@ -388,14 +401,14 @@ export default class BookingDetail extends Vue {
   }
 
   async printBands() {
-    const n = await promptInput(
+    const n = +(await promptInput(
       "要打印几条手环",
-      null,
+      `可打印手环：${this.bandsPrintable}条`,
       null,
       "question",
       "number",
-      (this.booking.adultsCount || 0) + (this.booking.kidsCount || 0)
-    );
+      this.bandsPrintable
+    ));
     if (!n) return;
     const data = {
       data1: this.booking.customer?.mobile || "",
@@ -407,6 +420,8 @@ export default class BookingDetail extends Vue {
       this.$electron?.printBands(data, n);
       await sleep(1500);
     }
+    this.booking.bandsPrinted = (this.booking.bandsPrinted || 0) + n;
+    this.booking = await BookingResource.save(this.booking);
   }
 
   @Watch("$user.store") onUserStoreUpdate(s: Store) {
@@ -495,6 +510,7 @@ export default class BookingDetail extends Vue {
       adultsCount: 1,
       kidsCount: 1,
       socksCount: 1,
+      bandsPrinted: 0,
       store: this.$user.store,
       payments: []
     };

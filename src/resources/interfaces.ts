@@ -52,6 +52,7 @@ export interface Booking extends Model {
   adultsCount: number;
   kidsCount: number;
   socksCount: number;
+  bandsPrinted: number;
   status: BookingStatus;
   price?: number;
   priceInPoints?: number;

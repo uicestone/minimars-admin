@@ -397,7 +397,7 @@ select.form-control {
   }
 
   &.md-has-textarea:not(.md-autogrow).md-focused .md-textarea, &.md-has-textarea:not(.md-autogrow).md-has-value .md-textarea{
-    padding-top: 20px;
+    padding: 24px 5px 0;
   }
 
   &.md-valid{
