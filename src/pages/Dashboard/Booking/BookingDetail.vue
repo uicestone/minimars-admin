@@ -99,7 +99,7 @@
             .md-layout-item.md-size-100.card.mt-4(v-if="booking.type === 'play'")
               div(v-if="!booking.id")
                 p(v-if="booking.customer && !customerCards.length") 无有效会员卡
-                md-button.md-lg-n.mr-1(:class="{'md-info':usingCard(card)}" v-for='card in customerCards', v-if='booking.type === "play" && (!card.store || card.store === booking.store)', :key='card.id', :value='card.id', @click='useCard(card)')
+                md-button.md-lg-n.mr-1(:class="{'md-info':usingCard(card)}" v-for='card in customerCards', v-if='booking.type === "play" && (!card.store || card.store === booking.store.id)', :key='card.id', :value='card.id', @click='useCard(card)')
                   | {{ card.title }} {{card.timesLeft?'剩余'+card.timesLeft+'次':''}}
               div(v-else)
                 md-button.md-lg-n.md-info(v-if="booking.card")
