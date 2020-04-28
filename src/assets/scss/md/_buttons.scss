@@ -146,7 +146,14 @@
     &.md-lg-n .md-ripple{
       font-size: $mdb-btn-font-size-lg;
       padding: 18px !important;
-  }
+    }
+    &.md-n {
+      min-width: 70px;
+      .md-ripple{
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+      }
+    }
     &.md-sm .md-ripple{
         padding: 0.40625rem 1.25rem !important;
         font-size: $mdb-btn-font-size-sm;

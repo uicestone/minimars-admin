@@ -46,9 +46,7 @@
             md-table-cell(md-label='门店', md-sort-by='store.name')
               | {{ item.store.name }}
             md-table-cell(md-label='客户', md-sort-by='customer.name', @click.native.stop='goToCustomer(item.customer)', style='min-width:120px')
-              | {{ item.customer.name }}
-              span(v-if='item.customer.mobile')
-                | {{ item.customer.mobile.substr(-4) }}
+              | {{ item.customer.mobile }}
               md-icon.mini keyboard_arrow_right
             md-table-cell(md-label='状态', md-sort-by='status')
               | {{ item.status | bookingStatusName }}
@@ -59,10 +57,9 @@
             md-table-cell(md-label='大 / 小', md-sort-by='adultsCount') {{ item.adultsCount }} / {{ item.kidsCount }}
             md-table-cell(md-label='收款', md-sort-by='socksCount')
               | {{ item.payments | paidAmount | currency }}
-            md-table-cell(md-label='优惠/券码', md-sort-by='coupon')
-              span(v-if='item.coupon') {{ item.coupon | couponName }}
-              span(v-else-if='item.code')
-                | {{ `${item.code.title} ${item.code.id.substr(-6).toUpperCase()}` }}
+            md-table-cell(md-label='优惠/会员卡', md-sort-by='coupon')
+              span(v-if='item.coupon') {{ item.coupon.title }}
+              span(v-else-if='item.card') {{ item.card.title }}
               span(v-else) -
             md-table-cell(md-label='创建时间', md-sort-by='createdAt')
               | {{ item.createdAt | date }}
