@@ -41,7 +41,7 @@
               | {{ item.mobile }}
             md-table-cell(md-label='地区', md-sort-by='region')
               | {{ item.region }}
-            md-table-cell(md-label='等级', md-sort-by='cardType', v-if="searchQuery.role === 'customer'") {{ item.cardType }}
+            md-table-cell(md-label='会员类型', md-sort-by='cardType', v-if="searchQuery.role === 'customer'") {{ item.cardType }}
             md-table-cell(md-label='余额', md-sort-by='balanceDeposit', v-if="searchQuery.role === 'customer'")
               div(v-if='item.balance')
                 | {{ item.balanceDeposit }} 赠{{ item.balanceReward }}

@@ -16,6 +16,8 @@
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
             md-table-cell(md-label='名称', md-sort-by='title')
               | {{ item.title }}
+            md-table-cell(md-label='门店', md-sort-by='type')
+              | {{ item.store ? item.store.name : '通用' }}
             md-table-cell(md-label='类型', md-sort-by='type')
               | {{ item.type | cardTypeName }}
             md-table-cell(md-label='售价', md-sort-by='price')
