@@ -22,9 +22,9 @@
             h4.title 餐饮消费 {{ booking.id.substr(-4).toUpperCase() }}
           md-card-content.md-layout
             .md-layout-item.md-small-size-100.md-size-50
-              md-autocomplete(v-model='customerSearchTerm', :md-options='customers', @md-selected='selectCustomer' @keypress.enter.native.prevent, :disabled="!!booking.id" autocomplete="none")
+              md-field
                 label 客户
-                template(slot='md-autocomplete-item', slot-scope='{ item }') {{ item.mobile + (item.name ? ` ${item.name}` : '') }}
+                md-input(v-model='customerSearchTerm' :disabled="!!booking.id")
             .md-layout-item.md-small-size-50.md-size-25
               md-field
                 label 门店
@@ -48,12 +48,12 @@
               .md-layout-item(style="flex:1;min-width:33%" v-if="['play','event'].includes(booking.type)")
                 md-field
                   label 成人
-                  md-input(v-model='booking.adultsCount', type='number', min='0' :disabled="booking.id")
+                  md-input(v-model='booking.adultsCount', type='number', min='0' :disabled="!!booking.id")
                   span.md-suffix 位
               .md-layout-item(style="flex:1;min-width:33%" v-if="['play','event'].includes(booking.type)")
                 md-field
                   label 儿童
-                  md-input(v-model='booking.kidsCount', type='number', min='0' :disabled="booking.id")
+                  md-input(v-model='booking.kidsCount', type='number', min='0' :disabled="!!booking.id")
                   span.md-suffix 位
               .md-layout-item(style="flex:1;min-width:33%" v-if="['play','event'].includes(booking.type)")
                 md-field.md-has-value
@@ -122,7 +122,8 @@
                       md-option(value='pos') 银行卡
               .md-layout.md-alignment-bottom-right(style='flex:1;flex-wrap:nowrap')
                 md-button.md-simple.md-danger(type='button', @click='remove', v-if='this.booking.id && $user.can("manage-booking")') 删除
-                md-button.md-primary(type='submit' v-if='booking.type==="play"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
+                md-button.md-primary.md-raised(type='submit' v-if='booking.type==="play" && !booking.id') 保存并入场
+                md-button.md-primary.md-simple(type='submit' v-if='booking.type==="play" && booking.id') 保存
                 md-button.md-warning(type='submit' v-if='booking.type==="event"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
                 md-button.md-rose(type='submit' v-if='booking.type==="gift"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
                 md-button.md-success(type='submit' v-if='booking.type==="food"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
@@ -158,7 +159,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Watch, Component } from "vue-property-decorator";
-import { confirm, promptInput } from "@/helpers/sweetAlert";
+import { confirm, promptInput, promptSelect } from "@/helpers/sweetAlert";
 import sleep from "@/helpers/sleep";
 import moment from "moment";
 import {
@@ -195,7 +196,6 @@ export default class BookingDetail extends Vue {
   booking: Partial<Booking> = {};
   price: number | null = null;
   priceInPoints: number | null = null;
-  customers: User[] = [];
   customerSearchTerm = "";
   events: Event[] = [];
   gifts: Gift[] = [];
@@ -226,10 +226,24 @@ export default class BookingDetail extends Vue {
 
   async save() {
     const { paymentGateway } = this;
+
+    if (
+      !this.booking.id &&
+      !(await confirm(
+        "确定已收款/验券",
+        `支付方式：${this.$gatewayNames[paymentGateway || ""]}`
+      ))
+    ) {
+      return;
+    }
+
+    this.booking.status = BookingStatus.IN_SERVICE;
+
     this.booking = await BookingResource.save(this.booking, {
       paymentGateway,
       customerKeyword: this.customerSearchTerm
     });
+
     this.$notify({
       message: "保存成功",
       icon: "check",
@@ -257,29 +271,27 @@ export default class BookingDetail extends Vue {
     this.$router.go(-1);
   }
 
-  async getCustomers(q: string) {
+  async searchCustomer(q: string) {
     if (!q) {
       this.booking.customer = null;
+      return;
     }
     if (
-      !q ||
       q.length < 2 ||
-      (this.booking.customer && q === this.booking.customer.name)
-    ) {
-      if (this.customers.length) {
-        this.customers = [];
-      }
-    } else
-      this.customers = await UserResource.query({
-        role: "customer",
-        keyword: q
-      });
-    return this.customers;
-  }
-
-  selectCustomer(item: User) {
-    this.booking.customer = item;
-    this.customerSearchTerm = item.mobile || "";
+      (this.booking.customer && q === this.booking.customer.mobile)
+    )
+      return;
+    const customers = await UserResource.query({
+      role: "customer",
+      keyword: q
+    });
+    if (customers.length === 1) {
+      this.booking.customer = customers[0];
+      console.log(`Customer set to ${customers[0].id} ${customers[0].mobile}`);
+    } else if (this.booking.customer) {
+      this.booking.customer = null;
+      console.log("Customer cleared.");
+    }
   }
 
   async getEvents(q?: string) {
@@ -502,16 +514,8 @@ export default class BookingDetail extends Vue {
       this.giftSearchTerm = null;
     }
   }
-  @Watch("customerSearchTerm") onCustomerSearchTermUpdate(
-    t: string,
-    pt: string
-  ) {
-    console.log("onCustomerSearchTermUpdate", t, pt);
-    if (t === null) return;
-    this.getCustomers(t);
-    // if (!t) {
-    //   this.booking.customer = null;
-    // }
+  @Watch("customerSearchTerm") onCustomerSearchTermUpdate(t: string) {
+    this.searchCustomer(t);
   }
   @Watch("eventSearchTerm") onEventSearchTermUpdate(t: string) {
     if (t === null) return;
