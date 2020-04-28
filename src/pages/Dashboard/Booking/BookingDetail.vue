@@ -48,12 +48,12 @@
               .md-layout-item(style="flex:1;min-width:33%" v-if="['play','event'].includes(booking.type)")
                 md-field
                   label 成人
-                  md-input(v-model='booking.adultsCount', type='number', min='0')
+                  md-input(v-model='booking.adultsCount', type='number', min='0' :disabled="booking.id")
                   span.md-suffix 位
               .md-layout-item(style="flex:1;min-width:33%" v-if="['play','event'].includes(booking.type)")
                 md-field
                   label 儿童
-                  md-input(v-model='booking.kidsCount', type='number', min='0')
+                  md-input(v-model='booking.kidsCount', type='number', min='0' :disabled="booking.id")
                   span.md-suffix 位
               .md-layout-item(style="flex:1;min-width:33%" v-if="['play','event'].includes(booking.type)")
                 md-field.md-has-value
