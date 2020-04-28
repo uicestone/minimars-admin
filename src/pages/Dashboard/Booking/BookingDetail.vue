@@ -35,7 +35,7 @@
                 md-select(v-model='booking.status', @keydown.enter.prevent, :disabled='!!booking.id || $user.role !== "admin"')
                   md-option(v-for='(name, status) in $bookingStatusNames', :key='status', :value='status') {{ name }}
             .md-layout-item.md-small-size-100.md-size-100(v-if="booking.type === 'event'")
-              md-autocomplete(v-model='eventSearchTerm', :md-options='events', @md-selected='selectEvent' @keypress.enter.native.prevent :disabled='!!booking.id' autocomplete="off")
+              md-autocomplete(v-model='eventSearchTerm', :md-options='events', @md-selected='selectEvent' @keypress.enter.native.prevent :disabled='!!booking.id' md-open-on-focus autocomplete="off")
                 label 活动
                 template(slot='md-autocomplete-item', slot-scope='{ item }')
                   | {{ item.title }}
@@ -418,21 +418,41 @@ export default class BookingDetail extends Vue {
       this.bandsPrintable,
       v => {
         if (v > this.bandsPrintable) return "超过可打印手环数";
+        if (v <= 0) return "请填写有效数字";
       }
     ));
+    console.log("n is:", n);
     if (!n) return;
     const data = {
       data1: this.booking.customer?.mobile || "",
       data2:
         this.booking.date + " " + this.booking.checkInAt?.substr(0, 5) || ""
     };
+    this.booking.bandsPrinted = (this.booking.bandsPrinted || 0) + n;
+    this.$notify({
+      message: "正在打印手环，请等待",
+      icon: "priority_high",
+      horizontalAlign: "center",
+      verticalAlign: "bottom",
+      type: "warning",
+      timeout: n * 1500
+    });
+    await BookingResource.update(
+      { id: this.booking.id },
+      { bandsPrinted: this.booking.bandsPrinted }
+    );
     for (let i = 0; i < n; i++) {
       console.log("Call electron printBands:", data, n);
       this.$electron?.printBands(data, n);
       await sleep(1500);
     }
-    this.booking.bandsPrinted = (this.booking.bandsPrinted || 0) + n;
-    this.booking = await BookingResource.save(this.booking);
+    this.$notify({
+      message: "手环打印完毕",
+      icon: "check",
+      horizontalAlign: "center",
+      verticalAlign: "bottom",
+      type: "success"
+    });
   }
 
   @Watch("$user.store") onUserStoreUpdate(s: Store) {
