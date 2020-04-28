@@ -37,6 +37,17 @@ const bookingMenu: RouteConfig = {
   redirect: "/booking/play",
   children: [
     {
+      path: ":type/add",
+      name: "添加预约",
+      component: BookingDetail,
+      props: {
+        add: true
+      },
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
       alias: "play",
       path: ":type",
       name: "票务管理",
@@ -257,6 +268,17 @@ const userMenu: RouteConfig = {
       path: "index",
       name: "用户列表",
       component: UserList,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: "add",
+      name: "添加用户",
+      component: UserProfile,
+      props: {
+        add: true
+      },
       meta: {
         keepAlive: true
       }

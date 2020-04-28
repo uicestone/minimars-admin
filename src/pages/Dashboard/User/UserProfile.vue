@@ -99,7 +99,8 @@
                   label 重置密码
                   md-input(v-model='user.password', type='password', autocomplete='new-password')
             .md-layout-item.md-size-100.text-right
-              md-button.md-raised.md-primary.mt-4(type='submit') 保存
+              md-button.md-primary.mt-4(type='submit' :class="{'md-raised':!user.id,'md-simple':user.id}") 保存
+              md-button.md-raised.md-primary.mt-4.pull-right(@click="createBooking" v-if="user.id && user.role === 'customer'") 创建门票预约
       bookings-card(title="近期预约" :bookings="userBookings" :customer="user" v-if="user.role === 'customer'")
     .md-layout-item.md-medium-size-100.md-size-40.mx-auto(v-if="user.role === 'customer'")
       membership(:customer="user" @updated="getUser")
@@ -107,7 +108,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Watch, Component } from "vue-property-decorator";
+import { Watch, Component, Prop } from "vue-property-decorator";
 import { BookingsCard, Membership } from "@/components";
 import { BookingResource, UserResource } from "@/resources";
 import { User, Store, Booking } from "@/resources/interfaces";
@@ -122,6 +123,9 @@ export default class UserProfile extends Vue {
   user: Partial<User> = {};
   userBookings: Booking[] = [];
 
+  @Prop({ default: false })
+  add!: boolean;
+
   async save() {
     this.user = await UserResource.save(this.user);
     this.$notify({
@@ -131,7 +135,8 @@ export default class UserProfile extends Vue {
       verticalAlign: "bottom",
       type: "success"
     });
-    if (this.$route.params.id === "add") {
+    if (this.add) {
+      this.$destroy();
       this.$router.replace(`/user/${this.user.id}`);
     }
   }
@@ -139,6 +144,10 @@ export default class UserProfile extends Vue {
   async getUser() {
     this.user = await UserResource.get({ id: this.$route.params.id });
     return this.user;
+  }
+
+  createBooking() {
+    this.$router.push("/booking/play/add?customer=" + this.user.id);
   }
 
   @Watch("user") onUserUpdate(u: any, pu: any) {
@@ -159,7 +168,7 @@ export default class UserProfile extends Vue {
       this.user.role = "customer";
     }
 
-    if (this.$route.params.id !== "add") {
+    if (!this.add) {
       if (this.$route.params.id === this.$user.id) {
         this.user = this.$user;
       } else {

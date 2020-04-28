@@ -8,6 +8,9 @@
             .card-icon
               md-icon timer
             h4.title 购票预约 {{ booking.id.substr(-4).toUpperCase() }}
+              md-button.pull-right.md-primary.md-sm.md-simple(@click="goCustomerDetail" v-if="booking.customer")
+                span 查看客户详情
+                md-icon.mini keyboard_arrow_right
           md-card-header.md-card-header-icon.md-card-header-warning(v-if="booking.type==='event'")
             .card-icon
               md-icon event
@@ -158,7 +161,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Watch, Component } from "vue-property-decorator";
+import { Watch, Component, Prop } from "vue-property-decorator";
 import { confirm, promptInput, promptSelect } from "@/helpers/sweetAlert";
 import sleep from "@/helpers/sleep";
 import moment from "moment";
@@ -204,6 +207,9 @@ export default class BookingDetail extends Vue {
   eventSearchTerm: string | null = null;
   giftSearchTerm: string | null = null;
   paymentGateway: string | null = null;
+
+  @Prop({ default: false })
+  add!: boolean;
 
   get bandsPrintable() {
     return (
@@ -251,7 +257,8 @@ export default class BookingDetail extends Vue {
       verticalAlign: "bottom",
       type: "success"
     });
-    if (this.$route.params.id === "add") {
+    if (this.add) {
+      this.$destroy();
       this.$router.replace(`/booking/${this.booking.type}/${this.booking.id}`);
     }
   }
@@ -563,10 +570,15 @@ export default class BookingDetail extends Vue {
       JSON.stringify(this.$user.store)
     );
 
-    if (this.$route.params.id === "add") {
+    if (this.add) {
       console.log("Add booking:", this.booking.type);
       await this.$user;
       const { type } = this.booking;
+      if (this.$route.query.customer) {
+        this.booking.customer = await UserResource.get({
+          id: this.$route.query.customer
+        });
+      }
       if (type === "play") {
         this.coupons = await CouponResource.query();
       }
@@ -580,11 +592,11 @@ export default class BookingDetail extends Vue {
       // this.updateBookingPrice();
     } else {
       this.booking = await BookingResource.get({ id: this.$route.params.id });
-      if (this.booking.customer)
-        this.customerSearchTerm = this.booking.customer.mobile || "";
       if (this.booking.event) this.eventSearchTerm = this.booking.event.title;
       if (this.booking.gift) this.giftSearchTerm = this.booking.gift.title;
     }
+    if (this.booking.customer)
+      this.customerSearchTerm = this.booking.customer.mobile || "";
   }
 }
 </script>
