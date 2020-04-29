@@ -9,9 +9,9 @@
               md-icon timer
             h4.title 购票预约 {{ booking.id.substr(-4).toUpperCase() }}
               md-button.pull-right.md-primary.md-sm.md-simple(@click="goCustomerDetail" v-if="booking.customer")
-                span 查看客户详情
+                span 查看客户{{booking.customer.name}}详情
                 md-icon.mini keyboard_arrow_right
-              md-button.pull-right.md-danger.md-sm.md-simple(@click="cancel")
+              md-button.pull-right.md-danger.md-sm.md-simple(v-if="!booking.id" @click="cancel")
                 span 取消
                 md-icon.mini close
           md-card-header.md-card-header-icon.md-card-header-warning(v-if="booking.type==='event'")

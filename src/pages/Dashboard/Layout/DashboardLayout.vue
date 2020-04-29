@@ -64,7 +64,7 @@ function initScrollbar(className: string) {
 export default class DashboardLayout extends Vue {
   sidebarBackgroundColor = "white";
   sidebarBackground = "purple";
-  sidebarBackgroundImage = "./img/sidebar-2.jpg";
+  sidebarBackgroundImage = "./img/bg-login.jpg";
   sidebarMini = false;
   sidebarImg = true;
 
