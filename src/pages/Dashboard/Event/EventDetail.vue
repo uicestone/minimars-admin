@@ -29,7 +29,7 @@
             .md-layout-item.md-small-size-100.md-size-25
               md-field
                 label 收款售价 ¥
-                md-input(type='number', v-model='event.price')
+                md-input(type='number', v-model='event.price' step="0.01")
             .md-layout-item.md-small-size-100.md-size-25
               md-field
                 label 最大儿童人数
