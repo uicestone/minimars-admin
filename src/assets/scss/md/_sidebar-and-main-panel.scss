@@ -382,10 +382,12 @@
 
                 img{
                   width: 70%;
+                  max-height: 100%;
                   vertical-align: unset;
                   position: relative;
                   // top: 2px;
-                  opacity: 0.8;
+                  // opacity: 0.8;
+                  object-fit: contain;
                 }
             }
         }
