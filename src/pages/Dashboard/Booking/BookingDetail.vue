@@ -155,7 +155,7 @@
         md-button.md-success.md-block.md-raised(v-if='booking.type==="food" && booking.status==="finished"' @click="createAnother") 继续收款
 
     .md-layout-item.md-size-40.md-small-size-100.mx-auto(v-if="booking.type==='play' && booking.customer")
-      membership(:customer="booking.customer")
+      membership(:customer="booking.customer" @updated="getCustomer();getCustomerCards()")
 </template>
 
 <script lang="ts">
@@ -435,6 +435,13 @@ export default class BookingDetail extends Vue {
     this.customerCards = await CardResource.query({
       customer: this.booking.customer.id,
       status: "activated"
+    });
+  }
+
+  async getCustomer() {
+    if (!this.booking.customer) return;
+    this.booking.customer = await UserResource.get({
+      id: this.booking.customer.id
     });
   }
 

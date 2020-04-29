@@ -79,7 +79,7 @@ export default class Membership extends Vue {
       { paymentGateway }
     );
     this.cardItems?.push(card);
-    // this.$emit("paymentUpdated");
+    this.$emit("updated");
     this.getCardPayments();
   }
 
