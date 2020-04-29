@@ -232,7 +232,8 @@ export default class BookingDetail extends Vue {
   get bookingValidated() {
     if (!this.paymentGateway && (this.price || this.priceInPoints))
       return false;
-    if (!this.booking.customer) return false;
+    if (!this.booking.customer && this.customerSearchTerm.length !== 11)
+      return false;
     return true;
   }
 
