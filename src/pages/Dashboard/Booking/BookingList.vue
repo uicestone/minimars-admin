@@ -43,14 +43,14 @@
               md-icon refresh
         md-table.paginated-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='$noop')
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
-            md-table-cell(md-label='门店', md-sort-by='store.name')
+            md-table-cell(md-label='门店', md-sort-by='store.name' v-if="$user.role==='admin'")
               | {{ item.store.name }}
-            md-table-cell(md-label='客户', md-sort-by='customer.name', @click.native.stop='goToCustomer(item.customer)', style='min-width:120px')
-              | {{ item.customer.mobile }}
-              md-icon.mini keyboard_arrow_right
+            md-table-cell(md-label='客户', md-sort-by='customer.name', @click.native.stop='goToCustomer(item.customer)', style='min-width:180px')
+              | {{ item.customer.mobile }} {{ item.customer.name }}
+              md-icon.mini.pull-right keyboard_arrow_right
             md-table-cell(md-label='状态', md-sort-by='status')
               | {{ item.status | bookingStatusName }}
-            md-table-cell(md-label='日期', md-sort-by='date')
+            md-table-cell(md-label='日期', md-sort-by='date' v-if="!searchQuery.date")
               | {{ item.date }}
             md-table-cell(md-label='入场时间', md-sort-by='checkInAt')
               | {{ item.checkInAt }}
