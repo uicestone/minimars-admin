@@ -8,6 +8,7 @@
             .card-icon
               md-icon confirmation_number
             h4.title {{ coupon.title }}
+              md-switch.pull-right(v-model="coupon.enabled") 启用
           md-card-content.md-layout
             .md-layout-item.md-size-33
               md-field
@@ -64,7 +65,8 @@ export default class CouponDetail extends Vue {
     id: "",
     store: null,
     kidsCount: 1,
-    price: 0
+    price: 0,
+    enabled: true
   };
   async save() {
     this.coupon = await CouponResource.save(this.coupon);

@@ -113,6 +113,7 @@ export interface Coupon extends Model {
   freeParentsPerKid: number;
   start: Date;
   end: Date;
+  enabled: true;
 }
 
 export interface Config {
