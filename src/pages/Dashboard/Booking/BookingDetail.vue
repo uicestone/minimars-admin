@@ -212,9 +212,9 @@ export default class BookingDetail extends Vue {
 
   get bandsPrintable() {
     return (
-      (this.booking.kidsCount || 0) +
-      (this.booking.adultsCount || 0) -
-      (this.booking.bandsPrinted || 0)
+      +(this.booking.kidsCount || 0) +
+      +(this.booking.adultsCount || 0) -
+      +(this.booking.bandsPrinted || 0)
     );
   }
 
