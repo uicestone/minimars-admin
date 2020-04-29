@@ -102,7 +102,7 @@
               div(v-else)
                 md-button.md-lg-n.md-warning(v-if="booking.coupon")
                   | {{ booking.coupon.title }}
-            .md-layout-item.md-size-100.card.mt-4(v-if="booking.type === 'play'")
+            .md-layout-item.md-size-100.card.mt-4(v-if="booking.type === 'play' && booking.store")
               div(v-if="!booking.id")
                 p(v-if="booking.customer && !customerCards.length") 无有效会员卡
                 md-button.md-lg-n.mr-1(:class="{'md-info':usingCard(card)}" v-for='card in customerCards', v-if='booking.type === "play" && (!card.store || card.store === booking.store.id)', :key='card.id', :value='card.id', @click='useCard(card)')
@@ -432,7 +432,10 @@ export default class BookingDetail extends Vue {
   }
 
   async getCustomerCards() {
-    if (!this.booking.customer) return;
+    if (!this.booking.customer) {
+      this.customerCards = [];
+      return;
+    }
     this.customerCards = await CardResource.query({
       customer: this.booking.customer.id,
       status: "activated"
