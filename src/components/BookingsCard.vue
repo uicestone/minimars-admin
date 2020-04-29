@@ -12,14 +12,18 @@ md-card.bookings-card
           | {{ booking.date }}
         md-table-cell(md-label='时间')
           | {{ booking.checkInAt }}
-        md-table-cell(md-label='类型')
+        //- md-table-cell(md-label='类型')
           | {{ booking.type | bookingTypeName }}
         md-table-cell(md-label='大/小')
           | {{ booking.adultsCount }} /
           | {{ booking.kidsCount }}
         //- md-table-cell(md-label='优惠', style='min-width:150px')
           | {{ booking.coupon | couponName }}
-        md-table-cell(md-label='门店')
+        md-table-cell(md-label='优惠/会员卡', md-sort-by='coupon')
+          span(v-if='booking.coupon') {{ booking.coupon.title }}
+          span(v-else-if='booking.card') {{ booking.card.title }}
+          span(v-else) -
+        //- md-table-cell(md-label='门店')
           | {{ booking.store.name }}
         md-table-cell(md-label='状态')
           | {{ booking.status | bookingStatusName }}
