@@ -1,5 +1,5 @@
 import Vue from "vue";
-import { User, Store, CardType, Config } from "@/resources/interfaces";
+import { User, Store, CardType, Config, Coupon } from "@/resources/interfaces";
 
 declare module "vue/types/vue" {
   interface Vue {
@@ -8,6 +8,7 @@ declare module "vue/types/vue" {
     $user: User;
     $stores: Store[];
     $cardTypes: CardType[];
+    $coupons: Coupon[];
     $bookingTypeNames: any;
     $bookingStatusNames: any;
     $cardTypeNames: any;

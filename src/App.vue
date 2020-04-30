@@ -101,16 +101,18 @@ export default class App extends Vue {
   async initAppData() {
     if (this.configFetched) return;
     try {
-      const [config, store, authUser, cardType] = await Promise.all([
+      const [config, store, authUser, cardType, coupon] = await Promise.all([
         http.get("config"),
         http.get("store"),
         http.get("auth/user"),
-        http.get("card-type")
+        http.get("card-type"),
+        http.get("coupon?enabled=true")
       ]);
       this.$config = config.data;
       this.$stores = store.data;
       this.$user = authUser.data;
       this.$cardTypes = cardType.data;
+      this.$coupons = coupon.data;
       this.configFetched = true;
     } catch (e) {
       console.warn(e);

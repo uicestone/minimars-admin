@@ -21,15 +21,32 @@
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
           .md-layout
-            md-datepicker.md-layout-item.md-size-25.md-xsmall-size-100(v-model='searchQuery.date', :md-model-type='String', md-immediately)
+            md-datepicker.md-layout-item.md-size-20.md-xsmall-size-100(v-model='searchQuery.date', :md-model-type='String', md-immediately)
               label 日期
-            md-field.md-layout-item.md-size-20.md-xsmall-size-100(v-if='!searchQuery.customer')
-              label 搜索客户
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100(v-if='!searchQuery.customer')
+              label 客户
               md-input(type='search', clearable='', v-model='searchQuery.customerKeyword')
-            md-field.md-layout-item.md-size-20.md-xsmall-size-100
-              label 筛选状态
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100
+              label 状态
               md-select(v-model='searchQuery.status', multiple)
                 md-option(v-for='(name, status) in $bookingStatusNames', :key='status', :value='status') {{ name }}
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100(v-if="$user.role==='admin'")
+              label 门店
+              md-select(v-model='searchQuery.store')
+                md-option(value='') 全部
+                md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100(v-if="type==='play'")
+              label 客户类型
+              md-select(v-model='searchQuery.paymentType')
+                md-option(value="") 全部
+                md-option(value="guest") 门市散客
+                md-option(value="coupon") 平台优惠
+                md-option(value="card") 购卡会员
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100(v-if="type==='play'")
+              label 优惠
+              md-select(v-model='searchQuery.coupon')
+                md-option(value='') 全部
+                md-option(v-for='coupon in $coupons', :key='coupon.id', :value='coupon.id') {{ coupon.title }}
           .toolbar-actions
             md-button.md-primary(v-if='type==="play"', @click='showCreate("play")')
               | 创建门票预约
@@ -43,7 +60,7 @@
               md-icon refresh
         md-table.paginated-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='$noop')
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
-            md-table-cell(md-label='门店', md-sort-by='store.name' v-if="$user.role==='admin'")
+            md-table-cell(md-label='门店', md-sort-by='store.name' v-if="$user.role==='admin' && !searchQuery.store")
               | {{ item.store.name }}
             md-table-cell(md-label='客户', md-sort-by='customer.name', @click.native.stop='goToCustomer(item.customer)', style='min-width:180px')
               | {{ item.customer.mobile }} {{ item.customer.name }}

@@ -152,6 +152,15 @@ Object.defineProperty(Vue.prototype, "$cardTypes", {
   }
 });
 
+Object.defineProperty(Vue.prototype, "$coupons", {
+  get() {
+    return this.$root.coupons || [];
+  },
+  set(val) {
+    this.$root.coupons = val;
+  }
+});
+
 Object.defineProperty(Vue.prototype, "$bookingTypeNames", {
   get() {
     return {
