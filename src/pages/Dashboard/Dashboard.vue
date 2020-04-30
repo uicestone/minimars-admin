@@ -64,8 +64,10 @@
       template(slot='footer')
         .stats
           md-icon bookmark_border
-          | 其中儿童人数
-          animated-number(:value='stats.kidsCount')
+          | 其中会员儿童
+          animated-number(:value='stats.memberKidsCount')
+          | ，散客儿童
+          animated-number(:value='stats.guestKidsCount')
   .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
     chart-card(header-animation='false', :chart-data='dailyCustomersChart.data', :chart-options='dailyCustomersChart.options', chart-type='Line', chart-inside-header='', background-color='rose')
       md-icon(slot='fixed-button') build
