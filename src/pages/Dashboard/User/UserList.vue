@@ -35,12 +35,12 @@
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
             md-table-cell(md-label='姓名', md-sort-by='name')
               | {{ item.name }}
-            md-table-cell(md-label='性别', md-sort-by='gender')
-              | {{ item.gender }}
+            md-table-cell(md-label='孩子姓名', md-sort-by='gender')
+              | {{ item.childName }}
             md-table-cell(md-label='手机', md-sort-by='mobile')
               | {{ item.mobile }}
-            md-table-cell(md-label='地区', md-sort-by='region')
-              | {{ item.region }}
+            md-table-cell(md-label='卡号', md-sort-by='cardNo')
+              | {{ item.cardNo }}
             md-table-cell(md-label='会员类型', md-sort-by='cardType', v-if="searchQuery.role === 'customer'") {{ item.cardType }}
             md-table-cell(md-label='余额', md-sort-by='balanceDeposit', v-if="searchQuery.role === 'customer'")
               div(v-if='item.balance')

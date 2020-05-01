@@ -121,7 +121,7 @@ Object.defineProperty(Vue.prototype, "$user", {
     this.$root.user.can = function(cap: string) {
       const roleCaps: Record<string, string> = {
         admin: ".*",
-        manager: "view-(booking|user)"
+        manager: "view-(bookings|users|payments)"
       };
       return this.role && cap.match(new RegExp(`^${roleCaps[this.role]}$`));
     };

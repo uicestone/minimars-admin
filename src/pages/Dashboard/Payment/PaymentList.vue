@@ -101,12 +101,16 @@ export default class PaymentList extends List<Payment> {
         return "充值";
     }
   }
-  created() {
+  async created() {
     this.searchQuery = {
       date: moment().format("YYYY-MM-DD"),
       paid: true,
       gateway: []
     };
+    await this.$user;
+    if (this.$user.store) {
+      this.searchQuery.store = this.$user.store.id;
+    }
   }
 }
 </script>
