@@ -39,7 +39,7 @@
                 md-option(v-for="(name, direction) in { payment: '收款', refund: '退款' }", :key='direction', :value='direction') {{ name }}
             md-button.md-just-icon.md-simple(@click='queryData')
               md-icon refresh
-            md-button.md-just-icon.md-simple(@click='download')
+            md-button.md-just-icon.md-simple(@click='download' v-if="['admin','accountant'].includes($user.role)")
               md-icon get_app
         md-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='$noop')
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }')
