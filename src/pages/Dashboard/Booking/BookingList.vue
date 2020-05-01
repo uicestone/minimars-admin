@@ -71,7 +71,9 @@
               | {{ item.date }}
             md-table-cell(md-label='入场时间', md-sort-by='checkInAt')
               | {{ item.checkInAt }}
-            md-table-cell(md-label='大 / 小', md-sort-by='adultsCount') {{ item.adultsCount }} / {{ item.kidsCount }}
+            md-table-cell(md-label='大 / 小', md-sort-by='adultsCount')
+              span {{ item.adultsCount }} /
+              b  {{ item.kidsCount }}
             md-table-cell(md-label='收款', md-sort-by='socksCount')
               | {{ item.payments | paidAmount | currency }}
             md-table-cell(md-label='优惠/会员卡', md-sort-by='coupon')

@@ -13,61 +13,76 @@
         md-icon keyboard_arrow_right
     //- .md-layout-item.md-size-10.md-xsmall-size-100
     //-   md-button.md-info(:href="$http.options.root + 'daily-report/' + date", style='width:100%') 下载日报表
-  .md-layout-item.md-medium-size-50.md-xsmall-size-100.md-size-25
-    stats-card(header-color='primary')
+  .md-layout-item.md-size-33
+    stats-card(header-color='blue')
       template(slot='header')
         .card-icon
           md-icon playlist_add_check
-        p.category 当日门票收入
+        p.category 当日累计资金流水（合计）
         h3.title
           | ¥
-          animated-number(:value='stats.playAmount')
+          animated-number(:value='stats.flowAmount')
       template(slot='footer')
         .stats
           md-icon bookmark_border
-          | 含会员卡核销和小程序支付
-  .md-layout-item.md-medium-size-50.md-xsmall-size-100.md-size-25
+          | 实时
+  .md-layout-item.md-size-33
     stats-card(header-color='green')
       template(slot='header')
         .card-icon
-          md-icon fastfood
-        p.category 当日餐饮收入
-        h3.title
-          | ¥
-          animated-number(:value='stats.foodAmount')
-      template(slot='footer')
-        .stats
-          md-icon bookmark_border
-          | 仅包括账户余额核销收入
-  .md-layout-item.md-medium-size-50.md-xsmall-size-100.md-size-25
-    stats-card(header-color='warning')
-      template(slot='header')
-        .card-icon
           md-icon payment
-        p.category 当日充值收入
+        p.category 当日核销卡券累计值（合计）
         h3.title
           | ¥ 
-          animated-number(:value='stats.cardAmount')
+          animated-number(:value='stats.cardCouponAmount')
       template(slot='footer')
         .stats
           md-icon bookmark_border
-          | 其中次卡 ¥
-          animated-number(:value='stats.codeDepositAmount')
-  .md-layout-item.md-medium-size-50.md-xsmall-size-100.md-size-25
+          | 实时
+  .md-layout-item.md-size-33
     stats-card(header-color='rose')
       template(slot='header')
         .card-icon
           md-icon store
-        p.category 当日入场人数
+        p.category 当日累计入场人数
         h3.title
           animated-number(:value='stats.customerCount')
       template(slot='footer')
         .stats
           md-icon bookmark_border
-          | 其中会员儿童
-          animated-number(:value='stats.memberKidsCount')
-          | ，散客儿童
-          animated-number(:value='stats.guestKidsCount')
+          | 实时
+  .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
+    chart-card(header-animation='false', :chart-data='dailyFlowChart.data', :chart-options='dailyFlowChart.options', chart-type='Line', chart-inside-header='', background-color='blue')
+      md-button.md-simple.md-info.md-just-icon(slot='first-button')
+        md-icon refresh
+        md-tooltip(md-direction='bottom') Refresh
+      md-button.md-simple.md-just-icon(slot='second-button')
+        md-icon edit
+        md-tooltip(md-direction='bottom') Change Date
+      template(slot='content')
+        h4.title 每日资金流水
+        p.category
+          | 最近一周每日每日资金流水
+      template(slot='footer')
+        .stats
+          md-icon access_time
+          | 实时
+  .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
+    chart-card(header-animation='false', :chart-data='dailyCardCouponPaymentChart.data', :chart-options='dailyCardCouponPaymentChart.options', chart-type='Line', chart-inside-header='', background-color='green')
+      md-button.md-simple.md-info.md-just-icon(slot='first-button')
+        md-icon refresh
+        md-tooltip(md-direction='bottom') Refresh
+      md-button.md-simple.md-just-icon(slot='second-button')
+        md-icon edit
+        md-tooltip(md-direction='bottom') Change Date
+      template(slot='content')
+        h4.title 每日核销卡券值
+        p.category
+          | 最近一周每日核销卡券值
+      template(slot='footer')
+        .stats
+          md-icon access_time
+          | 实时
   .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
     chart-card(header-animation='false', :chart-data='dailyCustomersChart.data', :chart-options='dailyCustomersChart.options', chart-type='Line', chart-inside-header='', background-color='rose')
       md-icon(slot='fixed-button') build
@@ -78,55 +93,23 @@
         md-icon edit
         md-tooltip(md-direction='bottom') Change Date
       template(slot='content')
-        h4.title 每日人数
+        h4.title 每日累计入场人数
         p.category
           | 最近一周每日累计入场人数
       template(slot='footer')
         .stats
           md-icon access_time
           | 实时
-  .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
-    chart-card(header-animation='false', :chart-data='dailyBookingPaymentChart.data', :chart-options='dailyBookingPaymentChart.options', chart-type='Line', chart-inside-header='', background-color='green')
-      md-button.md-simple.md-info.md-just-icon(slot='first-button')
-        md-icon refresh
-        md-tooltip(md-direction='bottom') Refresh
-      md-button.md-simple.md-just-icon(slot='second-button')
-        md-icon edit
-        md-tooltip(md-direction='bottom') Change Date
-      template(slot='content')
-        h4.title 每日门票收入
-        p.category
-          | 最近一周每日门票收入（含余额和次卡核销）
-      template(slot='footer')
-        .stats
-          md-icon access_time
-          | 实时
-  .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
-    chart-card(header-animation='false', :chart-data='dailyCardPaymentChart.data', :chart-options='dailyCardPaymentChart.options', chart-type='Line', chart-inside-header='', background-color='blue')
-      md-button.md-simple.md-info.md-just-icon(slot='first-button')
-        md-icon refresh
-        md-tooltip(md-direction='bottom') Refresh
-      md-button.md-simple.md-just-icon(slot='second-button')
-        md-icon edit
-        md-tooltip(md-direction='bottom') Change Date
-      template(slot='content')
-        h4.title 每日充值收入
-        p.category
-          | 最近一周每日充值和次卡销售收入
-      template(slot='footer')
-        .stats
-          md-icon access_time
-          | 实时
   .md-layout-item.md-size-33
-    global-sales-card(header-color='primary')
+    global-sales-card(header-color='blue')
       template(slot='header')
         .card-icon
           md-icon language
-        h4.title 当日各收款方式收款额
+        h4.title 当日流水分类汇总
       template(slot='content')
         .md-layout
           .md-layout-item.md-size-100
-            md-table(v-model='paidAmountByGatewayNames')
+            md-table(v-model='flowAmountByGatewayNames')
               md-table-row(slot='md-table-row', slot-scope='{ item }')
                 md-table-cell {{ item.name }}
                 md-table-cell {{ item.amount | currency }}
@@ -135,30 +118,42 @@
       template(slot='header')
         .card-icon
           md-icon language
-        h4.title 当日各优惠核销人数和券值
+        h4.title 当日核销卡券分类汇总
       template(slot='content')
         .md-layout
           .md-layout-item.md-size-100
-            md-table(v-model='stats.couponsCount')
+            md-table(:value='stats.couponsCount.concat(stats.cardsCount)')
               md-table-row(slot='md-table-row', slot-scope='{ item }')
                 md-table-cell {{ item.name }}
-                md-table-cell {{ item.count }}
+                md-table-cell
+                  span {{ item.adultsCount }} /
+                  b  {{ item.kidsCount }}
                 md-table-cell {{ item.amount | currency }}
   .md-layout-item.md-size-33
-    global-sales-card(header-color='warning')
+    global-sales-card(header-color='rose')
       template(slot='header')
         .card-icon
           md-icon language
-        h4.title 当日各卡种充值人数和金额
+        h4.title 当日入场人数分类汇总
       template(slot='content')
         .md-layout
           .md-layout-item.md-size-100
-            //- md-table(v-model='stats.cardTypesCount')
-              md-table-row(slot='md-table-row', slot-scope='{ item }')
-                md-table-cell {{ item.desc }}
-                md-table-cell {{ item.count }}
-                md-table-cell
-                  | {{ (item.price * item.count) | currency }}
+            md-table
+              md-table-row(slot='md-table-row')
+                md-table-cell 门市散客
+                md-table-cell 
+                  span {{ stats.customersByType.guest.adultsCount }} /
+                  b  {{ stats.customersByType.guest.kidsCount }}
+              md-table-row(slot='md-table-row')
+                md-table-cell 平台优惠
+                md-table-cell 
+                  span {{ stats.customersByType.coupon.adultsCount }} /
+                  b  {{ stats.customersByType.coupon.kidsCount }}
+              md-table-row(slot='md-table-row')
+                md-table-cell 购卡会员
+                md-table-cell 
+                  span {{ stats.customersByType.card.adultsCount }} /
+                  b  {{ stats.customersByType.card.kidsCount }}
 </template>
 
 <script lang="ts">
@@ -189,41 +184,41 @@ export default class Dashboard extends Vue {
   date = moment().format("YYYY-MM-DD");
   today = moment().format("YYYY-MM-DD");
   stats: {
-    checkedInCount: number;
-    dueCount: number;
+    flowAmount: number;
+    cardCouponAmount: number;
     customerCount: number;
-    kidsCount: number;
-    paidAmount: number;
-    cardAmount: number;
-    codeDepositAmount: number;
-    socksCount: number;
-    paidAmountByGateways: Record<string, number>;
+    flowAmountByGateways: Record<string, number>;
     couponsCount: [];
-    codesCount: [];
-    cardTypesCount: [];
+    cardsCount: [];
+    customersByType: Record<
+      "card" | "coupon" | "guest",
+      { adultsCount: number; kidsCount: number }
+    >;
     dailyCustomers: {
       adultsCount: number;
       kidsCount: number;
       day: 1 | 2 | 3 | 4 | 5 | 6 | 7;
     }[];
-    dailyBookingPayment: { amount: number; day: 1 | 2 | 3 | 4 | 5 | 6 | 7 }[];
-    dailyCardPayment: { amount: number; day: 1 | 2 | 3 | 4 | 5 | 6 | 7 }[];
+    dailyFlowAmount: { amount: number; day: 1 | 2 | 3 | 4 | 5 | 6 | 7 }[];
+    dailyCardCouponPayment: {
+      amount: number;
+      day: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+    }[];
   } = {
-    checkedInCount: 0,
-    dueCount: 0,
+    flowAmount: 0,
+    cardCouponAmount: 0,
     customerCount: 0,
-    kidsCount: 0,
-    paidAmount: 0,
-    cardAmount: 0,
-    codeDepositAmount: 0,
-    socksCount: 0,
-    paidAmountByGateways: {},
+    flowAmountByGateways: {},
     couponsCount: [],
-    codesCount: [],
-    cardTypesCount: [],
+    cardsCount: [],
+    customersByType: {
+      card: { adultsCount: 0, kidsCount: 0 },
+      coupon: { adultsCount: 0, kidsCount: 0 },
+      guest: { adultsCount: 0, kidsCount: 0 }
+    },
     dailyCustomers: [],
-    dailyBookingPayment: [],
-    dailyCardPayment: []
+    dailyFlowAmount: [],
+    dailyCardCouponPayment: []
   };
   weekdayMapping = {
     1: "一",
@@ -247,11 +242,11 @@ export default class Dashboard extends Vue {
     ).data;
   }
 
-  get paidAmountByGatewayNames() {
-    return Object.keys(this.stats.paidAmountByGateways)
+  get flowAmountByGatewayNames() {
+    return Object.keys(this.stats.flowAmountByGateways)
       .map(gateway => ({
         name: this.$gatewayNames[gateway],
-        amount: this.stats.paidAmountByGateways[gateway]
+        amount: this.stats.flowAmountByGateways[gateway]
       }))
       .filter(p => p.amount);
   }
@@ -286,9 +281,9 @@ export default class Dashboard extends Vue {
     };
   }
 
-  get dailyBookingPaymentChart() {
-    const values = this.stats.dailyBookingPayment.map(d => d.amount);
-    const labels = this.stats.dailyBookingPayment.map(
+  get dailyFlowChart() {
+    const values = this.stats.dailyFlowAmount.map(d => d.amount);
+    const labels = this.stats.dailyFlowAmount.map(
       d => this.weekdayMapping[d.day]
     );
     const high = Math.max(...values) * 1.05;
@@ -314,9 +309,9 @@ export default class Dashboard extends Vue {
     };
   }
 
-  get dailyCardPaymentChart() {
-    const values = this.stats.dailyCardPayment.map(d => d.amount);
-    const labels = this.stats.dailyCardPayment.map(
+  get dailyCardCouponPaymentChart() {
+    const values = this.stats.dailyCardCouponPayment.map(d => d.amount);
+    const labels = this.stats.dailyCardCouponPayment.map(
       d => this.weekdayMapping[d.day]
     );
     const high = Math.max(...values) * 1.05;
