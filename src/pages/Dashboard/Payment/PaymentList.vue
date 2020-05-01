@@ -37,6 +37,9 @@
               md-select(v-model='searchQuery.direction')
                 md-option(value='') 全部
                 md-option(v-for="(name, direction) in { payment: '收款', refund: '退款' }", :key='direction', :value='direction') {{ name }}
+            md-field.md-layout-item.md-size-15.md-xsmall-size-25
+              label 金额
+              md-input(v-model="searchQuery.amount")
             md-button.md-just-icon.md-simple(@click='queryData')
               md-icon refresh
             md-button.md-just-icon.md-simple(@click='download' v-if="['admin','accountant'].includes($user.role)")
