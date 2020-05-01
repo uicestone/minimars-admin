@@ -29,6 +29,7 @@
                   label 用户类型
                   md-select(v-model='user.role', @keydown.enter.prevent, :disabled="!$user.can('manage-user')")
                     md-option(value='admin') 管理员
+                    md-option(value='accountant') 财务
                     md-option(value='manager') 店员
                     md-option(value='customer') 客户
               .md-layout-item.md-small-size-100.md-size-25

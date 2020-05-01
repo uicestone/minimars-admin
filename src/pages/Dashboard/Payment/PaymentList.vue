@@ -39,6 +39,8 @@
                 md-option(v-for="(name, direction) in { payment: '收款', refund: '退款' }", :key='direction', :value='direction') {{ name }}
             md-button.md-just-icon.md-simple(@click='queryData')
               md-icon refresh
+            md-button.md-just-icon.md-simple(@click='download')
+              md-icon get_app
         md-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='$noop')
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }')
             md-table-cell(md-label='客户', md-sort-by='customer.name', @click.native.stop='goToCustomer(item.customer)', style='min-width:100px') {{ item.customer ? item.customer.name : "-" }}
@@ -60,7 +62,7 @@
 <script lang="ts">
 import moment from "moment";
 import Component from "vue-class-component";
-import { PaymentResource } from "@/resources";
+import { PaymentResource, http } from "@/resources";
 import List from "@/components/List";
 import { Payment, User } from "@/resources/interfaces";
 
@@ -92,6 +94,17 @@ export default class PaymentList extends List<Payment> {
         return this.$router.push(`/user/${attach[1]}`);
     }
   }
+  download() {
+    const params: Record<string, any> = {
+      token: window.localStorage.token,
+      ...this.searchQuery
+    };
+    const queryString = Object.keys(params)
+      .map(key => `${key}=${params[key]}`)
+      .join("&");
+    window.location.href =
+      process.env.VUE_APP_API_BASE + "/payment-sheet?" + queryString;
+  }
   relatedItem(item: Payment) {
     const attach = item.attach.split(" ");
     switch (attach[0]) {
@@ -101,13 +114,12 @@ export default class PaymentList extends List<Payment> {
         return "充值";
     }
   }
-  async created() {
+  created() {
     this.searchQuery = {
       date: moment().format("YYYY-MM-DD"),
       paid: true,
       gateway: []
     };
-    await this.$user;
     if (this.$user.store) {
       this.searchQuery.store = this.$user.store.id;
     }
