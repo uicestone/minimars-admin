@@ -125,9 +125,7 @@
             md-table(:value='stats.couponsCount.concat(stats.cardsCount)')
               md-table-row(slot='md-table-row', slot-scope='{ item }')
                 md-table-cell {{ item.name }}
-                md-table-cell
-                  span {{ item.adultsCount }} /
-                  b  {{ item.kidsCount }}
+                md-table-cell {{ item.kidsCount }}
                 md-table-cell {{ item.amount | currency }}
   .md-layout-item.md-size-33
     global-sales-card(header-color='rose')
