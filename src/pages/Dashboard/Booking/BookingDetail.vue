@@ -110,7 +110,7 @@
               div(v-else)
                 md-button.md-lg-n.md-info(v-if="booking.card")
                   | {{ booking.card.title }} {{booking.card.timesLeft?'剩余'+booking.card.timesLeft+'次':''}}
-            .md-layout-item.md-size-100.card.mt-4.md-layout.md-alignment-center-right(v-if="booking.type === 'play'")
+            .md-layout-item.md-size-100.card.mt-4.md-layout.md-alignment-center-right
               md-button.md-simple.md-warning.md-n(v-if="price || priceInPoints")
                 span {{ price | currency }}
                 span.ml-1.mr-1(v-if='priceInPoints !== null') /
