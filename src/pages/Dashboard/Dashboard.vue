@@ -100,7 +100,7 @@
         .stats
           md-icon access_time
           | 实时
-  .md-layout-item.md-size-33.md-xsmall-size-100
+  .md-layout-item.md-size-25.md-xsmall-size-100
     global-sales-card(header-color='blue')
       template(slot='header')
         .card-icon
@@ -113,7 +113,7 @@
               md-table-row(slot='md-table-row', slot-scope='{ item }')
                 md-table-cell {{ item.name }}
                 md-table-cell {{ item.amount | currency }}
-  .md-layout-item.md-size-33.md-xsmall-size-100
+  .md-layout-item.md-size-50.md-xsmall-size-100
     global-sales-card(header-color='green')
       template(slot='header')
         .card-icon
@@ -121,13 +121,18 @@
         h4.title 当日核销卡券分类汇总
       template(slot='content')
         .md-layout
-          .md-layout-item.md-size-100
-            md-table(:value='stats.couponsCount.concat(stats.cardsCount)')
-              md-table-row(slot='md-table-row', slot-scope='{ item }')
+          .md-layout-item.md-size-100.md-layout
+            md-table.md-layout-item(:value='stats.couponsCount.concat(stats.cardsCount)')
+              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-if="index % 2 == 0")
                 md-table-cell {{ item.name }}
                 md-table-cell {{ item.kidsCount }}
                 md-table-cell {{ item.amount | currency }}
-  .md-layout-item.md-size-33.md-xsmall-size-100
+            md-table.md-layout-item(:value='stats.couponsCount.concat(stats.cardsCount)')
+              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-if="index % 2 == 1")
+                md-table-cell {{ item.name }}
+                md-table-cell {{ item.kidsCount }}
+                md-table-cell {{ item.amount | currency }}
+  .md-layout-item.md-size-25.md-xsmall-size-100
     global-sales-card(header-color='rose')
       template(slot='header')
         .card-icon
@@ -348,3 +353,14 @@ export default class Dashboard extends Vue {
   }
 }
 </script>
+
+<style scoped>
+* >>> .md-card .md-card-content {
+  box-sizing: content-box;
+}
+
+* >>> .md-table-cell {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+</style>
