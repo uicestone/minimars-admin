@@ -42,8 +42,8 @@ const GlobalLibrariesPlugins = {
         this.$root.user.can = function(cap: string) {
           const roleCaps: Record<string, string> = {
             admin: ".*",
-            manager: "view-(bookings|users|payments)",
-            accountant: "view-(payments)"
+            manager: "view-(dashboard|booking|user|payment)",
+            accountant: "view-(dashboard|payments)"
           };
           return this.role && cap.match(new RegExp(`^${roleCaps[this.role]}$`));
         };

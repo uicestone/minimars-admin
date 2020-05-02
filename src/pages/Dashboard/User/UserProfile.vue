@@ -24,10 +24,10 @@
                     md-icon refresh
                   input(type='file', ref='avatarFileInput', @change='onFileChange', accept='image/jpeg,image/png')
             .md-layout-item.md-size-100.md-layout.md-alignment-vertical
-              .md-layout-item.md-small-size-100.md-size-25(v-if="user.role !== 'customer' && $user.can('manage-user')")
+              .md-layout-item.md-small-size-100.md-size-25(v-if="user.role !== 'customer' && $user.can('edit-user')")
                 md-field
                   label 用户类型
-                  md-select(v-model='user.role', @keydown.enter.prevent, :disabled="!$user.can('manage-user')")
+                  md-select(v-model='user.role', @keydown.enter.prevent)
                     md-option(value='admin') 管理员
                     md-option(value='accountant') 财务
                     md-option(value='manager') 店员
@@ -44,7 +44,7 @@
               .md-layout-item.md-small-size-100.md-size-25
                 md-field
                   label 性别
-                  md-select(v-model='user.gender', @keydown.enter.prevent, :disabled="!$user.can('manage-user')")
+                  md-select(v-model='user.gender', @keydown.enter.prevent)
                     md-option(value='男') 男
                     md-option(value='女') 女
                     md-option(value='未知') 未知
