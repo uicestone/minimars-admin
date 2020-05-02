@@ -13,7 +13,7 @@
         md-icon keyboard_arrow_right
     //- .md-layout-item.md-size-10.md-xsmall-size-100
     //-   md-button.md-info(:href="$http.options.root + 'daily-report/' + date", style='width:100%') 下载日报表
-  .md-layout-item.md-size-33
+  .md-layout-item.md-size-33.md-xsmall-size-100
     stats-card(header-color='blue')
       template(slot='header')
         .card-icon
@@ -26,7 +26,7 @@
         .stats
           md-icon bookmark_border
           | 实时
-  .md-layout-item.md-size-33
+  .md-layout-item.md-size-33.md-xsmall-size-100
     stats-card(header-color='green')
       template(slot='header')
         .card-icon
@@ -39,7 +39,7 @@
         .stats
           md-icon bookmark_border
           | 实时
-  .md-layout-item.md-size-33
+  .md-layout-item.md-size-33.md-xsmall-size-100
     stats-card(header-color='rose')
       template(slot='header')
         .card-icon
@@ -100,7 +100,7 @@
         .stats
           md-icon access_time
           | 实时
-  .md-layout-item.md-size-33
+  .md-layout-item.md-size-33.md-xsmall-size-100
     global-sales-card(header-color='blue')
       template(slot='header')
         .card-icon
@@ -113,7 +113,7 @@
               md-table-row(slot='md-table-row', slot-scope='{ item }')
                 md-table-cell {{ item.name }}
                 md-table-cell {{ item.amount | currency }}
-  .md-layout-item.md-size-33
+  .md-layout-item.md-size-33.md-xsmall-size-100
     global-sales-card(header-color='green')
       template(slot='header')
         .card-icon
@@ -127,7 +127,7 @@
                 md-table-cell {{ item.name }}
                 md-table-cell {{ item.kidsCount }}
                 md-table-cell {{ item.amount | currency }}
-  .md-layout-item.md-size-33
+  .md-layout-item.md-size-33.md-xsmall-size-100
     global-sales-card(header-color='rose')
       template(slot='header')
         .card-icon
