@@ -137,7 +137,7 @@
       template(slot='header')
         .card-icon
           md-icon language
-        h4.title 当日入场人数分类汇总
+        h4.title 当日人数分类汇总
       template(slot='content')
         .md-layout
           .md-layout-item.md-size-100
