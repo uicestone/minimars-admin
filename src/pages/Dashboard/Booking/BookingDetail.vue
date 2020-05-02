@@ -4,28 +4,16 @@
     .md-layout-item.md-size-60.md-small-size-100
       form(@submit.prevent='save', ref='form')
         md-card
-          md-card-header.md-card-header-icon.md-card-header-primary(v-if="booking.type==='play'" style="min-height:61px")
+          md-card-header.md-card-header-icon(:class="cardHeaderClass" style="min-height:61px")
             .card-icon
-              md-icon timer
-            h4.title 购票预约 {{ booking.id.substr(-4).toUpperCase() }}
+              md-icon {{ cardHeaderIcon }}
+            h4.title {{ cardHeaderTitle }} {{ booking.id.substr(-4).toUpperCase() }}
               md-button.pull-right.md-primary.md-sm.md-simple(@click="goCustomerDetail" v-if="booking.customer")
                 span 查看客户{{booking.customer.name}}详情
                 md-icon.mini keyboard_arrow_right
               md-button.pull-right.md-danger.md-sm.md-simple(v-if="!booking.id" @click="cancel")
                 span 取消
                 md-icon.mini close
-          md-card-header.md-card-header-icon.md-card-header-warning(v-if="booking.type==='event'")
-            .card-icon
-              md-icon event
-            h4.title 活动预约 {{ booking.id.substr(-4).toUpperCase() }}
-          md-card-header.md-card-header-icon.md-card-header-rose(v-if="booking.type==='gift'")
-            .card-icon
-              md-icon card_giftcard
-            h4.title 礼品兑换 {{ booking.id.substr(-4).toUpperCase() }}
-          md-card-header.md-card-header-icon.md-card-header-green(v-if="booking.type==='food'")
-            .card-icon
-              md-icon fastfood
-            h4.title 餐饮消费 {{ booking.id.substr(-4).toUpperCase() }}
           md-card-content.md-layout
             .md-layout-item.md-small-size-100.md-size-50
               md-field
@@ -94,23 +82,23 @@
               md-field
                 label 备注
                 md-textarea.no-padding(v-model='booking.remarks')
-            .md-layout-item.md-size-100.coupon.mt-4(v-if="booking.type === 'play'")
-              div(v-if="!booking.id")
+            .md-layout-item.md-size-100.coupon.mt-2(v-if="booking.type === 'play'")
+              div.pb-2.bb(v-if="!booking.id")
                 md-button.md-lg-n.mr-1(:class="{'md-warning':usingCoupon(coupon)}" v-for='coupon in coupons', :key='coupon.id', :value='coupon.id', @click='useCoupon(coupon)')
                   span {{ coupon.title }}
                   span.ml-1(v-if="coupon.priceThirdParty")  {{ coupon.priceThirdParty }}
-              div(v-else)
+              div.pb-2.bb(v-else)
                 md-button.md-lg-n.md-warning(v-if="booking.coupon")
                   | {{ booking.coupon.title }}
-            .md-layout-item.md-size-100.card.mt-4(v-if="booking.type === 'play' && booking.store && booking.customer")
-              div(v-if="!booking.id")
+            .md-layout-item.md-size-100.card.mt-2(v-if="booking.type === 'play' && booking.store && booking.customer")
+              div.pb-2.bb(v-if="!booking.id")
                 p(v-if="booking.customer && !customerCards.length") 无有效会员卡
                 md-button.md-lg-n.mr-1(:class="{'md-info':usingCard(card)}" v-for='card in customerCards', v-if='booking.type === "play" && (!card.store || card.store === booking.store.id)', :key='card.id', :value='card.id', @click='useCard(card)')
                   | {{ card.title }} {{card.timesLeft?'剩余'+card.timesLeft+'次':''}}
-              div(v-else)
+              div.pb-2.bb(v-else)
                 md-button.md-lg-n.md-info(v-if="booking.card")
                   | {{ booking.card.title }} {{booking.card.timesLeft?'剩余'+booking.card.timesLeft+'次':''}}
-            .md-layout-item.md-size-100.payment.mt-4.pt-2.bt.md-layout.md-alignment-center-right
+            .md-layout-item.md-size-100.payment.mt-4.mb-2.md-layout.md-alignment-center-right
               md-button.md-simple.md-warning.md-n(v-if="price || priceInPoints")
                 span {{ price | currency }}
                 span.ml-1.mr-1(v-if='priceInPoints !== null') /
@@ -235,6 +223,42 @@ export default class BookingDetail extends Vue {
     if (!this.booking.customer && this.customerSearchTerm.length !== 11)
       return false;
     return true;
+  }
+
+  get cardHeaderClass() {
+    if (!this.booking.type) return "";
+    const map = {
+      [BookingType.PLAY]: "primary",
+      [BookingType.EVENT]: "warning",
+      [BookingType.GIFT]: "rose",
+      [BookingType.FOOD]: "green",
+      [BookingType.PARTY]: "blue"
+    };
+    return "md-card-header-" + map[this.booking.type];
+  }
+
+  get cardHeaderIcon() {
+    if (!this.booking.type) return "";
+    const map = {
+      [BookingType.PLAY]: "timer",
+      [BookingType.EVENT]: "event",
+      [BookingType.GIFT]: "card_giftcard",
+      [BookingType.FOOD]: "fastfood",
+      [BookingType.PARTY]: ""
+    };
+    return map[this.booking.type];
+  }
+
+  get cardHeaderTitle() {
+    if (!this.booking.type) return "";
+    const map = {
+      [BookingType.PLAY]: "购票预约",
+      [BookingType.EVENT]: "活动预约",
+      [BookingType.GIFT]: "礼品兑换",
+      [BookingType.FOOD]: "餐饮消费",
+      [BookingType.PARTY]: "派对"
+    };
+    return map[this.booking.type];
   }
 
   async save() {
@@ -656,7 +680,7 @@ export default class BookingDetail extends Vue {
 .md-card .md-table {
   width: 100%;
 }
-.bt {
-  border-top: 1px solid #dadada;
+.bb {
+  border-bottom: 1px solid #dadada;
 }
 </style>
