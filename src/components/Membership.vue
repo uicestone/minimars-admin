@@ -87,7 +87,9 @@ export default class Membership extends Vue {
     if (
       !(await confirm(
         "确认激活这张充值卡",
-        `将为 ${this.customer.name} 增加账户余额 ${card.balance} 元`
+        `将为 ${this.customer.name || this.customer.mobile} 增加账户余额 ${
+          card.balance
+        } 元`
       ))
     )
       return;

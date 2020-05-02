@@ -14,8 +14,8 @@
               md-button.pull-right.md-primary.md-sm.md-simple(@click="goCustomerDetail" v-if="booking.customer")
                 span 查看客户{{booking.customer.name}}详情
                 md-icon.mini keyboard_arrow_right
-              md-button.pull-right.md-danger.md-sm.md-simple(v-if="!booking.id" @click="cancel")
-                span 取消
+              md-button.pull-right.md-danger.md-sm.md-simple(v-if="!booking.id" @click="destroy")
+                span 清空
                 md-icon.mini close
           md-card-content.md-layout
             .md-layout-item.md-small-size-100.md-size-50
@@ -29,7 +29,7 @@
             .md-layout-item.md-small-size-50.md-size-25
               md-field
                 label 状态
-                md-select(v-model='booking.status', @keydown.enter.prevent, :disabled='!!booking.id || $user.role !== "admin"')
+                md-select(v-model='booking.status', @keydown.enter.prevent, :disabled='!!booking.id && booking.status !=="pending_refund"')
                   md-option(v-for='(name, status) in $bookingStatusNames', :key='status', :value='status') {{ name }}
             .md-layout-item.md-small-size-100.md-size-100(v-if="booking.type === 'event'")
               md-autocomplete(v-model='eventSearchTerm', :md-options='events', @md-selected='selectEvent' @keypress.enter.native.prevent :disabled='!!booking.id' md-open-on-focus autocomplete="off")
@@ -115,6 +115,7 @@
                 md-button.md-n.md-simple(@click="usePaymentGateway('pos')", :class="{'md-primary':usingPaymentGateway('pos')}") 银行卡
               .md-layout-item.md-layout.md-alignment-bottom-right(style='flex:0;flex-wrap:nowrap')
                 md-button.md-simple.md-danger(type='button', @click='remove', v-if='this.booking.id && $user.can("delete-booking")') 删除
+                md-button.md-simple.md-warning(type='button', @click='cancel', v-if="this.booking.id && !['pending_refund', 'canceled'].includes(this.booking.status)") 撤销
                 md-button.md-primary.md-raised(type='submit' v-if='booking.type==="play" && !booking.id' :disabled="!bookingValidated") 保存并入场
                 md-button.md-primary.md-simple(type='submit' v-if='booking.type==="play" && booking.id') 保存
                 md-button.md-warning(type='submit' v-if='booking.type==="event"' :class='{"md-simple": booking.id,"md-raised": !booking.id}' :disabled="!bookingValidated") 保存
@@ -141,7 +142,7 @@
                 md-table-cell(md-label='创建时间', md-sort-by='createdAt')
                   | {{ payment.createdAt | date }}
                 md-table-cell(md-label='收款' style="width:86px")
-                  md-button.md-success.md-normal(disabled, v-if='payment.paid') 已收款
+                  md-button.md-success.md-normal(disabled, v-if='payment.paid') 完成
                   md-button.md-normal.md-warning(v-else, @click='pay(payment)') 收款
         md-button.md-success.md-block.md-raised(v-if='booking.type==="food" && booking.status==="finished"' @click="createAnother") 继续收款
 
@@ -319,6 +320,25 @@ export default class BookingDetail extends Vue {
     this.$router.go(-1);
   }
 
+  async cancel() {
+    if (
+      !(await confirm(
+        "确定要撤销这个预约？",
+        `这将生成冲销支付记录，并尝试向用户退款`,
+        "确定撤销",
+        "warning"
+      ))
+    )
+      return;
+    this.booking = await BookingResource.update(
+      { id: this.booking.id },
+      { status: BookingStatus.CANCELED }
+    );
+    if (this.booking.card) {
+      this.getCustomerCards();
+    }
+  }
+
   async searchCustomer(q: string) {
     if (!q) {
       this.booking.customer = null;
@@ -376,7 +396,7 @@ export default class BookingDetail extends Vue {
     this.$router.push(`/user/${this.booking.customer.id}`);
   }
 
-  cancel() {
+  destroy() {
     this.$destroy();
     this.$router.back();
   }
