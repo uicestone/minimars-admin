@@ -7,7 +7,10 @@
           md-card-header.md-card-header-icon(:class="cardHeaderClass" style="min-height:61px")
             .card-icon
               md-icon {{ cardHeaderIcon }}
-            h4.title {{ cardHeaderTitle }} {{ booking.id.substr(-4).toUpperCase() }}
+            h4.title {{ cardHeaderTitle }}
+              span(@click="copyId")
+                span {{ booking.id.substr(-4).toUpperCase() }}
+                md-icon(style="font-size:15px !important") file_copy
               md-button.pull-right.md-primary.md-sm.md-simple(@click="goCustomerDetail" v-if="booking.customer")
                 span 查看客户{{booking.customer.name}}详情
                 md-icon.mini keyboard_arrow_right
@@ -531,6 +534,19 @@ export default class BookingDetail extends Vue {
     }
     this.$notify({
       message: "手环打印完毕",
+      icon: "check",
+      horizontalAlign: "center",
+      verticalAlign: "bottom",
+      type: "success"
+    });
+  }
+
+  copyId() {
+    if (this.booking.id) {
+      this.$copyText(this.booking.id);
+    }
+    this.$notify({
+      message: "订单ID已复制",
       icon: "check",
       horizontalAlign: "center",
       verticalAlign: "bottom",

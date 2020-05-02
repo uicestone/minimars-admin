@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import DashboardPlugin from "./material-dashboard";
 import CommonFiltersPlugin from "./helpers/CommonFiltersPlugin";
 import GlobalLibrariesPlugins from "./helpers/GlobalLibrariesPlugin";
+import VueClipboard from "vue-clipboard2";
 
 // Plugins
 import App from "./App.vue";
@@ -14,6 +15,7 @@ import routes from "./routes/routes";
 
 // plugin setup
 Vue.use(VueRouter);
+Vue.use(VueClipboard);
 Vue.use(DashboardPlugin);
 Vue.use(CommonFiltersPlugin);
 Vue.use(GlobalLibrariesPlugins);
