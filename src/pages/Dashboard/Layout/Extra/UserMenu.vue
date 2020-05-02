@@ -11,7 +11,7 @@
         @click.capture="clicked"
       >
         <span>
-          {{ $user.name || "用户" }}
+          {{ $user.name || "未登陆" }}
           <b class="caret"></b>
         </span>
       </a>

@@ -47,6 +47,9 @@
   </md-card>
 </template>
 <script>
+// @ts-ignore
+import Chartist from "chartist";
+
 export default {
   name: "chart-card",
   props: {
@@ -138,7 +141,7 @@ export default {
      */
     initChart() {
       const chartIdQuery = `#${this.chartId}`;
-      this.$Chartist[this.chartType](
+      Chartist[this.chartType](
         chartIdQuery,
         this.chartData,
         this.chartOptions,

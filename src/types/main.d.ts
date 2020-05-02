@@ -1,9 +1,9 @@
 import Vue from "vue";
 import { User, Store, CardType, Config, Coupon } from "@/resources/interfaces";
+import { NotificationStore } from "@/components/NotificationPlugin";
 
 declare module "vue/types/vue" {
   interface Vue {
-    $Chartist: any;
     $config: Config;
     $user: User;
     $stores: Store[];
@@ -18,7 +18,7 @@ declare module "vue/types/vue" {
     $material: any;
     $sidebar: any;
     $electron: any;
-    notificationStore: any;
+    notificationStore: typeof NotificationStore;
     sidebarStore: any;
   }
 }

@@ -1,11 +1,8 @@
-<template>
-  <div>
-    <md-progress-bar
-      md-mode="indeterminate"
-      v-if="pendingRequests > 0"
-    ></md-progress-bar>
-    <router-view></router-view>
-  </div>
+<template lang="pug">
+div
+  md-progress-bar(md-mode="indeterminate" v-if="pendingRequests > 0")
+  notifications
+  router-view
 </template>
 
 <script lang="ts">
@@ -13,6 +10,7 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { http } from "@/resources";
+import loadConfig from "./helpers/loadConfig";
 
 @Component
 export default class App extends Vue {
@@ -26,29 +24,24 @@ export default class App extends Vue {
     );
 
     this.$router.beforeResolve(async (to, from, next) => {
-      await this.initAppData();
-      next();
+      if (to.path === "/login") next();
+      else {
+        const config = await loadConfig(this.$config);
+        this.$config = config;
+        next();
+      }
     });
-
-    this.initAppData();
   }
 
   requestFullfilled(request: AxiosRequestConfig) {
     this.pendingRequests++;
 
-    const token = window.localStorage.getItem("token");
-
-    if (token) {
-      request.headers["Authorization"] = token;
-    }
     // stop request and return 401 response when no token exist except for login request
     if (
       !["auth/login", "config", "store"].includes(request.url || "") &&
       !window.localStorage.getItem("token")
     ) {
-      window.location.hash = "#/login";
       this.pendingRequests--;
-      return Promise.reject("No token exists, login required.");
     }
     return request;
   }
@@ -96,27 +89,6 @@ export default class App extends Vue {
       return Promise.reject(new Error(message));
     }
     return response;
-  }
-
-  async initAppData() {
-    if (this.configFetched) return;
-    try {
-      const [config, store, authUser, cardType, coupon] = await Promise.all([
-        http.get("config"),
-        http.get("store"),
-        http.get("auth/user"),
-        http.get("card-type"),
-        http.get("coupon?enabled=true")
-      ]);
-      this.$config = config.data;
-      this.$stores = store.data;
-      this.$user = authUser.data;
-      this.$cardTypes = cardType.data;
-      this.$coupons = coupon.data;
-      this.configFetched = true;
-    } catch (e) {
-      console.warn(e);
-    }
   }
 }
 </script>

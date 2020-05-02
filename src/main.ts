@@ -6,11 +6,10 @@ import GlobalLibrariesPlugins from "./helpers/GlobalLibrariesPlugin";
 
 // Plugins
 import App from "./App.vue";
-// @ts-ignore
-import Chartist from "chartist";
 
 // router setup
 import routes from "./routes/routes";
+import loadConfig from "./helpers/loadConfig";
 
 // plugin setup
 Vue.use(VueRouter);
@@ -83,14 +82,14 @@ const router = new VueRouter({
   linkExactActiveClass: "nav-item active"
 });
 
-/* eslint-disable no-new */
-new Vue({
-  el: "#app",
-  render: h => h(App),
-  router,
-  data: {
-    Chartist: Chartist,
-    user: {},
-    isLoading: false
-  }
+loadConfig().then(config => {
+  /* eslint-disable no-new */
+  new Vue({
+    el: "#app",
+    render: h => h(App),
+    router,
+    data: {
+      config
+    }
+  });
 });
