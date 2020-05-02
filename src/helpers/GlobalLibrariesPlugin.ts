@@ -135,18 +135,18 @@ const GlobalLibrariesPlugins = {
     Object.defineProperty(Vue.prototype, "$gatewayNames", {
       get() {
         return {
-          balance: "账户余额",
-          points: "账户积分",
-          coupon: "团购优惠券",
-          scan: "现场扫码",
-          card: "会员卡",
+          dianping: "点评POS",
+          shouqianba: "收钱吧",
+          wechatpay: "微信小程序",
           pos: "银行卡",
           cash: "现金",
-          shouqianba: "收钱吧",
-          dianping: "点评POS",
-          wechatpay: "微信小程序",
-          alipay: "支付宝",
-          unionpay: "银联"
+          card: "会员卡",
+          coupon: "团购优惠券",
+          balance: "账户余额",
+          points: "账户积分"
+          // scan: "现场扫码",
+          // alipay: "支付宝",
+          // unionpay: "银联"
         };
       }
     });

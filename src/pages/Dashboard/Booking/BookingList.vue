@@ -63,20 +63,29 @@
             md-table-cell(md-label='门店', md-sort-by='store.name' v-if="$user.role==='admin' && !searchQuery.store")
               | {{ item.store.name }}
             md-table-cell(md-label='客户', md-sort-by='customer.name', @click.native.stop='goToCustomer(item.customer)', style='min-width:180px')
-              | {{ item.customer.mobile }} {{ item.customer.name }}
-              md-icon.mini.pull-right keyboard_arrow_right
+              span(v-if="item.customer") {{ item.customer.mobile }} {{ item.customer.name }}
+                md-icon.mini.pull-right keyboard_arrow_right
+              span(v-else) -
             md-table-cell(md-label='状态', md-sort-by='status')
               | {{ item.status | bookingStatusName }}
             md-table-cell(md-label='日期', md-sort-by='date' v-if="!searchQuery.date")
               | {{ item.date }}
-            md-table-cell(md-label='入场时间', md-sort-by='checkInAt')
+            md-table-cell(md-label='入场时间', md-sort-by='checkInAt' v-if="searchQuery.type === 'play'")
               | {{ item.checkInAt }}
-            md-table-cell(md-label='大 / 小', md-sort-by='adultsCount')
+            md-table-cell(md-label='大 / 小', md-sort-by='adultsCount' v-if="searchQuery.type === 'play'")
               span {{ item.adultsCount }} /
               b  {{ item.kidsCount }}
-            md-table-cell(md-label='收款', md-sort-by='socksCount')
+            md-table-cell(md-label='礼品', md-sort-by='gift.id' v-if="searchQuery.type === 'gift'")
+              | {{ item.gift.title }}
+            md-table-cell(md-label='数量', md-sort-by='quantity' v-if="searchQuery.type === 'gift'")
+              | {{ item.quantity }}
+            md-table-cell(md-label='活动', md-sort-by='event.id' v-if="searchQuery.type === 'event'")
+              | {{ item.event.title }}
+            md-table-cell(md-label='人数', md-sort-by='kidsCount' v-if="searchQuery.type === 'event'")
+              | {{ item.quantity }}
+            md-table-cell(md-label='收款', md-sort-by='price')
               | {{ item.payments | paidAmount | currency }}
-            md-table-cell(md-label='优惠/会员卡', md-sort-by='coupon')
+            md-table-cell(md-label='优惠/会员卡', md-sort-by='coupon' v-if="searchQuery.type === 'play'")
               span(v-if='item.coupon') {{ item.coupon.title }}
               span(v-else-if='item.card') {{ item.card.title }}
               span(v-else) -
