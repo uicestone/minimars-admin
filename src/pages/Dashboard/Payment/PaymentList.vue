@@ -65,7 +65,7 @@
 <script lang="ts">
 import moment from "moment";
 import Component from "vue-class-component";
-import { PaymentResource, http } from "@/resources";
+import { PaymentResource } from "@/resources";
 import List from "@/components/List";
 import { Payment, User } from "@/resources/interfaces";
 
