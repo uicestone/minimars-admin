@@ -94,7 +94,7 @@
               md-field
                 label 备注
                 md-textarea.no-padding(v-model='booking.remarks')
-            .md-layout-item.md-size-100.card.mt-4(v-if="booking.type === 'play'")
+            .md-layout-item.md-size-100.coupon.mt-4(v-if="booking.type === 'play'")
               div(v-if="!booking.id")
                 md-button.md-lg-n.mr-1(:class="{'md-warning':usingCoupon(coupon)}" v-for='coupon in coupons', :key='coupon.id', :value='coupon.id', @click='useCoupon(coupon)')
                   span {{ coupon.title }}
@@ -102,7 +102,7 @@
               div(v-else)
                 md-button.md-lg-n.md-warning(v-if="booking.coupon")
                   | {{ booking.coupon.title }}
-            .md-layout-item.md-size-100.card.mt-4(v-if="booking.type === 'play' && booking.store")
+            .md-layout-item.md-size-100.card.mt-4(v-if="booking.type === 'play' && booking.store && booking.customer")
               div(v-if="!booking.id")
                 p(v-if="booking.customer && !customerCards.length") 无有效会员卡
                 md-button.md-lg-n.mr-1(:class="{'md-info':usingCard(card)}" v-for='card in customerCards', v-if='booking.type === "play" && (!card.store || card.store === booking.store.id)', :key='card.id', :value='card.id', @click='useCard(card)')
@@ -110,7 +110,7 @@
               div(v-else)
                 md-button.md-lg-n.md-info(v-if="booking.card")
                   | {{ booking.card.title }} {{booking.card.timesLeft?'剩余'+booking.card.timesLeft+'次':''}}
-            .md-layout-item.md-size-100.card.mt-4.md-layout.md-alignment-center-right
+            .md-layout-item.md-size-100.payment.mt-4.pt-2.bt.md-layout.md-alignment-center-right
               md-button.md-simple.md-warning.md-n(v-if="price || priceInPoints")
                 span {{ price | currency }}
                 span.ml-1.mr-1(v-if='priceInPoints !== null') /
@@ -155,7 +155,7 @@
         md-button.md-success.md-block.md-raised(v-if='booking.type==="food" && booking.status==="finished"' @click="createAnother") 继续收款
 
     .md-layout-item.md-size-40.md-small-size-100.mx-auto(v-if="booking.type==='play' && booking.customer")
-      membership(:customer="booking.customer" @updated="getCustomer();getCustomerCards()")
+      membership(:customer="booking.customer" @updated="getCustomer();getCustomerCards()" :booking="booking")
 </template>
 
 <script lang="ts">
@@ -655,5 +655,8 @@ export default class BookingDetail extends Vue {
 }
 .md-card .md-table {
   width: 100%;
+}
+.bt {
+  border-top: 1px solid #dadada;
 }
 </style>
