@@ -90,16 +90,16 @@
                 md-button.md-lg-n.mr-1(:class="{'md-warning':usingCoupon(coupon)}" v-for='coupon in coupons', :key='coupon.id', :value='coupon.id', @click='useCoupon(coupon)')
                   span {{ coupon.title }}
                   span.ml-1(v-if="coupon.priceThirdParty")  {{ coupon.priceThirdParty }}
-              div.pb-2.bb(v-else)
-                md-button.md-lg-n.md-warning(v-if="booking.coupon")
+              div.pb-2.bb(v-else-if="booking.coupon")
+                md-button.md-lg-n.md-warning
                   | {{ booking.coupon.title }}
             .md-layout-item.md-size-100.card.mt-2(v-if="booking.type === 'play' && booking.store && booking.customer")
               div.pb-2.bb(v-if="!booking.id")
                 p(v-if="booking.customer && !customerCards.length") 无有效会员卡
                 md-button.md-lg-n.mr-1(:class="{'md-info':usingCard(card)}" v-for='card in customerCards', v-if='booking.type === "play" && (!card.store || card.store === booking.store.id)', :key='card.id', :value='card.id', @click='useCard(card)')
                   | {{ card.title }} {{card.timesLeft?'剩余'+card.timesLeft+'次':''}}
-              div.pb-2.bb(v-else)
-                md-button.md-lg-n.md-info(v-if="booking.card")
+              div.pb-2.bb(v-else-if="booking.card")
+                md-button.md-lg-n.md-info
                   | {{ booking.card.title }} {{booking.card.timesLeft?'剩余'+booking.card.timesLeft+'次':''}}
             .md-layout-item.md-size-100.payment.mt-4.mb-2.md-layout.md-alignment-center-right
               md-button.md-simple.md-warning.md-n(v-if="price || priceInPoints")
