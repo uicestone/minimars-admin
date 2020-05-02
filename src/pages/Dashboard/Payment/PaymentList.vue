@@ -18,26 +18,26 @@
               md-select(v-model='searchQuery.store')
                 md-option(value='') 全部
                 md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
-            md-field.md-layout-item.md-size-10.md-xsmall-size-25
+            md-field.md-layout-item.md-size-5.md-xsmall-size-25
               label 完成
               md-select(v-model='searchQuery.paid')
                 md-option(value='') 全部
                 md-option(v-for="(name, paid) in { true: '是', false: '否' }", :key='paid', :value='paid') {{ name }}
-            md-field.md-layout-item.md-size-15.md-xsmall-size-25
+            md-field.md-layout-item.md-size-10.md-xsmall-size-25
               label 支付方式
               md-select(v-model='searchQuery.gateway', multiple)
                 md-option(v-for='(name, gateway) in $gatewayNames', :key='gateway', :value='gateway') {{ name }}
-            md-field.md-layout-item.md-size-15.md-xsmall-size-25
+            md-field.md-layout-item.md-size-10.md-xsmall-size-25
               label 消费/充值
               md-select(v-model='searchQuery.attach')
                 md-option(value='') 全部
                 md-option(v-for="(name, attach) in { booking: '消费', card: '充值' }", :key='attach', :value='attach') {{ name }}
-            md-field.md-layout-item.md-size-15.md-xsmall-size-25
+            md-field.md-layout-item.md-size-10.md-xsmall-size-25
               label 收/退
               md-select(v-model='searchQuery.direction')
                 md-option(value='') 全部
                 md-option(v-for="(name, direction) in { payment: '收款', refund: '退款' }", :key='direction', :value='direction') {{ name }}
-            md-field.md-layout-item.md-size-15.md-xsmall-size-25
+            md-field.md-layout-item.md-size-10.md-xsmall-size-25
               label 金额
               md-input(v-model="searchQuery.amount")
             md-button.md-just-icon.md-simple(@click='queryData')
