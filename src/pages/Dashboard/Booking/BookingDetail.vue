@@ -70,7 +70,7 @@
               .md-layout-item(v-if="booking.type==='gift'", style="flex:1;min-width:33%")
                 md-field
                   label 数量
-                  md-input(v-model='booking.quantity', type='number', min='0', :disabled='!!booking.id')
+                  md-input(v-model='booking.quantity', type='number', min='1', :disabled='!!booking.id')
             .md-layout-item.md-layout.md-small-size-100.md-size-50.p-0
               .md-layout-item.md-small-size-60.md-size-60
                 md-datepicker(v-model='booking.date', :md-model-type='String', md-immediately)
@@ -216,7 +216,8 @@ export default class BookingDetail extends Vue {
       this.booking.kidsCount,
       this.booking.adultsCount,
       this.booking.event?.id,
-      this.booking.gift?.id
+      this.booking.gift?.id,
+      this.booking.quantity
     ].join();
   }
 
@@ -377,8 +378,12 @@ export default class BookingDetail extends Vue {
 
   async updateBookingPrice() {
     if (
-      this.booking.adultsCount === undefined ||
-      this.booking.kidsCount === undefined
+      this.booking.type &&
+      [BookingType.PLAY, BookingType.EVENT, BookingType.PARTY].includes(
+        this.booking.type
+      ) &&
+      (this.booking.adultsCount === undefined ||
+        this.booking.kidsCount === undefined)
     )
       return;
     console.log(
@@ -638,13 +643,25 @@ export default class BookingDetail extends Vue {
       status: BookingStatus.PENDING,
       date: moment().format("YYYY-MM-DD"),
       checkInAt: moment().format("HH:mm:ss"),
-      adultsCount: 1,
-      kidsCount: 1,
-      socksCount: 1,
+      adultsCount: undefined,
+      kidsCount: undefined,
+      quantity: undefined,
       bandsPrinted: 0,
       store: this.$user.store,
       payments: []
     };
+    if (
+      this.booking.type &&
+      [BookingType.PARTY, BookingType.PLAY, BookingType.EVENT].includes(
+        this.booking.type
+      )
+    ) {
+      this.booking.kidsCount = 1;
+      this.booking.adultsCount = 1;
+    }
+    if (this.booking.type === BookingType.GIFT) {
+      this.booking.quantity = 1;
+    }
     console.log(
       "Created. Booking with store:",
       JSON.stringify(this.$user.store)
