@@ -42,7 +42,7 @@
               md-input(v-model="searchQuery.amount")
             md-button.md-just-icon.md-simple(@click='queryData')
               md-icon refresh
-            md-button.md-just-icon.md-simple(@click='download' v-if="['admin','accountant'].includes($user.role)")
+            md-button.md-just-icon.md-simple(@click='download')
               md-icon get_app
         md-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='$noop')
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }')
