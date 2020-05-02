@@ -107,20 +107,20 @@
                 span.ml-1.mr-1(v-if='priceInPoints !== null') /
                 span(v-if='priceInPoints !== null') {{ priceInPoints }} 积分
               .md-layout-item(v-if='!booking.id && (price || priceInPoints)')
-                md-button.md-n.md-simple(@click="usePaymentGateway('points')", :class="{'md-primary':usingPaymentGateway('points')}", v-if='priceInPoints') 账户积分 {{ booking.customer ? booking.customer.points : ''}}
+                md-button.md-n.md-simple(@click="usePaymentGateway('points')", :class="{'md-primary':usingPaymentGateway('points')}", v-if='priceInPoints') 积分 {{ booking.customer ? booking.customer.points : ''}}
                 md-button.md-n.md-simple(@click="usePaymentGateway('balance')", :class="{'md-primary':usingPaymentGateway('balance')}", v-if='booking.customer && booking.customer.balance') 账户余额 {{ booking.customer.balance }}
                 md-button.md-n.md-simple(@click="usePaymentGateway('dianping')", :class="{'md-primary':usingPaymentGateway('dianping')}") 点评POS
                 md-button.md-n.md-simple(@click="usePaymentGateway('shouqianba')", :class="{'md-primary':usingPaymentGateway('shouqianba')}") 收钱吧
                 md-button.md-n.md-simple(@click="usePaymentGateway('cash')", :class="{'md-primary':usingPaymentGateway('cash')}") 现金
                 md-button.md-n.md-simple(@click="usePaymentGateway('pos')", :class="{'md-primary':usingPaymentGateway('pos')}") 银行卡
               .md-layout-item.md-layout.md-alignment-bottom-right(style='flex:0;flex-wrap:nowrap')
-                md-button.md-simple.md-danger(type='button', @click='remove', v-if='this.booking.id && $user.can("manage-booking")') 删除
+                md-button.md-simple.md-danger(type='button', @click='remove', v-if='this.booking.id && $user.can("delete-booking")') 删除
                 md-button.md-primary.md-raised(type='submit' v-if='booking.type==="play" && !booking.id' :disabled="!bookingValidated") 保存并入场
                 md-button.md-primary.md-simple(type='submit' v-if='booking.type==="play" && booking.id') 保存
-                md-button.md-warning(type='submit' v-if='booking.type==="event"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
-                md-button.md-rose(type='submit' v-if='booking.type==="gift"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
-                md-button.md-success(type='submit' v-if='booking.type==="food"' :class='{"md-simple": booking.id,"md-raised": !booking.id}') 保存
-                md-button.md-raised.md-info.ml-2(v-if="bandsPrintable > 0 && ['booked','in_service'].includes(booking.status) && ['play','event'].includes(booking.type)" @click="printBands") 打印手环
+                md-button.md-warning(type='submit' v-if='booking.type==="event"' :class='{"md-simple": booking.id,"md-raised": !booking.id}' :disabled="!bookingValidated") 保存
+                md-button.md-rose(type='submit' v-if='booking.type==="gift"' :class='{"md-simple": booking.id,"md-raised": !booking.id}' :disabled="!bookingValidated") 保存
+                md-button.md-success(type='submit' v-if='booking.type==="food"' :class='{"md-simple": booking.id,"md-raised": !booking.id}' :disabled="!bookingValidated") 保存
+                md-button.md-raised.md-info.ml-2(v-if="bandsPrintable > 0 && ['booked','in_service'].includes(booking.status) && booking.type === 'play'" @click="printBands") 打印手环
                 md-button.md-raised.md-warning.ml-2(v-if="booking.status === 'booked' && ['play','event'].includes(booking.type)" @click="checkIn") 入场
                 md-button.md-raised.md-rose.ml-2(v-if="booking.status === 'booked' && ['gift'].includes(booking.type)" @click="redeem") 兑换
         md-card.payments-card(v-if="booking.payments.length")
@@ -222,7 +222,12 @@ export default class BookingDetail extends Vue {
   }
 
   get bookingValidated() {
+    if (this.booking.id) return true;
     if (!this.paymentGateway && (this.price || this.priceInPoints))
+      return false;
+    if (this.booking.type === BookingType.EVENT && !this.booking.event)
+      return false;
+    if (this.booking.type === BookingType.GIFT && !this.booking.gift)
       return false;
     if (!this.booking.customer && this.customerSearchTerm.length !== 11)
       return false;
