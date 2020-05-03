@@ -11,9 +11,11 @@
           .md-layout-item(style='flex:0;flex-basis:200px')
             | 总金额：{{ totalAmount | currency }}
           .md-layout.md-layout-item.md-alignment-center-right.search-query
-            md-datepicker.md-layout-item.md-size-20.md-xsmall-size-50(v-model='searchQuery.date', :md-model-type='String', md-immediately)
-              label 日期
-            md-field.md-layout-item.md-size-15.md-xsmall-size-50(v-if="$user.role==='admin'")
+            md-datepicker.md-layout-item.md-size-date.md-xsmall-size-50(v-model='searchQuery.date', :md-model-type='String', md-immediately)
+              label 日期开始
+            md-datepicker.md-layout-item.md-size-date.md-xsmall-size-50(v-model='searchQuery.dateEnd', :md-model-type='String', md-immediately)
+              label 日期结束
+            md-field.md-layout-item.md-size-10.md-xsmall-size-50(v-if="$user.role==='admin'")
               label 门店
               md-select(v-model='searchQuery.store')
                 md-option(value='') 全部
@@ -145,5 +147,9 @@ export default class PaymentList extends List<Payment> {
   width: 16px;
   min-width: 16px;
   font-size: 16px !important;
+}
+.md-size-date {
+  min-width: 140px;
+  max-width: 140px;
 }
 </style>
