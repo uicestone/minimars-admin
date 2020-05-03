@@ -25,20 +25,25 @@
                   md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
             .md-layout-item.md-small-size-100.md-size-25
               md-switch.md-primary(v-model="cardType.isGift") 可转赠
-            .md-layout-item.md-small-size-100.md-size-25
+            .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 类型
                 md-select(v-model='cardType.type', @keydown.enter.prevent)
                   md-option(v-for='(name, type) in $cardTypeNames', :key='type', :value='type') {{ name }}
-            .md-layout-item.md-small-size-100.md-size-25
+            .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 售价
                 md-input(type='number', v-model='cardType.price')
-            .md-layout-item.md-small-size-100.md-size-25
+            .md-layout-item.md-small-size-100.md-size-20
+              md-field
+                label 有效时长
+                md-input(type='number', v-model='cardType.expiresInMonths')
+                span.md-suffix 个月
+            .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 单次最多儿童数
                 md-input(type='number', v-model='cardType.maxKids')
-            .md-layout-item.md-small-size-100.md-size-25
+            .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 每儿童免费陪同成人
                 md-input(type='number', v-model='cardType.freeParentsPerKid')
