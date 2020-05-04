@@ -3,7 +3,12 @@
   .md-layout-item.md-size-100.md-layout.md-alignment-center-right
     .md-layout-item.md-size-20.md-xsmall-size-100.stats-date
       md-datepicker(v-model='date', :md-model-type='String', md-immediately)
-    .md-layout-item.md-size-20.md-xsmall-size-100.stats-date(style='display:flex;justify-content:space-between')
+    .md-layout-item.md-size-30.md-xsmall-size-100.stats-date(style='display:flex;justify-content:space-between')
+      md-menu.md-button
+        md-button.md-info(md-menu-trigger) {{ store ? store.name : '全部门店' }}
+        md-menu-content
+          md-menu-item(@click="selectStore(false)") 全部门店
+          md-menu-item(v-for="store in $stores" :key="store.id" @click="selectStore(store)") {{ store.name }}
       md-button.md-info(style='flex:0', @click='addDate(-1)')
         span.md-label
           md-icon keyboard_arrow_left
@@ -20,12 +25,12 @@
           md-icon playlist_add_check
         p.category 当日累计资金流水（合计）
         h3.title
-          | ¥
+          | ¥ 
           animated-number(:value='stats.flowAmount')
       template(slot='footer')
         .stats
           md-icon bookmark_border
-          | 实时
+          | 实时，包含各项现金类收款
   .md-layout-item.md-size-33.md-xsmall-size-100
     stats-card(header-color='green')
       template(slot='header')
@@ -38,7 +43,7 @@
       template(slot='footer')
         .stats
           md-icon bookmark_border
-          | 实时
+          | 实时，包含各平台优惠券核销券值和会员卡核销价值
   .md-layout-item.md-size-33.md-xsmall-size-100
     stats-card(header-color='rose')
       template(slot='header')
@@ -50,7 +55,7 @@
       template(slot='footer')
         .stats
           md-icon bookmark_border
-          | 实时
+          | 实时，包含所有成功付款订单的成人数及儿童数
   .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
     chart-card(header-animation='false', :chart-data='dailyFlowChart.data', :chart-options='dailyFlowChart.options', chart-type='Line', chart-inside-header='', background-color='blue')
       md-button.md-simple.md-info.md-just-icon(slot='first-button')
@@ -112,7 +117,7 @@
             md-table(v-model='flowAmountByGatewayNames')
               md-table-row(slot='md-table-row', slot-scope='{ item }')
                 md-table-cell {{ item.name }}
-                md-table-cell {{ item.amount | currency }}
+                md-table-cell {{ item.amount | currency(0) }}
   .md-layout-item.md-size-50.md-xsmall-size-100
     global-sales-card(header-color='green')
       template(slot='header')
@@ -123,15 +128,15 @@
         .md-layout
           .md-layout-item.md-size-100.md-layout
             md-table.md-layout-item(:value='stats.couponsCount.concat(stats.cardsCount)')
-              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-if="index % 2 == 0")
+              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 2 == 0")
                 md-table-cell {{ item.name }}
                 md-table-cell {{ item.kidsCount }}
-                md-table-cell {{ item.amount | currency }}
+                md-table-cell {{ item.amount | currency(0) }}
             md-table.md-layout-item(:value='stats.couponsCount.concat(stats.cardsCount)')
-              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-if="index % 2 == 1")
+              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 2 == 1")
                 md-table-cell {{ item.name }}
                 md-table-cell {{ item.kidsCount }}
-                md-table-cell {{ item.amount | currency }}
+                md-table-cell {{ item.amount | currency(0) }}
   .md-layout-item.md-size-25.md-xsmall-size-100
     global-sales-card(header-color='rose')
       template(slot='header')
@@ -172,6 +177,7 @@ import {
   // GlobalSalesTable
 } from "@/components";
 import { http } from "@/resources";
+import { Store } from "../../resources/interfaces";
 
 @Component({
   components: {
@@ -184,6 +190,7 @@ import { http } from "@/resources";
   }
 })
 export default class Dashboard extends Vue {
+  store: Store | null = null;
   date = moment().format("YYYY-MM-DD");
   today = moment().format("YYYY-MM-DD");
   stats: {
@@ -239,10 +246,19 @@ export default class Dashboard extends Vue {
       .format("YYYY-MM-DD");
   }
 
+  selectStore(store: Store | null) {
+    this.store = store;
+  }
+
   async updateStats() {
-    this.stats = (
-      await http.get(`stats${this.date ? "/" + this.date : ""}`)
-    ).data;
+    let url = `stats`;
+    if (this.date) {
+      url += `/${this.date}`;
+    }
+    if (this.store) {
+      url += `?store=${this.store.id}`;
+    }
+    this.stats = (await http.get(url)).data;
   }
 
   get flowAmountByGatewayNames() {
@@ -350,6 +366,10 @@ export default class Dashboard extends Vue {
     }
     this.updateStats();
     // console.log(this.stats);
+  }
+
+  @Watch("store") onStoreUpdate() {
+    this.updateStats();
   }
 }
 </script>

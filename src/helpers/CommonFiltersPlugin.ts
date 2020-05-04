@@ -39,9 +39,9 @@ const CommonFiltersPlugin = {
       return Vue.prototype.$cardStatusNames[value];
     });
 
-    Vue.filter("currency", (value: any) => {
+    Vue.filter("currency", (value: any, precision: number = 2) => {
       if (value === undefined || value === null) return "-";
-      return "¥ " + (+value).toFixed(2);
+      return "¥ " + (+value).toFixed(precision);
     });
 
     Vue.filter("paymentGatewayName", (gateway: any) => {
