@@ -1,13 +1,13 @@
 <template lang="pug">
 md-card.bookings-card
-  md-card-header.md-card-header-icon.md-card-header-warning
+  md-card-header.md-card-header-icon.md-card-header-primary
     .card-icon
       md-icon history
     h4.title {{ title }}
-      md-button.md-warning.md-sm.pull-right(@click='goCustomerBookings' v-if="customer") 查看所有预约
+      md-button.md-primary.md-sm.pull-right(@click='goCustomerBookings' v-if="customer") 查看所有预约
   md-card-content.md-layout
     md-table
-      md-table-row(v-for='booking in bookings', :key='booking.id')
+      md-table-row(v-for='booking in bookings', :key='booking.id' @click="showDetail(booking)")
         md-table-cell(md-label='日期')
           | {{ booking.date }}
         md-table-cell(md-label='时间')
@@ -53,6 +53,10 @@ export default class BookingsCard extends Vue {
     if (!this.bookings && this.query) {
       this.bookings = await BookingResource.query(this.query);
     }
+  }
+
+  showDetail(booking: Booking) {
+    this.$router.push(`/booking/${booking.type}/${booking.id}`);
   }
 
   goCustomerBookings() {
