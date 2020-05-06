@@ -143,9 +143,9 @@ const GlobalLibrariesPlugins = {
           card: "会员卡",
           coupon: "团购优惠券",
           balance: "账户余额",
-          points: "账户积分"
+          points: "账户积分",
+          alipay: "支付宝"
           // scan: "现场扫码",
-          // alipay: "支付宝",
           // unionpay: "银联"
         };
       }
@@ -154,6 +154,21 @@ const GlobalLibrariesPlugins = {
     Object.defineProperty(Vue.prototype, "$noop", {
       get() {
         return () => {};
+      }
+    });
+
+    Object.defineProperty(Vue.prototype, "$clipboard", {
+      get() {
+        return (v: string, name: string = "文本") => {
+          this.$copyText(v);
+          this.$notify({
+            message: `${name}已复制`,
+            icon: "check",
+            horizontalAlign: "center",
+            verticalAlign: "bottom",
+            type: "success"
+          });
+        };
       }
     });
   }

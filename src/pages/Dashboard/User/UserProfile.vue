@@ -7,7 +7,10 @@
           md-card-header.md-card-header-icon.md-card-header-green
             .card-icon
               md-icon perm_identity
-            h4.title {{ user.name }}
+            h4.title 用户详情
+              span(@click="$clipboard(user.id, '用户ID')")
+                span {{ user.id.substr(-4).toUpperCase() }}
+                md-icon(style="font-size:15px !important") file_copy
           md-card-content.md-layout
             //- .file-input.img-circle.md-layout-item.md-size-25.pt-4
               div(v-if='!user.avatarUrl')

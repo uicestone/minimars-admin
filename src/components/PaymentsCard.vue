@@ -7,14 +7,18 @@ md-card.payments-card
   md-card-content.md-layout
     md-table
       md-table-row(v-for='payment in payments', :key='payment.id')
-        md-table-cell(md-label='创建时间')
-          | {{ payment.createdAt | date("YY/MM/DD") }}
+        md-table-cell(md-label='创建时间' @click.native="$clipboard(payment.id, '支付ID')")
+          //- | {{ payment.id.substr(-4) }}
+          //- | {{ payment.s }}
+          | {{ payment.createdAt | date("YY/MM/DD HH:mm:ss") }}
         md-table-cell(md-label='金额') ¥{{ payment.amount }}
         md-table-cell(md-label='通道') {{ payment.gateway | paymentGatewayName }}
         md-table-cell(md-label='描述') {{ payment.title }}
         md-table-cell(md-label='收款')
           md-button.md-success.md-normal(disabled, v-if='payment.paid') 已收款
           md-button.md-normal.md-warning(v-else-if="payment.valid", @click='pay(payment)') 收款
+        //- md-table-cell
+          | card: {{ payment.card && payment.card.substr(-4) }}
 </template>
 
 <script lang="ts">

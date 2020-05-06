@@ -8,7 +8,7 @@ md-card.codes-card
   md-card-content.md-layout
     md-table.table-full-width
       md-table-row(v-for='card in cards', :key='card.id', :class="{ 'table-warning': card.status === 'pending' }")
-        md-table-cell(md-label='卡名') {{ card.title }}
+        md-table-cell(md-label='卡名' @click.native="$clipboard(card.id,'卡ID')") {{ card.title }}
         md-table-cell(md-label='状态' style="text-align:center")
           span(v-if="card.status!=='valid'") {{ card.status | cardStatusName }}
           md-button.md-normal.md-success.md-xs(v-else @click="activate(card)" style="width:48px !important") 激活
@@ -21,12 +21,18 @@ md-card.codes-card
           | {{ card.end | date("YY-MM-DD") }}
         md-table-cell(md-label='面值', v-if="card.type === 'balance'")
           | {{ card.balance }}
+        //- md-table-cell
+          | {{ card.createdAt | date('YYYY-MM-DD HH:mm:ss') }}
+          | {{ card.payments.map(p => p.id.substr(-4) || p) }}
+          textarea(v-model="card.payments")
+          button(@click="save(card)") 保存
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { Card } from "@/resources/interfaces";
+import { CardResource } from "@/resources";
 
 @Component
 export default class CardsCard extends Vue {
@@ -38,6 +44,14 @@ export default class CardsCard extends Vue {
 
   @Prop({ default: () => {} })
   activate!: Function;
+
+  save(card: Card) {
+    CardResource.update(
+      { id: card.id },
+      // @ts-ignore
+      { payments: card.payments.split(",") }
+    );
+  }
 }
 </script>
 
