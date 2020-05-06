@@ -116,7 +116,7 @@
                 md-button.md-n.md-simple(@click="usePaymentGateway('pos')", :class="{'md-primary':usingPaymentGateway('pos')}") 银行卡
               .md-layout-item.md-layout.md-alignment-bottom-right(style='flex:0;flex-wrap:nowrap')
                 md-button.md-simple.md-danger(type='button', @click='remove', v-if='this.booking.id && $user.can("delete-booking")') 删除
-                md-button.md-simple.md-warning(type='button', @click='cancel', v-if="this.booking.id && !['pending_refund', 'canceled'].includes(this.booking.status)") 撤销
+                md-button.md-simple.md-warning(type='button', @click='cancel', v-if="bookingCancelable") 撤销
                 md-button.md-primary.md-raised(type='submit' v-if='booking.type==="play" && !booking.id' :disabled="!bookingValidated") 保存并入场
                 md-button.md-primary.md-simple(type='submit' v-if='booking.type==="play" && booking.id') 保存
                 md-button.md-warning(type='submit' v-if='booking.type==="event"' :class='{"md-simple": booking.id,"md-raised": !booking.id}' :disabled="!bookingValidated") 保存
@@ -234,6 +234,16 @@ export default class BookingDetail extends Vue {
     if (!this.booking.customer && this.customerSearchTerm.length !== 11)
       return false;
     return true;
+  }
+
+  get bookingCancelable() {
+    return (
+      this.booking.id &&
+      !["pending_refund", "canceled"].includes(
+        this.booking.status as BookingStatus
+      ) &&
+      this.booking.date === moment().format("YYYY-MM-DD")
+    );
   }
 
   get cardHeaderClass() {
