@@ -12,21 +12,8 @@
                 span {{ user.id.substr(-4).toUpperCase() }}
                 md-icon(style="font-size:15px !important") file_copy
           md-card-content.md-layout
-            //- .file-input.img-circle.md-layout-item.md-size-25.pt-4
-              div(v-if='!user.avatarUrl')
-                .image-container
-                  img(src='/img/placeholder.jpg', title='')
-              .image-container(v-else)
-                img(:src='user.avatarUrl')
-              .text-center
-                md-button.md-danger.md-round.md-just-icon(@click="removeImage('circle')", v-if='user.avatarUrl')
-                  md-icon close
-                md-button.md-success.md-round.md-fileinput(:class="{ 'md-just-icon': user.avatarUrl }")
-                  div(v-if='!user.avatarUrl') 选择头像
-                  div(v-else)
-                    md-icon refresh
-                  input(type='file', ref='avatarFileInput', @change='onFileChange', accept='image/jpeg,image/png')
-            .md-layout-item.md-size-100.md-layout.md-alignment-vertical
+            poster.pt-4(v-model="user.avatarUrl" placeholder="/img/placeholder.jpg" circle)
+            .md-layout-item.md-size-75.md-layout.md-alignment-vertical
               .md-layout-item.md-small-size-100.md-size-25(v-if="user.role !== 'customer' && $user.can('edit-user')")
                 md-field
                   label 用户类型
@@ -46,17 +33,15 @@
                   md-input(v-model='user.childName')
               .md-layout-item.md-small-size-100.md-size-25
                 md-field
-                  label 性别
-                  md-select(v-model='user.gender', @keydown.enter.prevent)
+                  label 孩子性别
+                  md-select(v-model='user.childGender', @keydown.enter.prevent)
                     md-option(value='男') 男
                     md-option(value='女') 女
                     md-option(value='未知') 未知
               .md-layout-item.md-small-size-100.md-size-25
                 md-field
-                  label 门店
-                  md-select(v-model='user.store')
-                    md-option 不绑定门店
-                    md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
+                  label 孩子生日
+                  md-input(v-model='user.childBirthday', type='text')
               .md-layout-item.md-small-size-100.md-size-33
                 md-field
                   label 手机号
@@ -67,16 +52,18 @@
                   md-input(v-model='user.cardNo')
               .md-layout-item.md-small-size-100.md-size-33
                 md-field
+                  label 门店
+                  md-select(v-model='user.store')
+                    md-option 不绑定门店
+                    md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
+              .md-layout-item.md-small-size-100.md-size-33
+                md-field
                   label 身份证号
                   md-input(v-model='user.idCardNo')
               .md-layout-item.md-small-size-100.md-size-33
                 md-field
                   label 地区
                   md-input(v-model='user.region', type='text')
-              .md-layout-item.md-small-size-100.md-size-33
-                md-field
-                  label 生日
-                  md-input(v-model='user.birthday', type='text')
               .md-layout-item.md-small-size-100.md-size-33
                 md-field
                   label 星座
@@ -103,7 +90,7 @@
                   label 重置密码
                   md-input(v-model='user.password', type='password', autocomplete='new-password')
             .md-layout-item.md-size-100.text-right
-              md-button.md-primary.mt-4(type='submit' :class="{'md-raised':!user.id,'md-simple':user.id}") 保存
+              md-button.md-success.mt-4(type='submit' :class="{'md-raised':!user.id,'md-simple':user.id}") 保存
               md-button.md-raised.md-primary.mt-4.pull-right(@click="createBooking" v-if="user.id && user.role === 'customer'") 创建门票预约
       bookings-card(title="近期门票" :bookings="userBookings" :customer="user" v-if="user.role === 'customer'")
     .md-layout-item.md-medium-size-100.md-size-40.mx-auto(v-if="user.role === 'customer'")
@@ -113,14 +100,15 @@
 <script lang="ts">
 import Vue from "vue";
 import { Watch, Component, Prop } from "vue-property-decorator";
-import { BookingsCard, Membership } from "@/components";
+import { BookingsCard, Membership, Poster } from "@/components";
 import { BookingResource, UserResource } from "@/resources";
 import { User, Store, Booking } from "@/resources/interfaces";
 
 @Component({
   components: {
     BookingsCard,
-    Membership
+    Membership,
+    Poster
   }
 })
 export default class UserProfile extends Vue {

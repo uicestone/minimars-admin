@@ -1,7 +1,7 @@
 <template lang="pug">
-.file-input.mx-auto(style='display:block')
+.file-input.mx-auto(:class='{"img-circle":circle}' style='display:block')
   .image-container.mx-auto
-    img(:src="value || preview || '/img/image_placeholder.jpg'")
+    img(:src="value || preview || placeholder")
   .button-container
     md-button.md-danger.md-round(@click='removeImage', v-if='preview || value') 移除
     md-button.md-success.md-round.md-fileinput
@@ -19,11 +19,14 @@ import { http } from "@/resources";
 @Component({
   name: "poster",
   props: {
-    value: String
+    value: String,
+    circle: { default: false, type: Boolean },
+    placeholder: { default: "/img/image_placeholder.jpg", type: String }
   }
 })
 export default class Poster extends Vue {
   preview = "";
+
   onFileChange(e: any) {
     let files = e.target.files || e.dataTransfer.files;
     if (!files.length) return;
