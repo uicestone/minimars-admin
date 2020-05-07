@@ -27,11 +27,11 @@
             .md-layout-item.md-small-size-100.md-size-33
               md-field
                 label 三方平台售价
-                md-input(type='number', v-model='coupon.priceThirdParty')
+                md-input(type='number', step='0.01', v-model='coupon.priceThirdParty')
             .md-layout-item.md-small-size-100.md-size-33
               md-field
                 label 门店售价
-                md-input(type='number', v-model='coupon.price')
+                md-input(type='number', step='0.01', v-model='coupon.price')
             .md-layout-item.md-small-size-100.md-size-33
               md-field
                 label 每儿童免费陪同成人

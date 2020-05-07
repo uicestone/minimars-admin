@@ -61,7 +61,7 @@
                 md-field
                   label 金额
                   span.md-prefix ¥
-                  md-input(v-model='booking.price', type='number', min='0', :disabled='!!booking.id')
+                  md-input(v-model='booking.price', type='number', min='0', step='0.01', :disabled='!!booking.id')
               //- .md-layout-item(v-if="booking.type==='play'", style="flex:1;min-width:33%")
                 md-field
                   label 袜子

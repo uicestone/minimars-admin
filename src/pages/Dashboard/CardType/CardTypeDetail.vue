@@ -33,11 +33,11 @@
             .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 售价
-                md-input(type='number', v-model='cardType.price')
+                md-input(type='number', step='0.01', v-model='cardType.price')
             .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 有效时长
-                md-input(type='number', v-model='cardType.expiresInMonths')
+                md-input(type='number', step='0.1', v-model='cardType.expiresInMonths')
                 span.md-suffix 个月
             .md-layout-item.md-small-size-100.md-size-20
               md-field
@@ -54,7 +54,7 @@
             .md-layout-item.md-small-size-100.md-size-100(v-if="cardType.type === 'balance'")
               md-field
                 label 面值
-                md-input(type='number', v-model='cardType.balance')
+                md-input(type='number', step='0.01', v-model='cardType.balance')
             .md-layout-item.md-small-size-100.md-size-50(v-if="cardType.type === 'period'")
               md-datepicker(placeholder='开始日期', v-model='cardType.start', :md-model-type='Date', md-immediately)
                 label 开始日期

@@ -20,11 +20,11 @@
             .md-layout-item.md-small-size-100.md-size-25
               md-field
                 label 积分售价
-                md-input(type='number', v-model='gift.priceInPoints')
+                md-input(type='number', step='0.01', v-model='gift.priceInPoints')
             .md-layout-item.md-small-size-100.md-size-25
               md-field
                 label 收款售价 ¥
-                md-input(type='number', v-model='gift.price' step="0.01")
+                md-input(type='number', step='0.01', v-model='gift.price')
             .md-layout-item.md-small-size-100.md-size-25
               md-field
                 label 门店
