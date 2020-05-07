@@ -8,7 +8,7 @@
             .card-icon
               md-icon perm_identity
             h4.title 用户详情
-              span(@click="$clipboard(user.id, '用户ID')")
+              span(v-if="user.id" @click="$clipboard(user.id, '用户ID')")
                 span {{ user.id.substr(-4).toUpperCase() }}
                 md-icon(style="font-size:15px !important") file_copy
           md-card-content.md-layout
