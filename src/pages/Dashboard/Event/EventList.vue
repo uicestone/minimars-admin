@@ -18,14 +18,17 @@
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
             md-table-cell(md-label='名称', md-sort-by='title')
               | {{ item.title }}
-            md-table-cell(md-label='门店', md-sort-by='store.name')
-              | {{ item.store ? item.store.name : '-' }}
+            md-table-cell(md-label='门店', md-sort-by='store')
+              | {{ item.store ? item.store.name : '通用' }}
             md-table-cell(md-label='日期', md-sort-by='date')
-              | {{ item.date | date("YYYY-MM-DD") }}
+              span(v-if="item.date") {{ item.date | date("YYYY-MM-DD") }}
+              span(v-else) 长期
             md-table-cell(md-label='积分售价', md-sort-by='priceInPoints')
               | {{ item.priceInPoints }}
             md-table-cell(md-label='收款售价', md-sort-by='price')
               | {{ item.price | currency }}
+            md-table-cell(md-label='创建日期', md-sort-by='createdAt')
+              | {{ item.createdAt | date('YYYY-MM-DD') }}
       md-card-actions(md-alignment='space-between')
         div
           p.card-category {{ from }} - {{ to }} / {{ total }}
