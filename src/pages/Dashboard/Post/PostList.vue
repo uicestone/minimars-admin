@@ -23,8 +23,8 @@
               | {{ item.title }}
             md-table-cell(md-label='简称', md-sort-by='slug')
               | {{ item.slug }}
-            md-table-cell(md-label='发布者', md-sort-by='author.name')
-              | {{ item.author.name }}
+            md-table-cell(md-label='发布者', md-sort-by='author')
+              | {{ item.author && item.author.name }}
             md-table-cell(md-label='修改时间', md-sort-by='updatedAt')
               | {{ item.updatedAt | date("YYYY-MM-DD HH:mm") }}
       md-card-actions(md-alignment='space-between')
