@@ -29,7 +29,7 @@ import { ConfigItemResource } from "@/resources";
   }
 })
 export default class Config extends Vue {
-  key = this.$route.params.key;
+  key = "";
   value = {};
   async save() {
     this.value = (
@@ -52,6 +52,7 @@ export default class Config extends Vue {
     });
   }
   async mounted() {
+    this.key = this.$route.params.key;
     const config = await ConfigItemResource.get({
       key: this.$route.params.key
     });

@@ -35,6 +35,12 @@ export default class ConfigList extends List<ConfigItem> {
   showDetail(item: ConfigItem) {
     this.$router.push(`/config/${Object.keys(item)[0]}`);
   }
+
+  mounted() {
+    this.searchQuery = {
+      seperate: true
+    };
+  }
 }
 </script>
 
