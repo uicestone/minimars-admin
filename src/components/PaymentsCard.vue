@@ -6,7 +6,7 @@ md-card.payments-card
     h4.title {{ title }}
   md-card-content.md-layout
     md-table
-      md-table-row(v-for='payment in payments', :key='payment.id')
+      md-table-row(v-for='payment in payments', :key='payment.id' v-if="payment.valid")
         md-table-cell(md-label='创建时间' @click.native="$clipboard(payment.id, '支付ID')")
           //- | {{ payment.id.substr(-4) }}
           //- | {{ payment.s }}
