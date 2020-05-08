@@ -8,8 +8,11 @@
             .card-icon
               md-icon card_membership
             h4.title {{ cardType.title }}
+              span.pull-right(style="display:flex")
+                md-switch.md-primary(v-model="cardType.isGift") 可转赠
+                md-switch.md-primary(v-model="cardType.openForClient") 客户端购买
           md-card-content.md-layout
-            .md-layout-item.md-size-35
+            .md-layout-item.md-size-60
               md-field
                 label 名称
                 md-input(v-model='cardType.title')
@@ -23,8 +26,6 @@
                 md-select(v-model='cardType.store')
                   md-option 不绑定门店
                   md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
-            .md-layout-item.md-small-size-100.md-size-25
-              md-switch.md-primary(v-model="cardType.isGift") 可转赠
             .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 类型
@@ -39,11 +40,11 @@
                 label 有效时长
                 md-input(type='number', step='0.1', v-model='cardType.expiresInMonths')
                 span.md-suffix 个月
-            .md-layout-item.md-small-size-100.md-size-20
+            .md-layout-item.md-small-size-100.md-size-20(v-if="cardType.type!=='balance'")
               md-field
                 label 单次最多儿童数
                 md-input(type='number', v-model='cardType.maxKids')
-            .md-layout-item.md-small-size-100.md-size-20
+            .md-layout-item.md-small-size-100.md-size-20(v-if="cardType.type!=='balance'")
               md-field
                 label 每儿童免费陪同成人
                 md-input(type='number', v-model='cardType.freeParentsPerKid')
