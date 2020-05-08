@@ -127,7 +127,7 @@ const GlobalLibrariesPlugins = {
           valid: "待激活",
           activated: "已激活",
           expired: "已失效",
-          cancel: "已取消"
+          canceled: "已取消"
         };
       }
     });
