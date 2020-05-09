@@ -29,6 +29,8 @@
               | {{ item.price | currency }}
             md-table-cell(md-label='创建日期', md-sort-by='createdAt')
               | {{ item.createdAt | date('YYYY-MM-DD') }}
+            md-table-cell(md-label='显示顺序', md-sort-by='order')
+              | {{ item.order }}
       md-card-actions(md-alignment='space-between')
         div
           p.card-category {{ from }} - {{ to }} / {{ total }}
@@ -43,6 +45,8 @@ import { Event } from "@/resources/interfaces";
 export default class EventList extends List<Event> {
   name = "event";
   resource = EventResource;
+  currentSort = "order";
+  currentSortOrder = "desc";
 }
 </script>
 

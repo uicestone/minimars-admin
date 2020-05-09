@@ -26,6 +26,10 @@
               | {{ item.priceInPoints }}
             md-table-cell(md-label='收款售价', md-sort-by='price')
               | {{ item.price }}
+            md-table-cell(md-label='创建日期', md-sort-by='createdAt')
+              | {{ item.createdAt | date('YYYY-MM-DD') }}
+            md-table-cell(md-label='显示顺序', md-sort-by='order')
+              | {{ item.order }}
       md-card-actions(md-alignment='space-between')
         div
           p.card-category {{ from }} - {{ to }} / {{ total }}
@@ -42,8 +46,8 @@ import Component from "vue-class-component";
 export default class GiftList extends List<Gift> {
   name = "gift";
   resource = GiftResource;
-  currentSort = "title";
-  currentSortOrder = "asc";
+  currentSort = "order";
+  currentSortOrder = "desc";
 }
 </script>
 
