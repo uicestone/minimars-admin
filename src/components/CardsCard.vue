@@ -9,6 +9,7 @@ md-card.codes-card
     md-table.table-full-width
       md-table-row(v-for='card in cards', :key='card.id', :class="{ 'table-warning': card.status === 'pending' }")
         md-table-cell(md-label='卡名' @click.native="$clipboard(card.id,'卡ID')") {{ card.title }}
+        md-table-cell(md-label='门店') {{ cardStoreName(card) }}
         md-table-cell(md-label='状态' style="text-align:center")
           span(v-if="card.status!=='valid'") {{ card.status | cardStatusName }}
           md-button.md-normal.md-success.md-xs(v-else @click="activate(card)" style="width:48px !important") 激活
@@ -51,6 +52,11 @@ export default class CardsCard extends Vue {
       // @ts-ignore
       { payments: card.payments.split(",") }
     );
+  }
+
+  cardStoreName(card: Card) {
+    const store = this.$stores.find(s => s.id === card.store);
+    return store ? store.name.substr(0, 2) : "通用";
   }
 }
 </script>

@@ -76,7 +76,7 @@ export interface Card extends Model {
   slug: string;
   type: string;
   isGift: boolean;
-  store?: Populated<Store>;
+  store?: string;
   content: string;
   times: number;
   start: Date;
