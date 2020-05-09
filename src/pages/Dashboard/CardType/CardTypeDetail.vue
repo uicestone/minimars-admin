@@ -63,9 +63,9 @@
               md-datepicker(placeholder='截止日期', v-model='cardType.end', :md-model-type='Date', md-immediately)
                 label 截止日期
             .md-layout-item.md-size-100
-              md-field
+              md-field.md-has-value.mt-4
                 label 内容详情
-                md-textarea.no-padding(v-model='cardType.content')
+                editor(v-model='cardType.content')
             .md-layout-item.md-size-100.text-right
               md-button.md-raised.md-primary.mt-4(type='submit') 保存
               md-button.mt-4.ml-2.md-simple.md-danger(type='button', @click='remove', v-if='this.cardType.id') 删除
@@ -83,11 +83,12 @@ import { Watch, Component } from "vue-property-decorator";
 import { confirm } from "@/helpers/sweetAlert";
 import { CardType, Store } from "@/resources/interfaces";
 import { CardTypeResource } from "@/resources";
-import { Poster } from "@/components";
+import { Poster, Editor } from "@/components";
 
 @Component({
   components: {
-    Poster
+    Poster,
+    Editor
   }
 })
 export default class CardTypeDetail extends Vue {
