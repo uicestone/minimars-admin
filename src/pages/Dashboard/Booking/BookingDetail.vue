@@ -219,7 +219,8 @@ export default class BookingDetail extends Vue {
       this.booking.adultsCount,
       this.booking.event?.id,
       this.booking.gift?.id,
-      this.booking.quantity
+      this.booking.quantity,
+      this.booking.price
     ].join();
   }
 
