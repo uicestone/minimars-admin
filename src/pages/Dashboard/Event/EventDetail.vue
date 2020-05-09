@@ -16,24 +16,28 @@
             .md-layout-item.md-small-size-100.md-size-33
               md-datepicker(v-model='event.date', md-immediately)
                 label 日期
-            .md-layout-item.md-small-size-100.md-size-25
+            .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 门店
                 md-select(v-model='event.store')
                   md-option 不绑定门店
                   md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
-            .md-layout-item.md-small-size-100.md-size-25
+            .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 积分售价
                 md-input(type='number', step='0.01', v-model='event.priceInPoints')
-            .md-layout-item.md-small-size-100.md-size-25
+            .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 收款售价 ¥
                 md-input(type='number', step='0.01', v-model='event.price')
-            .md-layout-item.md-small-size-100.md-size-25
+            .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 最大儿童人数
                 md-input(type='number', v-model='event.kidsCountMax')
+            .md-layout-item.md-small-size-100.md-size-20
+              md-field
+                label 显示顺序
+                md-input(type='number', v-model='event.order')
             .md-layout-item.md-size-100
               md-chips.md-primary.shake-on-error(@keypress.native.enter.prevent, v-model='event.tags', md-placeholder='添加标签', md-check-duplicated)
             .md-layout-item.md-small-size-100

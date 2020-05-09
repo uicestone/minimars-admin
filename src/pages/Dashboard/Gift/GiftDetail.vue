@@ -13,24 +13,28 @@
               md-field
                 label 显示名称
                 md-input(v-model='gift.title')
-            .md-layout-item.md-small-size-100.md-size-25
+            .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 库存
                 md-input(type='number', v-model='gift.quantity')
-            .md-layout-item.md-small-size-100.md-size-25
+            .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 积分售价
                 md-input(type='number', step='0.01', v-model='gift.priceInPoints')
-            .md-layout-item.md-small-size-100.md-size-25
+            .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 收款售价 ¥
                 md-input(type='number', step='0.01', v-model='gift.price')
-            .md-layout-item.md-small-size-100.md-size-25
+            .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 门店
                 md-select(v-model='gift.store')
                   md-option 不绑定门店
                   md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
+            .md-layout-item.md-small-size-100.md-size-20
+              md-field
+                label 显示顺序
+                md-input(type='number', v-model='gift.order')
             .md-layout-item.md-small-size-100
               md-field.md-has-value.mt-4
                 label 内容
