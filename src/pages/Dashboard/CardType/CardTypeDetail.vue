@@ -38,8 +38,8 @@
             .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 有效时长
-                md-input(type='number', step='0.1', v-model='cardType.expiresInMonths')
-                span.md-suffix 个月
+                md-input(type='number', step='1', v-model='cardType.expiresInDays')
+                span.md-suffix 天
             .md-layout-item.md-small-size-100.md-size-20(v-if="cardType.type!=='balance'")
               md-field
                 label 单次最多儿童数
