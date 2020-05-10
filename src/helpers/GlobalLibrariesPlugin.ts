@@ -1,4 +1,5 @@
 import { VueConstructor } from "vue";
+import { User } from "@/resources/interfaces";
 
 const GlobalLibrariesPlugins = {
   install(Vue: VueConstructor) {
@@ -7,12 +8,6 @@ const GlobalLibrariesPlugins = {
       get() {
         //@ts-ignore
         return window.remote;
-      }
-    });
-
-    Object.defineProperty(Vue.prototype, "$Chartist", {
-      get() {
-        return this.$root.Chartist;
       }
     });
 
@@ -26,60 +21,43 @@ const GlobalLibrariesPlugins = {
       }
     });
 
-    const config = {}; // global config from api
-
     Object.defineProperty(Vue.prototype, "$config", {
       get() {
-        return config;
-      },
-      set(val) {
-        Object.assign(config, val);
+        return this.$root.config;
       }
     });
 
+    const can = function(this: User, cap: string) {
+      const roleCaps: Record<string, string> = {
+        admin: ".*",
+        manager: "view-(dashboard|booking|user|payment)",
+        accountant: "view-(dashboard|payments)"
+      };
+      return this.role && cap.match(new RegExp(`^${roleCaps[this.role]}$`));
+    };
+
     Object.defineProperty(Vue.prototype, "$user", {
       get() {
-        this.$root.user.can = function(cap: string) {
-          const roleCaps: Record<string, string> = {
-            admin: ".*",
-            manager: "view-(dashboard|booking|user|payment)",
-            accountant: "view-(dashboard|payments)"
-          };
-          return this.role && cap.match(new RegExp(`^${roleCaps[this.role]}$`));
-        };
-
-        return this.$root.user;
-      },
-      set(val) {
-        this.$root.user = val;
+        this.$root.config.user.can = can;
+        return this.$root.config.user;
       }
     });
 
     Object.defineProperty(Vue.prototype, "$stores", {
       get() {
-        if (!this.$root.stores) this.$root.stores = [];
-        return this.$root.stores;
-      },
-      set(val) {
-        this.$root.stores = val;
+        return this.$root.config.stores;
       }
     });
 
     Object.defineProperty(Vue.prototype, "$cardTypes", {
       get() {
-        return this.$root.cardTypes || [];
-      },
-      set(val) {
-        this.$root.cardTypes = val;
+        return this.$root.config.cardTypes;
       }
     });
 
     Object.defineProperty(Vue.prototype, "$coupons", {
       get() {
-        return this.$root.coupons || [];
-      },
-      set(val) {
-        this.$root.coupons = val;
+        return this.$root.config.coupons;
       }
     });
 

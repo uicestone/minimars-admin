@@ -30,16 +30,20 @@ export default {
   },
   methods: {
     async submitLogin() {
-      const { login, password } = this;
-      const {
-        data: { user, token }
-      } = await http.post("auth/login", {
-        login,
-        password
-      });
-      window.localStorage.setItem("token", token);
-      this.$user = user;
-      this.$router.push("/");
+      try {
+        const { login, password } = this;
+        const {
+          data: { user, token }
+        } = await http.post("auth/login", {
+          login,
+          password
+        });
+        window.localStorage.setItem("token", token);
+        this.$user = user;
+        this.$router.push("/");
+      } catch (err) {
+        console.error(err.message);
+      }
     }
   }
 };

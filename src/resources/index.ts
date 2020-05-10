@@ -1,4 +1,4 @@
-import Axios from "axios";
+import Axios, { AxiosRequestConfig } from "axios";
 import Resource from "./Resource";
 import {
   User,
@@ -16,6 +16,23 @@ import {
 
 export const http = Axios.create({
   baseURL: process.env.VUE_APP_API_BASE
+});
+
+http.interceptors.request.use((request: AxiosRequestConfig) => {
+  const token = window.localStorage.getItem("token");
+
+  if (token) {
+    request.headers["Authorization"] = token;
+  }
+  // stop request and return 401 response when no token exist except for login request
+  if (
+    !["auth/login", "config", "store"].includes(request.url || "") &&
+    !window.localStorage.getItem("token")
+  ) {
+    window.location.hash = "#/login";
+    return Promise.reject("No token exists, login required.");
+  }
+  return request;
 });
 
 export const BookingResource = new Resource<Booking>(http, "booking/{id}");

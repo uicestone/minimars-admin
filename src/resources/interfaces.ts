@@ -117,35 +117,14 @@ export interface Coupon extends Model {
 }
 
 export interface Config {
-  depositLevels?: {
-    slug: string;
-    desc: string;
-    price: number;
-    cardType: string;
-    isGift?: boolean;
-    depositBalance?: number;
-    rewardBalance?: number;
-    freePlayFrom?: Date;
-    freePlayTo?: Date;
-  }[];
   sockPrice?: number;
   extraParentFullDayPrice?: number;
   kidFullDayPrice?: number;
   freeParentsPerKid?: number;
-  coupons?: {
-    slug: string;
-    name: string;
-    validFrom: Date;
-    validTill: Date;
-    type: string;
-    amount: number; // value of the coupon itself
-    adultsCount?: number;
-    kidsCount?: number;
-    fixedMembersCount?: boolean;
-    price?: number;
-    discountAmount?: number;
-    discountRate?: number;
-  }[];
+  user?: User;
+  stores?: Store[];
+  cardTypes?: CardType[];
+  coupons?: Coupon[];
 }
 
 export interface ConfigItem extends Model, Record<string, any> {
