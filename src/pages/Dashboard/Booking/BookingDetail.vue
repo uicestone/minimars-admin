@@ -144,7 +144,8 @@
                   | {{ payment.createdAt | date }}
                 md-table-cell(md-label='收款' style="width:86px")
                   md-button.md-success.md-normal(disabled, v-if='payment.paid') 完成
-                  md-button.md-normal.md-warning(v-else, @click='pay(payment)') 收款
+                  md-button.md-normal.md-warning(v-else-if="payment.valid && !['wechatpay'].includes(payment.gateway)", @click='pay(payment)') 收款
+                  md-button.md-normal(v-else disabled) 失效
         md-button.md-success.md-block.md-raised(v-if='booking.type==="food" && booking.status==="finished"' @click="createAnother") 继续收款
 
     .md-layout-item.md-size-40.md-small-size-100.mx-auto(v-if="booking.type==='play' && booking.customer")
