@@ -108,8 +108,8 @@
                 span.ml-1.mr-1(v-if='priceInPoints !== null') /
                 span(v-if='priceInPoints !== null') {{ priceInPoints }} 积分
               .md-layout-item(v-if='!booking.id && (price || priceInPoints)')
-                md-button.md-n.md-simple(:class="{'md-primary':usingPaymentGateway('points')}", v-if='priceInPoints') 积分 {{ booking.customer ? booking.customer.points : ''}}
-                md-button.md-n.md-simple.md-success(v-if='booking.customer && booking.customer.balance') 账户余额 {{ booking.customer.balance }}
+                md-button.md-n.md-simple(@click="usePaymentGateway(null)", :class="{'md-success':paymentGateway!=='points'}", v-if='booking.customer && booking.customer.balance') 账户余额 {{ booking.customer.balance }}
+                md-button.md-n.md-simple(@click="usePaymentGateway('points')", :class="{'md-primary':usingPaymentGateway('points')}", v-if='priceInPoints') 积分 {{ booking.customer ? booking.customer.points : ''}}
                 span(v-if="!booking.customer || !booking.customer.balance || booking.customer.balance < price")
                   md-button.md-n.md-simple(@click="usePaymentGateway('dianping')", :class="{'md-primary':usingPaymentGateway('dianping')}") 点评POS
                   md-button.md-n.md-simple(@click="usePaymentGateway('shouqianba')", :class="{'md-primary':usingPaymentGateway('shouqianba')}") 收钱吧
@@ -298,7 +298,8 @@ export default class BookingDetail extends Vue {
       !(await confirm(
         "确定已收款/验券",
         `支付方式：${this.booking.card?.title || ""}${
-          this.booking.coupon?.title || this.booking.customer?.balance
+          this.booking.coupon?.title ||
+          (paymentGateway !== "points" && this.booking.customer?.balance)
             ? "账户余额"
             : ""
         } ${paymentGateway ? this.$gatewayNames[paymentGateway] : ""}`
