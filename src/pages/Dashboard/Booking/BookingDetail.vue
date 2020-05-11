@@ -292,16 +292,30 @@ export default class BookingDetail extends Vue {
   async save() {
     const { paymentGateway } = this;
 
+    const paymentGatewayNames = [];
+
+    if (this.booking.card) {
+      paymentGatewayNames.push(this.booking.card.title);
+    }
+    if (this.booking.coupon) {
+      paymentGatewayNames.push(this.booking.coupon.title);
+    }
+    if (
+      paymentGateway !== "points" &&
+      this.price &&
+      this.booking.customer?.balance
+    ) {
+      paymentGatewayNames.push("账户余额");
+    }
+    if (paymentGateway) {
+      paymentGatewayNames.push(this.$gatewayNames[paymentGateway]);
+    }
+
     if (
       !this.booking.id &&
       !(await confirm(
         "确定已收款/验券",
-        `支付方式：${this.booking.card?.title || ""}${
-          this.booking.coupon?.title ||
-          (paymentGateway !== "points" && this.booking.customer?.balance)
-            ? "账户余额"
-            : ""
-        } ${paymentGateway ? this.$gatewayNames[paymentGateway] : ""}`
+        `支付方式：${paymentGatewayNames.join("、")}`
       ))
     ) {
       return;
