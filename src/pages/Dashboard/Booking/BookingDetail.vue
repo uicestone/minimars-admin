@@ -166,8 +166,7 @@ import {
   EventResource,
   GiftResource,
   PaymentResource,
-  CardResource,
-  CouponResource
+  CardResource
 } from "@/resources";
 import {
   Event,

@@ -36,7 +36,6 @@ import ContentFooter from "./ContentFooter.vue";
 import UserMenu from "./Extra/UserMenu.vue";
 import Component from "vue-class-component";
 import { Watch } from "vue-property-decorator";
-import { RouteConfig } from "vue-router";
 
 function hasElement(className: string) {
   return document.getElementsByClassName(className).length > 0;
