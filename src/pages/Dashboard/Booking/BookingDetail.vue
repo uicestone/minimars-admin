@@ -96,7 +96,7 @@
             .md-layout-item.md-size-100.card.mt-2(v-if="booking.type === 'play' && booking.store && booking.customer")
               div.pb-2.bb(v-if="!booking.id")
                 p(v-if="booking.customer && !customerCards.length") 无有效会员卡
-                md-button.md-lg-n.mr-1(:class="{'md-info':usingCard(card)}" v-for='card in customerCards', v-if='booking.type === "play" && (!card.store || card.store === booking.store.id)', :key='card.id', :value='card.id', @click='useCard(card)')
+                md-button.md-lg-n.mr-1(:class="{'md-info':usingCard(card)}" v-for='card in customerCards', v-if='booking.type === "play" && (!card.store || card.store === booking.store.id) && card.type !== "balance"', :key='card.id', :value='card.id', @click='useCard(card)')
                   | {{ card.title }} {{card.timesLeft?'剩余'+card.timesLeft+'次':''}}
               div.pb-2.bb(v-else-if="booking.card")
                 md-button.md-lg-n.md-info
@@ -108,12 +108,13 @@
                 span.ml-1.mr-1(v-if='priceInPoints !== null') /
                 span(v-if='priceInPoints !== null') {{ priceInPoints }} 积分
               .md-layout-item(v-if='!booking.id && (price || priceInPoints)')
-                md-button.md-n.md-simple(@click="usePaymentGateway('points')", :class="{'md-primary':usingPaymentGateway('points')}", v-if='priceInPoints') 积分 {{ booking.customer ? booking.customer.points : ''}}
-                md-button.md-n.md-simple(@click="usePaymentGateway('balance')", :class="{'md-primary':usingPaymentGateway('balance')}", v-if='booking.customer && booking.customer.balance') 账户余额 {{ booking.customer.balance }}
-                md-button.md-n.md-simple(@click="usePaymentGateway('dianping')", :class="{'md-primary':usingPaymentGateway('dianping')}") 点评POS
-                md-button.md-n.md-simple(@click="usePaymentGateway('shouqianba')", :class="{'md-primary':usingPaymentGateway('shouqianba')}") 收钱吧
-                md-button.md-n.md-simple(@click="usePaymentGateway('cash')", :class="{'md-primary':usingPaymentGateway('cash')}") 现金
-                md-button.md-n.md-simple(@click="usePaymentGateway('pos')", :class="{'md-primary':usingPaymentGateway('pos')}") 银行卡
+                md-button.md-n.md-simple(:class="{'md-primary':usingPaymentGateway('points')}", v-if='priceInPoints') 积分 {{ booking.customer ? booking.customer.points : ''}}
+                md-button.md-n.md-simple.md-success(v-if='booking.customer && booking.customer.balance') 账户余额 {{ booking.customer.balance }}
+                span(v-if="!booking.customer || !booking.customer.balance || booking.customer.balance < price")
+                  md-button.md-n.md-simple(@click="usePaymentGateway('dianping')", :class="{'md-primary':usingPaymentGateway('dianping')}") 点评POS
+                  md-button.md-n.md-simple(@click="usePaymentGateway('shouqianba')", :class="{'md-primary':usingPaymentGateway('shouqianba')}") 收钱吧
+                  md-button.md-n.md-simple(@click="usePaymentGateway('cash')", :class="{'md-primary':usingPaymentGateway('cash')}") 现金
+                  md-button.md-n.md-simple(@click="usePaymentGateway('pos')", :class="{'md-primary':usingPaymentGateway('pos')}") 银行卡
               .md-layout-item.md-layout.md-alignment-bottom-right(style='flex:0;flex-wrap:nowrap')
                 md-button.md-simple.md-danger(type='button', @click='remove', v-if='this.booking.id && $user.can("delete-booking")') 删除
                 md-button.md-simple.md-warning(type='button', @click='cancel', v-if="bookingCancelable") 撤销
@@ -226,7 +227,13 @@ export default class BookingDetail extends Vue {
 
   get bookingValidated() {
     if (this.booking.id) return true;
-    if (!this.paymentGateway && (this.price || this.priceInPoints))
+    if (!this.booking.store) return false;
+    if (
+      !this.paymentGateway &&
+      (this.price || this.priceInPoints) &&
+      (!this.booking.customer?.balance ||
+        this.booking.customer.balance < (this.price || 0))
+    )
       return false;
     if (this.booking.type === BookingType.EVENT && !this.booking.event)
       return false;
@@ -290,10 +297,11 @@ export default class BookingDetail extends Vue {
       !this.booking.id &&
       !(await confirm(
         "确定已收款/验券",
-        `支付方式：${this.booking.card?.title || ""}${this.booking.coupon
-          ?.title || ""} ${
-          paymentGateway ? this.$gatewayNames[paymentGateway] : ""
-        }`
+        `支付方式：${this.booking.card?.title || ""}${
+          this.booking.coupon?.title || this.booking.customer?.balance
+            ? "账户余额"
+            : ""
+        } ${paymentGateway ? this.$gatewayNames[paymentGateway] : ""}`
       ))
     ) {
       return;
