@@ -87,7 +87,7 @@
                 md-textarea.no-padding(v-model='booking.remarks')
             .md-layout-item.md-size-100.coupon.mt-2(v-if="booking.type === 'play'")
               div.pb-2.bb(v-if="!booking.id")
-                md-button.md-lg-n.mr-1(:class="{'md-warning':usingCoupon(coupon)}" v-for='coupon in coupons', :key='coupon.id', :value='coupon.id', @click='useCoupon(coupon)')
+                md-button.md-lg-n.mr-1(:class="{'md-warning':usingCoupon(coupon)}" v-for='coupon in $coupons', :key='coupon.id', :value='coupon.id', @click='useCoupon(coupon)')
                   span {{ coupon.title }}
                   span.ml-1(v-if="coupon.priceThirdParty")  {{ coupon.priceThirdParty }}
               div.pb-2.bb(v-else-if="booking.coupon")
@@ -195,7 +195,6 @@ export default class BookingDetail extends Vue {
   customerSearchTerm = "";
   events: Event[] = [];
   gifts: Gift[] = [];
-  coupons: Coupon[] = [];
   customerCards: Card[] = [];
   eventSearchTerm: string | null = null;
   giftSearchTerm: string | null = null;
@@ -700,9 +699,6 @@ export default class BookingDetail extends Vue {
         this.booking.customer = await UserResource.get({
           id: this.$route.query.customer
         });
-      }
-      if (type === "play") {
-        this.coupons = await CouponResource.query();
       }
       if (type === "event") {
         this.getEvents();
