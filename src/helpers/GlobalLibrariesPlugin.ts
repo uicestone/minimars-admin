@@ -24,6 +24,9 @@ const GlobalLibrariesPlugins = {
     Object.defineProperty(Vue.prototype, "$config", {
       get() {
         return this.$root.config;
+      },
+      set(v) {
+        this.$root.config = v;
       }
     });
 
@@ -40,6 +43,9 @@ const GlobalLibrariesPlugins = {
       get() {
         this.$root.config.user.can = can;
         return this.$root.config.user;
+      },
+      set(v) {
+        this.$root.config.user = v;
       }
     });
 

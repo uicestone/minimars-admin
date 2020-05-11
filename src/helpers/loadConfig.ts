@@ -10,6 +10,7 @@ async function getHttpData(path: string) {
       })
       .catch(err => {
         console.error(err);
+        resolve();
       });
   });
 }
@@ -22,6 +23,7 @@ const loadConfig = async (configLoaded: Config = {}) => {
     configLoaded.cardTypes || getHttpData("card-type"),
     configLoaded.coupons || getHttpData("coupon?enabled=true")
   ]);
+
   return {
     ...(config as Config),
     stores: stores as Store[],
