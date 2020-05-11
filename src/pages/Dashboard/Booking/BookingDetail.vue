@@ -73,8 +73,11 @@
                   md-input(v-model='booking.quantity', type='number', min='1', :disabled='!!booking.id')
             .md-layout-item.md-layout.md-small-size-100.md-size-50.p-0
               .md-layout-item.md-small-size-60.md-size-60
-                md-datepicker(v-model='booking.date', :md-model-type='String', md-immediately)
+                md-datepicker(v-model='booking.date', :md-model-type='String', md-immediately, v-if='!booking.id')
                   label 日期
+                md-field(v-else)
+                  label 日期
+                  md-input(disabled v-model='booking.date')
               .md-layout-item.md-small-size-40.md-size-40
                 md-field
                   label(v-if='["play","party","event"].includes(booking.type)') 入场时间
