@@ -112,7 +112,7 @@
                 span(v-if='priceInPoints !== null') {{ priceInPoints }} 积分
               .md-layout-item(v-if='!booking.id && (price || priceInPoints)')
                 md-button.md-n.md-simple(@click="usePaymentGateway(null)", :class="{'md-success':paymentGateway!=='points'}", v-if='booking.customer && booking.customer.balance') 账户余额 {{ booking.customer.balance }}
-                md-button.md-n.md-simple(@click="usePaymentGateway('points')", :class="{'md-primary':usingPaymentGateway('points')}", v-if='priceInPoints') 积分 {{ booking.customer ? booking.customer.points : ''}}
+                md-button.md-n.md-simple(@click="usePaymentGateway('points')", :class="{'md-primary':usingPaymentGateway('points')}", v-if='priceInPoints') 积分 {{ booking.customer ? Math.round(booking.customer.points) : ''}}
                 span(v-if="!booking.customer || !booking.customer.balance || booking.customer.balance < price")
                   md-button.md-n.md-simple(@click="usePaymentGateway('dianping')", :class="{'md-primary':usingPaymentGateway('dianping')}") 点评POS
                   md-button.md-n.md-simple(@click="usePaymentGateway('shouqianba')", :class="{'md-primary':usingPaymentGateway('shouqianba')}") 收钱吧

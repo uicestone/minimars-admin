@@ -92,7 +92,10 @@
             .md-layout-item.md-size-100.text-right
               md-button.md-success.mt-4(type='submit' :class="{'md-raised':!user.id,'md-simple':user.id}") 保存
               md-button.md-raised.md-primary.mt-4.pull-right(@click="createBooking" v-if="user.id && user.role === 'customer'") 创建门票预约
-      bookings-card(title="近期门票" :bookings="userBookings" :customer="user" v-if="user.role === 'customer'")
+      bookings-card(title="近期门票预约" type="play" :bookings="userBookings.filter(b=>b.type==='play')" :customer="user" v-if="user.role === 'customer'")
+      bookings-card(title="近期活动预约" type="event" :bookings="userBookings.filter(b=>b.type==='event')" :customer="user" v-if="user.role === 'customer'")
+      bookings-card(title="近期礼品兑换" type="gift" :bookings="userBookings.filter(b=>b.type==='gift')" :customer="user" v-if="user.role === 'customer'")
+      bookings-card(title="近期餐饮消费" type="food" :bookings="userBookings.filter(b=>b.type==='food')" :customer="user" v-if="user.role === 'customer'")
     .md-layout-item.md-medium-size-100.md-size-40.mx-auto(v-if="user.role === 'customer'")
       membership(:customer="user" @updated="getUser")
 </template>
@@ -168,7 +171,7 @@ export default class UserProfile extends Vue {
       }
       this.userBookings = await BookingResource.query({
         customer: this.user.id,
-        type: "play"
+        limit: 50
       });
     }
   }
