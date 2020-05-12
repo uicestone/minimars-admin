@@ -127,12 +127,12 @@
       template(slot='content')
         .md-layout
           .md-layout-item.md-size-100.md-layout
-            md-table.md-layout-item(:value='stats.couponsCount.concat(stats.cardsCount)')
+            md-table.md-layout-item(:value='cardCouponByTypes')
               md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 2 == 0")
                 md-table-cell {{ item.name }}
                 md-table-cell {{ item.kidsCount }}
                 md-table-cell {{ item.amount | currency(0) }}
-            md-table.md-layout-item(:value='stats.couponsCount.concat(stats.cardsCount)')
+            md-table.md-layout-item(:value='cardCouponByTypes')
               md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 2 == 1")
                 md-table-cell {{ item.name }}
                 md-table-cell {{ item.kidsCount }}
@@ -200,6 +200,7 @@ export default class Dashboard extends Vue {
     flowAmountByGateways: Record<string, number>;
     couponsCount: [];
     cardsCount: [];
+    balanceCount: {};
     customersByType: Record<
       "card" | "coupon" | "guest",
       { adultsCount: number; kidsCount: number }
@@ -221,6 +222,7 @@ export default class Dashboard extends Vue {
     flowAmountByGateways: {},
     couponsCount: [],
     cardsCount: [],
+    balanceCount: {},
     customersByType: {
       card: { adultsCount: 0, kidsCount: 0 },
       coupon: { adultsCount: 0, kidsCount: 0 },
@@ -354,6 +356,14 @@ export default class Dashboard extends Vue {
         }
       }
     };
+  }
+
+  get cardCouponByTypes() {
+    return [
+      ...this.stats.couponsCount,
+      ...this.stats.cardsCount,
+      this.stats.balanceCount
+    ];
   }
 
   mounted() {
