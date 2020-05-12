@@ -16,7 +16,7 @@ export default class List<M extends Model> extends Vue {
   currentSort = "createdAt";
   currentSortOrder = "desc";
   pagination = {
-    perPage: 10,
+    perPage: Math.max(Math.floor((window.innerHeight - 300) / 48), 10),
     currentPage: 1,
     total: 0
   };
