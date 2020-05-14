@@ -71,19 +71,23 @@
                 md-field
                   label 数量
                   md-input(v-model='booking.quantity', type='number', min='1', :disabled='!!booking.id')
-            .md-layout-item.md-layout.md-small-size-100.md-size-50.p-0
-              .md-layout-item.md-small-size-60.md-size-60
+            .md-layout-item.md-layout.md-small-size-100.md-size-50.p-0.md-layout-nowrap
+              .md-layout-item(style="min-width:33%")
                 md-datepicker(v-model='booking.date', :md-model-type='String', md-immediately, v-if='!booking.id')
                   label 日期
                 md-field(v-else)
                   label 日期
                   md-input(disabled v-model='booking.date')
-              .md-layout-item.md-small-size-40.md-size-40
+              .md-layout-item(style="min-width:33%")
                 md-field
                   label(v-if='["play","party","event"].includes(booking.type)') 入场时间
                   label(v-if='["gift"].includes(booking.type)') 领取时间
                   label(v-if='["food"].includes(booking.type)') 消费时间
                   md-input(v-model='booking.checkInAt', :disabled='!!booking.id')
+              .md-layout-item(v-if='booking.checkOutAt' style="min-width:33%")
+                md-field
+                  label 出场时间
+                  md-input(v-model='booking.checkOutAt' disabled)
             .md-layout-item.md-small-size-100
               md-field
                 label 备注
@@ -119,10 +123,11 @@
                   md-button.md-n.md-simple(@click="usePaymentGateway('cash')", :class="{'md-primary':usingPaymentGateway('cash')}") 现金
                   md-button.md-n.md-simple(@click="usePaymentGateway('pos')", :class="{'md-primary':usingPaymentGateway('pos')}") 银行卡
               .md-layout-item.md-layout.md-alignment-bottom-right(style='flex:0;flex-wrap:nowrap')
-                md-button.md-simple.md-danger(type='button', @click='remove', v-if='this.booking.id && $user.can("delete-booking")') 删除
-                md-button.md-simple.md-warning(type='button', @click='cancel', v-if="bookingCancelable") 撤销
-                md-button.md-primary.md-raised(type='submit' v-if='booking.type==="play" && !booking.id' :disabled="!bookingValidated") 保存并入场
+                md-button.md-simple.md-danger(@click='remove', v-if='this.booking.id && $user.can("delete-booking")') 删除
+                md-button.md-simple.md-warning(@click='cancel', v-if="bookingCancelable") 撤销
                 md-button.md-primary.md-simple(type='submit' v-if='booking.type==="play" && booking.id') 保存
+                md-button.md-primary.md-raised(type='submit' v-if='booking.type==="play" && !booking.id' :disabled="!bookingValidated") 保存并入场
+                md-button.md-warning.md-raised(@click="checkOut" v-if='booking.type==="play" && booking.status==="in_service"') 出场
                 md-button.md-warning(type='submit' v-if='booking.type==="event"' :class='{"md-simple": booking.id,"md-raised": !booking.id}' :disabled="!bookingValidated") 保存
                 md-button.md-rose(type='submit' v-if='booking.type==="gift"' :class='{"md-simple": booking.id,"md-raised": !booking.id}' :disabled="!bookingValidated") 保存
                 md-button.md-success(type='submit' v-if='booking.type==="food"' :class='{"md-simple": booking.id,"md-raised": !booking.id}' :disabled="!bookingValidated") 保存
@@ -548,6 +553,20 @@ export default class BookingDetail extends Vue {
   async checkIn() {
     if (!(await confirm("确定已入场", "确定至少1位客人已经入场"))) return;
     this.booking.status = BookingStatus.IN_SERVICE;
+    this.booking = await BookingResource.save(this.booking);
+  }
+
+  async checkOut() {
+    if (
+      !(await confirm(
+        "确定已出场",
+        "确定所有客人已经结束游玩离场",
+        null,
+        "warning"
+      ))
+    )
+      return;
+    this.booking.status = BookingStatus.FINISHED;
     this.booking = await BookingResource.save(this.booking);
   }
 
