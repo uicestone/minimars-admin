@@ -422,8 +422,8 @@ export default class BookingDetail extends Vue {
   async getGifts(q?: string) {
     if (q && q === this.booking.gift?.title) return;
     this.gifts = await GiftResource.query({
-      keyword: q,
-      store: this.booking.store?.id
+      keyword: q
+      // store: this.booking.store?.id
     });
     return this.gifts;
   }

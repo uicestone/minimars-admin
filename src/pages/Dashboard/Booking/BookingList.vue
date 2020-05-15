@@ -60,8 +60,8 @@
               md-icon refresh
         md-table.paginated-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='$noop')
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
-            md-table-cell(md-label='门店', md-sort-by='store.name' v-if="$user.role==='admin' && !searchQuery.store")
-              | {{ item.store.name }}
+            md-table-cell(md-label='门店', md-sort-by='store' v-if="$user.role==='admin' && !searchQuery.store")
+              | {{ item.store ? item.store.name : '门店通用' }}
             md-table-cell(md-label='客户', md-sort-by='customer.name', @click.native.stop='goToCustomer(item.customer)', style='min-width:180px')
               span(v-if="item.customer") {{ item.customer.mobile }} {{ item.customer.name }}
                 md-icon.mini.pull-right keyboard_arrow_right
