@@ -26,7 +26,7 @@ md-card.bookings-card
           span(v-else-if='booking.card') {{ booking.card.title }}
           span(v-else) -
         md-table-cell(md-label='门店' v-if="$user.role==='admin'")
-          | {{ booking.store.name }}
+          | {{ booking.store ? booking.store.name : "门店通用" }}
         md-table-cell(md-label='状态')
           | {{ booking.status | bookingStatusName }}
 </template>
