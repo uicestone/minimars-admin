@@ -257,7 +257,9 @@ export default class BookingDetail extends Vue {
       !["pending_refund", "canceled"].includes(
         this.booking.status as BookingStatus
       ) &&
-      this.booking.date === moment().format("YYYY-MM-DD")
+      (this.booking.status === BookingStatus.BOOKED ||
+        !this.booking.date ||
+        this.booking.date <= moment().format("YYYY-MM-DD"))
     );
   }
 
