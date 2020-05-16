@@ -78,7 +78,7 @@ export default class Membership extends Vue {
       { customer: this.customer.id, ...cardType, id: undefined },
       { paymentGateway }
     );
-    this.cardItems?.push(card);
+    this.cardItems?.unshift(card);
     this.$emit("updated");
     this.getCardPayments();
   }
