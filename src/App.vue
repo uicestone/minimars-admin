@@ -52,6 +52,7 @@ export default class App extends Vue {
   }
 
   responseRejected(err: any) {
+    // console.log("App.responseRejected", err);
     this.pendingRequests--;
     const { response } = err;
     if (!response) {
@@ -65,18 +66,19 @@ export default class App extends Vue {
           type: "danger"
         });
       }
-      return Promise.reject(err.message || err);
+      return Promise.reject(err);
     }
     if (response.status >= 500) {
       const message = "服务器内部错误";
-
+      this.$notify({
+        message,
+        icon: "add_alert",
+        horizontalAlign: "center",
+        verticalAlign: "bottom",
+        type: "danger"
+      });
       return Promise.reject(new Error(message));
     } else if (response.status >= 400) {
-      // redirect to login page on any 401 response
-      if (response.status === 401) {
-        window.location.hash = "#/login";
-        window.localStorage.removeItem("token");
-      }
       const message = response.data.message || response.statusText;
       this.$notify({
         message,
@@ -85,7 +87,6 @@ export default class App extends Vue {
         verticalAlign: "bottom",
         type: "warning"
       });
-
       return Promise.reject(new Error(message));
     }
     return response;

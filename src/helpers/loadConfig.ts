@@ -9,7 +9,7 @@ async function getHttpData(path: string) {
         resolve(res.data);
       })
       .catch(err => {
-        console.error(err);
+        console.error(err.message);
         resolve();
       });
   });
@@ -17,11 +17,12 @@ async function getHttpData(path: string) {
 
 const loadConfig = async (configLoaded: Config = {}) => {
   const [config, stores, user, cardTypes, coupons] = await Promise.all([
-    getHttpData("config"),
+    configLoaded || getHttpData("config"),
     configLoaded.stores || getHttpData("store"),
-    configLoaded.user || getHttpData("auth/user"),
-    configLoaded.cardTypes || getHttpData("card-type"),
-    configLoaded.coupons || getHttpData("coupon?enabled=true")
+    configLoaded.user || (localStorage.token && getHttpData("auth/user")),
+    configLoaded.cardTypes || (localStorage.token && getHttpData("card-type")),
+    configLoaded.coupons ||
+      (localStorage.token && getHttpData("coupon?enabled=true"))
   ]);
 
   return {

@@ -30,10 +30,25 @@ http.interceptors.request.use((request: AxiosRequestConfig) => {
     !window.localStorage.getItem("token")
   ) {
     window.location.hash = "#/login";
-    return Promise.reject("No token exists, login required.");
+    return Promise.reject(new Error("No token exists, login required."));
   }
   return request;
 });
+
+http.interceptors.response.use(
+  res => res,
+  err => {
+    // console.log("http.interceptors.response", err);
+    const { response } = err;
+    if (!response) return Promise.reject(err);
+    // redirect to login page on any 401 response
+    if (response.status === 401 && window.location.hash !== "#/login") {
+      window.location.hash = "#/login";
+      window.localStorage.removeItem("token");
+    }
+    return Promise.reject(err);
+  }
+);
 
 export const BookingResource = new Resource<Booking>(http, "booking/{id}");
 
