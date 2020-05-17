@@ -12,7 +12,7 @@
                 md-switch.md-primary(v-model="gift.useBalance") 可使用余额
 
           md-card-content.md-layout
-            .md-layout-item.md-small-size-100.md-size-80
+            .md-layout-item.md-small-size-100.md-size-60
               md-field
                 label 显示名称
                 md-input(v-model='gift.title')
@@ -20,6 +20,10 @@
               md-field
                 label 库存
                 md-input(type='number', v-model='gift.quantity')
+            .md-layout-item.md-small-size-100.md-size-20
+              md-field
+                label 显示顺序
+                md-input(type='number', v-model='gift.order')
             .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 积分售价
@@ -40,8 +44,8 @@
                 md-input(v-model='gift.tagCustomer')
             .md-layout-item.md-small-size-100.md-size-20
               md-field
-                label 显示顺序
-                md-input(type='number', v-model='gift.order')
+                label 每客户限制购买
+                md-input(type="number" min="1" v-model='gift.maxQuantityPerCustomer')
             .md-layout-item.md-small-size-100
               md-field.md-has-value.mt-4
                 label 内容
