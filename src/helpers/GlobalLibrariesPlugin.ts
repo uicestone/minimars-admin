@@ -11,6 +11,12 @@ const GlobalLibrariesPlugins = {
       }
     });
 
+    Object.defineProperty(Vue.prototype, "$version", {
+      get() {
+        return process.env.VERSION;
+      }
+    });
+
     Object.defineProperty(Vue.prototype, "$pendingRequests", {
       get() {
         if (!this.$root.pendingRequests) this.$root.pendingRequests = 0;
