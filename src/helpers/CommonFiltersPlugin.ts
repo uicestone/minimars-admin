@@ -41,7 +41,7 @@ const CommonFiltersPlugin = {
 
     Vue.filter(
       "currency",
-      (value: any, precision: number = 2, lazyPrecision = false) => {
+      (value: any, precision: number = 2, lazyPrecision: boolean = false) => {
         if (value === undefined || value === null) return "-";
         let fixed = (+value).toFixed(precision);
         if (lazyPrecision) fixed = (+fixed).toString();
