@@ -11,7 +11,7 @@ md-card.payments-card
           //- | {{ payment.id.substr(-4) }}
           //- | {{ payment.s }}
           | {{ payment.createdAt | date("YY/MM/DD HH:mm:ss") }}
-        md-table-cell(md-label='金额') ¥{{ payment.amount }}
+        md-table-cell(md-label='金额') {{ payment.amount | currency(2, true) }}
         md-table-cell(md-label='通道') {{ payment.gateway | paymentGatewayName }}
         md-table-cell(md-label='描述') {{ payment.title }}
         md-table-cell(md-label='收款')

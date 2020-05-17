@@ -39,10 +39,15 @@ const CommonFiltersPlugin = {
       return Vue.prototype.$cardStatusNames[value];
     });
 
-    Vue.filter("currency", (value: any, precision: number = 2) => {
-      if (value === undefined || value === null) return "-";
-      return "¥ " + (+value).toFixed(precision);
-    });
+    Vue.filter(
+      "currency",
+      (value: any, precision: number = 2, lazyPrecision = false) => {
+        if (value === undefined || value === null) return "-";
+        let fixed = (+value).toFixed(precision);
+        if (lazyPrecision) fixed = (+fixed).toString();
+        return "¥ " + fixed;
+      }
+    );
 
     Vue.filter("paymentGatewayName", (gateway: any) => {
       return Vue.prototype.$gatewayNames[gateway];

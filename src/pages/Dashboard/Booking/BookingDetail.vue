@@ -146,7 +146,7 @@
                 md-table-cell(md-label='通道', md-sort-by='gateway')
                   | {{ payment.gateway | paymentGatewayName }}
                 md-table-cell(md-label='金额', md-sort-by='amount')
-                  span(v-if='payment.amount') ¥{{ payment.amount }}
+                  span(v-if='payment.amount') {{ payment.amount | currency(2, true) }}
                   span(v-if='payment.amountInPoints')
                     | {{ payment.amountInPoints }}
                 md-table-cell(md-label='创建时间', md-sort-by='createdAt')
