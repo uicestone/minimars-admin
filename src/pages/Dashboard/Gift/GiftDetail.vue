@@ -8,8 +8,11 @@
             .card-icon
               md-icon card_giftcard
             h4.title {{ gift.title }}
+              span.pull-right(style="display:flex")
+                md-switch.md-primary(v-model="gift.useBalance") 可使用余额
+
           md-card-content.md-layout
-            .md-layout-item.md-size-100
+            .md-layout-item.md-small-size-100.md-size-80
               md-field
                 label 显示名称
                 md-input(v-model='gift.title')
@@ -31,6 +34,10 @@
                 md-select(v-model='gift.store')
                   md-option 不绑定门店
                   md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
+            .md-layout-item.md-small-size-100.md-size-20
+              md-field
+                label 设置用户标签
+                md-input(v-model='gift.tagCustomer')
             .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 显示顺序

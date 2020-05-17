@@ -118,6 +118,10 @@ export default class App extends Vue {
     padding-top: 9px !important;
   }
 }
+.shake-on-error /deep/ .md-duplicated {
+  animation-name: shake;
+  animation-duration: 0.5s;
+}
 // .fade-enter-active,
 // .fade-leave-active {
 //   transition: opacity 0.5s;

@@ -80,6 +80,8 @@
                 md-field
                   label 备注
                   md-textarea(v-model='user.remarks')
+              .md-layout-item.md-size-100
+                md-chips.md-primary(v-model='user.tags' md-static)
             .md-layout-item.md-layout.mt-2(v-if="user.role !== 'customer'")
               .md-layout-item.md-small-size-100.md-size-50
                 md-field

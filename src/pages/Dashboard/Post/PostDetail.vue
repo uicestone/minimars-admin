@@ -102,8 +102,4 @@ export default class PostDetail extends Vue {
 .md-card .md-table {
   width: 100%;
 }
-.shake-on-error /deep/ .md-duplicated {
-  animation-name: shake;
-  animation-duration: 0.5s;
-}
 </style>

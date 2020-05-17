@@ -63,6 +63,8 @@
               md-datepicker(placeholder='截止日期', v-model='cardType.end', :md-model-type='Date', md-immediately)
                 label 截止日期
             .md-layout-item.md-size-100
+                md-chips.md-primary.shake-on-error(@keypress.native.enter.prevent, v-model='cardType.customerTags', md-placeholder='仅对标签客户显示', md-check-duplicated)
+            .md-layout-item.md-size-100
               md-field.md-has-value.mt-4
                 label 内容详情
                 editor(v-model='cardType.content')
