@@ -12,10 +12,14 @@
                 md-switch.md-primary(v-model="cardType.isGift") 可转赠
                 md-switch.md-primary(v-model="cardType.openForClient") 客户端购买
           md-card-content.md-layout
-            .md-layout-item.md-size-60
+            .md-layout-item.md-size-40
               md-field
                 label 名称
                 md-input(v-model='cardType.title')
+            .md-layout-item.md-size-20
+              md-field
+                label 每用户最多购买
+                md-input(type="number" min="1" v-model='cardType.maxPerCustomer')
             .md-layout-item.md-size-20
               md-field
                 label 代号
