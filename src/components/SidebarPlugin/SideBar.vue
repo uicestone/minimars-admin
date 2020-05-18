@@ -7,7 +7,7 @@
     :style="sidebarStyle"
   >
     <div class="logo">
-      <a href="https://admin.mini-mars.com" class="simple-text" target="_blank">
+      <a href="/" class="simple-text" target="_blank">
         <div class="logo-img">
           <img :src="logo" />
         </div>
