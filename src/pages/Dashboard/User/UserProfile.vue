@@ -12,7 +12,10 @@
                 span {{ user.id.substr(-4).toUpperCase() }}
                 md-icon(style="font-size:15px !important") file_copy
           md-card-content.md-layout
-            poster.pt-4(v-model="user.avatarUrl" placeholder="/img/placeholder.jpg" circle)
+            .md-layout-item.md-size-25
+              poster.pt-4(v-model="user.avatarUrl" placeholder="/img/placeholder.jpg" circle disabled)
+              .pt-4.pb-1.text-center 儿童照片：
+              poster(v-model="user.childPhotoUrl" placeholder="/img/image_placeholder.jpg")
             .md-layout-item.md-size-75.md-layout.md-alignment-vertical
               .md-layout-item.md-small-size-100.md-size-25(v-if="user.role !== 'customer' && $user.can('edit-user')")
                 md-field

@@ -2,11 +2,14 @@
 .file-input.mx-auto(:class='{"img-circle":circle}' style='display:block')
   .image-container.mx-auto
     img(:src="value || preview || placeholder")
-  .button-container
-    md-button.md-danger.md-round(@click='removeImage', v-if='preview || value') 移除
-    md-button.md-success.md-round.md-fileinput
-      template(v-if='!preview && !value') 选择图片
-      template(v-else) 更换
+  .button-container(v-if="!disabled")
+    md-button.md-danger.md-round.md-simple.md-just-icon(@click='removeImage', v-if='preview || value')
+      md-icon close
+    md-button.md-success.md-round.md-fileinput(v-if='!preview && !value')
+      | 选择图片
+      input(type='file', @change='onFileChange', ref='file-input')
+    md-button.md-success.md-round.md-fileinput.md-just-icon(v-else)
+      md-icon refresh
       input(type='file', @change='onFileChange', ref='file-input')
 </template>
 
@@ -21,7 +24,8 @@ import { http } from "@/resources";
   props: {
     value: String,
     circle: { default: false, type: Boolean },
-    placeholder: { default: "/img/image_placeholder.jpg", type: String }
+    placeholder: { default: "/img/image_placeholder.jpg", type: String },
+    disabled: { default: false, type: Boolean }
   }
 })
 export default class Poster extends Vue {
@@ -61,3 +65,9 @@ export default class Poster extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.file-input.img-circle .button-container {
+  flex-direction: row;
+}
+</style>
