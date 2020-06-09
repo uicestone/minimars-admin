@@ -4,7 +4,7 @@
     .md-layout-item.md-size-20.md-xsmall-size-100.stats-date
       md-datepicker(v-model='date', :md-model-type='String', md-immediately)
     .md-layout-item.md-xsmall-size-100.stats-date(style='display:flex;justify-content:space-between;width:330px;flex:0')
-      md-menu.md-button
+      md-menu.md-button(v-if="$user.role==='admin'")
         md-button.md-info(md-menu-trigger) {{ store ? store.name : '全部门店' }}
         md-menu-content
           md-menu-item(@click="selectStore(false)") 全部门店
