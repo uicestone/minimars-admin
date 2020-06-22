@@ -16,7 +16,7 @@ md-card.codes-card
           md-button.md-normal.md-danger.md-xs.ml-1(v-if="card.status === 'valid'" @click="$clipboard(card.giftCode, '礼品码')" style="width:48px !important") 转赠
         md-table-cell(md-label='过期日期')
           | {{ card.expiresAt | date("YYYY-MM-DD") }}
-        md-table-cell(md-label='剩余次数', v-if="card.type === 'times'") 剩{{ card.timesLeft }}次
+        md-table-cell(md-label='剩余次数', v-if="['times','coupon'].includes(card.type)") 剩{{ card.timesLeft }}次
         md-table-cell(md-label='日期区间', v-if="card.type === 'period'")
           | {{ card.start | date("YY-MM-DD") }} -
           br

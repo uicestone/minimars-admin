@@ -85,6 +85,9 @@ export interface Card extends Model {
   price: number;
   maxKids: number;
   freeParentsPerKid: number;
+  overPrice?: number;
+  discountPrice?: number;
+  discountRate?: number;
 }
 
 export interface CardType extends Model {
@@ -103,7 +106,10 @@ export interface CardType extends Model {
   freeParentsPerKid: number;
   openForClient: boolean;
   customerTags: string[];
-  maxPerCustomer: number;
+  maxPerCustomer?: number;
+  overPrice?: number;
+  discountPrice?: number;
+  discountRate?: number;
 }
 
 export interface Coupon extends Model {

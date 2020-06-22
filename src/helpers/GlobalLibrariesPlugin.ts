@@ -108,7 +108,8 @@ const GlobalLibrariesPlugins = {
         return {
           times: "次卡",
           period: "时效卡",
-          balance: "储值卡"
+          balance: "储值卡",
+          coupon: "优惠券"
         };
       }
     });

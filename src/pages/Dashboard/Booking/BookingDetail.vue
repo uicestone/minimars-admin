@@ -100,10 +100,10 @@
               div.pb-2.bb(v-else-if="booking.coupon")
                 md-button.md-lg-n.md-warning
                   | {{ booking.coupon.title }}
-            .md-layout-item.md-size-100.card.mt-2(v-if="booking.type === 'play' && booking.store && booking.customer")
+            .md-layout-item.md-size-100.card.mt-2(v-if="['play', 'food'].includes(booking.type) && booking.store && booking.customer")
               div.pb-2.bb(v-if="!booking.id")
-                p(v-if="booking.customer && !customerCards.length") 无有效会员卡
-                md-button.md-lg-n.mr-1(:class="{'md-info':usingCard(card)}" v-for='card in customerCards', v-if='booking.type === "play" && (!card.store || card.store === booking.store.id) && card.type !== "balance"', :key='card.id', :value='card.id', @click='useCard(card)')
+                p(v-if="booking.customer && !availableCards.length") 无有效卡券
+                md-button.md-lg-n.mr-1(:class="{'md-info':usingCard(card)}" v-for='card in availableCards' :key='card.id', :value='card.id', @click='useCard(card)')
                   | {{ card.title }} {{card.timesLeft?'剩余'+card.timesLeft+'次':''}}
               div.pb-2.bb(v-else-if="booking.card")
                 md-button.md-lg-n.md-info
@@ -186,7 +186,8 @@ import {
   BookingStatus,
   Payment,
   Coupon,
-  PaymentGateway
+  PaymentGateway,
+  CardStatus
 } from "@/resources/interfaces";
 import { Membership, StoreSelect } from "@/components";
 
@@ -261,6 +262,10 @@ export default class BookingDetail extends Vue {
         !this.booking.date ||
         this.booking.date <= moment().format("YYYY-MM-DD"))
     );
+  }
+
+  get availableCards() {
+    return this.customerCards.filter(card => this.cardAvailable(card));
   }
 
   get cardHeaderClass() {
@@ -466,6 +471,24 @@ export default class BookingDetail extends Vue {
     this.priceInPoints = priceInPoints || null;
   }
 
+  cardAvailable(card: Card) {
+    if (card.status !== CardStatus.ACTIVATED) return false;
+    if (card.start && new Date(card.start) > new Date()) return false;
+    if (
+      this.booking.type === BookingType.PLAY &&
+      ["times", "period"].includes(card.type)
+    ) {
+      if (!card.store) return true;
+      if (card.store === this.booking.store?.id) return true;
+    }
+    if (this.booking.type === BookingType.FOOD && card.type === "coupon") {
+      if (!card.overPrice || (this.booking.price || 0) >= card.overPrice) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   useCard(card?: Card | false) {
     if (!card || this.usingCard(card)) {
       console.log("UseCard null");
@@ -645,8 +668,8 @@ export default class BookingDetail extends Vue {
     // }
   }
   @Watch("booking.customer") onBookingCustomerUpdate() {
-    if (this.booking.id) return;
-    if (this.booking.type === "play") {
+    if (this.booking.id || !this.booking.type) return;
+    if (["play", "food"].includes(this.booking.type)) {
       this.getCustomerCards();
     }
     this.booking.card = null;

@@ -44,26 +44,34 @@
                 label 有效时长
                 md-input(type='number', step='1', v-model='cardType.expiresInDays')
                 span.md-suffix 天
-            .md-layout-item.md-small-size-100.md-size-20(v-if="cardType.type!=='balance'")
+            .md-layout-item.md-small-size-100.md-size-20(v-if="['times', 'period'].includes(cardType.type)")
               md-field
                 label 单次最多儿童数
                 md-input(type='number', v-model='cardType.maxKids')
-            .md-layout-item.md-small-size-100.md-size-20(v-if="cardType.type!=='balance'")
+            .md-layout-item.md-small-size-100.md-size-20(v-if="['times', 'period'].includes(cardType.type)")
               md-field
                 label 每儿童免费陪同成人
                 md-input(type='number', v-model='cardType.freeParentsPerKid')
-            .md-layout-item.md-small-size-100.md-size-100(v-if="cardType.type === 'times'")
+            .md-layout-item(v-if="['times', 'coupon'].includes(cardType.type)")
               md-field
                 label 次数
                 md-input(type='number', v-model='cardType.times')
-            .md-layout-item.md-small-size-100.md-size-100(v-if="cardType.type === 'balance'")
+            .md-layout-item(v-if="['coupon'].includes(cardType.type)")
+              md-field
+                label 满
+                md-input(type='number', v-model='cardType.overPrice')
+            .md-layout-item(v-if="['coupon'].includes(cardType.type)")
+              md-field
+                label 减
+                md-input(type='number', v-model='cardType.discountPrice')
+            .md-layout-item(v-if="cardType.type === 'balance'")
               md-field
                 label 面值
                 md-input(type='number', step='0.01', v-model='cardType.balance')
-            .md-layout-item.md-small-size-100.md-size-50(v-if="cardType.type === 'period'")
+            .md-layout-item(v-if="['period', 'coupon'].includes(cardType.type)")
               md-datepicker(placeholder='开始日期', v-model='cardType.start', :md-model-type='Date', md-immediately)
                 label 开始日期
-            .md-layout-item.md-small-size-100.md-size-50(v-if="cardType.type === 'period'")
+            .md-layout-item(v-if="cardType.type === 'period'")
               md-datepicker(placeholder='截止日期', v-model='cardType.end', :md-model-type='Date', md-immediately)
                 label 截止日期
             .md-layout-item.md-size-100
