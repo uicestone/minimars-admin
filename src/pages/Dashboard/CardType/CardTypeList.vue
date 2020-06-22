@@ -5,13 +5,13 @@
       md-card-header.md-card-header-icon.md-card-header-primary
         .card-icon
           md-icon card_membership
-        h4.title 卡片种类
+        h4.title 卡券种类
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
           .md-layout
           .toolbar-actions
             md-button.md-primary(@click='showCreate')
-              | 添加卡片种类
+              | 添加卡券种类
         md-table.paginated-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='$noop')
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
             md-table-cell(md-label='名称', md-sort-by='title')

@@ -5,7 +5,7 @@
       md-menu.pull-right(v-if="cardItems")
         md-button.md-info.md-sm(md-menu-trigger) 购卡
         md-menu-content
-          md-menu-item(v-for='cardType in $cardTypes', :key='cardType.id', @click='createCard(cardType)') {{ cardType.title }}
+          md-menu-item(v-for='cardType in $cardTypes', v-if="cardType.type !== 'coupon'", :key='cardType.id', @click='createCard(cardType)') {{ cardType.title }}
           md-menu-item(@click="receiveGiftCard") 接收礼品卡
   payments-card(:payments="paymentItems" :pay="pay")
 </template>
@@ -62,7 +62,7 @@ export default class Membership extends Vue {
 
   async createCard(cardType: CardType) {
     const paymentGateway = await promptSelect(
-      "购买" + cardType.title,
+      cardType.title + " ¥ " + cardType.price,
       `请选择支付方式`,
       {
         dianping: "点评POS",
