@@ -102,7 +102,8 @@ export default class CardTypeDetail extends Vue {
     id: "",
     store: null,
     freeParentsPerKid: 2,
-    maxKids: 2
+    maxKids: 2,
+    customerTags: []
   };
   async save() {
     this.cardType = await CardTypeResource.save(this.cardType);

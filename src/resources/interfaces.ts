@@ -101,6 +101,9 @@ export interface CardType extends Model {
   price: number;
   maxKids: number;
   freeParentsPerKid: number;
+  openForClient: boolean;
+  customerTags: string[];
+  maxPerCustomer: number;
 }
 
 export interface Coupon extends Model {
