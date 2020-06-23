@@ -20,7 +20,8 @@ const loadConfig = async (configLoaded: Config = {}) => {
     configLoaded || getHttpData("config"),
     configLoaded.stores || getHttpData("store"),
     configLoaded.user || (localStorage.token && getHttpData("auth/user")),
-    configLoaded.cardTypes || (localStorage.token && getHttpData("card-type")),
+    configLoaded.cardTypes ||
+      (localStorage.token && getHttpData("card-type?limit=false")),
     configLoaded.coupons ||
       (localStorage.token && getHttpData("coupon?enabled=true"))
   ]);
