@@ -460,6 +460,7 @@ export default class BookingDetail extends Vue {
         this.booking.kidsCount === undefined)
     )
       return;
+    if (this.booking.type === BookingType.FOOD && this.booking.id) return;
     console.log(
       "Update booking price:",
       JSON.stringify(this.priceRelatedBookingProperties)
