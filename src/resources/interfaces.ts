@@ -224,9 +224,6 @@ export interface User extends Model {
   balanceReward?: number;
   balance: number;
   points?: number;
-  freePlayFrom: Date;
-  freePlayTo: Date;
-  freePlay: boolean;
   cardType?: string;
   cardNo?: string;
   cards: Card[];
