@@ -40,6 +40,7 @@ const GlobalLibrariesPlugins = {
       const roleCaps: Record<string, string> = {
         admin: ".*",
         manager: "view-(dashboard|booking|user|payment)",
+        eventManager: "view-(event-booking)",
         accountant: "view-(dashboard|payments)"
       };
       return this.role && cap.match(new RegExp(`^${roleCaps[this.role]}$`));
@@ -73,6 +74,18 @@ const GlobalLibrariesPlugins = {
     Object.defineProperty(Vue.prototype, "$coupons", {
       get() {
         return this.$root.config.coupons;
+      }
+    });
+
+    Object.defineProperty(Vue.prototype, "$userRoles", {
+      get() {
+        return {
+          admin: "管理员",
+          accountant: "财务",
+          manager: "店员",
+          eventManager: "活动策划",
+          customer: "客户"
+        };
       }
     });
 

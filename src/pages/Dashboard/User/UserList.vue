@@ -16,7 +16,7 @@
             md-field.md-layout-item.md-size-20.md-xsmall-size-100
               label 筛选角色
               md-select(v-model='searchQuery.role')
-                md-option(v-for="(name, type) in { admin: '管理员', accountant: '财务', manager: '店员', customer: '客户' }", :key='type', :value='type') {{ name }}
+                md-option(v-for="(name, role) in $userRoles", :key='role', :value='role') {{ name }}
             //- md-field.md-layout-item.md-size-20.md-xsmall-size-100(v-if="searchQuery.role === 'customer'")
               label 会员类型
               md-select(v-model='searchQuery.membership', multiple)
@@ -62,19 +62,7 @@ import List from "@/components/List";
 import { UserResource } from "@/resources";
 import { User } from "@/resources/interfaces";
 
-@Component({
-  filters: {
-    roleName(role: "admin" | "manager" | "customer") {
-      const roleName = {
-        admin: "管理员",
-        accountant: "财务",
-        manager: "店员",
-        customer: "客户"
-      };
-      return roleName[role];
-    }
-  }
-})
+@Component
 export default class UserList extends List<User> {
   name = "user";
   resource = UserResource;

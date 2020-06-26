@@ -23,6 +23,10 @@ const CommonFiltersPlugin = {
       return value.toFixed(digits || 0);
     });
 
+    Vue.filter("roleName", (value: any) => {
+      return Vue.prototype.$userRoles[value];
+    });
+
     Vue.filter("bookingTypeName", (value: any) => {
       return Vue.prototype.$bookingTypeNames[value];
     });

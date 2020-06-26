@@ -14,34 +14,34 @@
           md-card-content.md-layout
             .md-layout-item.md-size-25
               poster.pt-4(v-model="user.avatarUrl" placeholder="/img/placeholder.jpg" circle disabled)
-              .pt-4.pb-1.text-center 儿童照片：
-              poster(v-model="user.childPhotoUrl" placeholder="/img/image_placeholder.jpg")
+              .pt-4.pb-1.text-center(v-if="user.role==='customer'") 儿童照片：
+              poster(v-if="user.role==='customer'" v-model="user.childPhotoUrl" placeholder="/img/image_placeholder.jpg")
             .md-layout-item.md-size-75.md-layout.md-alignment-vertical
-              .md-layout-item.md-small-size-100.md-size-25(v-if="user.role !== 'customer' && $user.can('edit-user')")
+              .md-layout-item.md-small-size-100.md-size-33(v-if="user.role !== 'customer' && $user.can('edit-user')")
                 md-field
                   label 用户类型
                   md-select(v-model='user.role', @keydown.enter.prevent)
-                    md-option(value='admin') 管理员
-                    md-option(value='accountant') 财务
-                    md-option(value='manager') 店员
-                    md-option(value='customer') 客户
-              .md-layout-item.md-small-size-100.md-size-25
+                    md-option(v-for="(name, role) in $userRoles" :key='role' :value='role') {{ name }}
+              .md-layout-item.md-small-size-100.md-size-25(v-if="user.role === 'customer'")
                 md-field
-                  label(v-if="user.role === 'customer'") 会员姓名
-                  label(v-else) 姓名
+                  label 会员姓名
+                  md-input(v-model='user.name')
+              .md-layout-item.md-small-size-100.md-size-33(v-else)
+                md-field
+                  label 姓名
                   md-input(v-model='user.name')
               .md-layout-item.md-small-size-100.md-size-25(v-if="user.role === 'customer'")
                 md-field
                   label 孩子姓名
                   md-input(v-model='user.childName')
-              .md-layout-item.md-small-size-100.md-size-25
+              .md-layout-item.md-small-size-100.md-size-25(v-if="user.role === 'customer'")
                 md-field
                   label 孩子性别
                   md-select(v-model='user.childGender', @keydown.enter.prevent)
                     md-option(value='男') 男
                     md-option(value='女') 女
                     md-option(value='未知') 未知
-              .md-layout-item.md-small-size-100.md-size-25
+              .md-layout-item.md-small-size-100.md-size-25(v-if="user.role === 'customer'")
                 md-field
                   label 孩子生日
                   md-input(v-model='user.childBirthday', type='text')
@@ -67,7 +67,7 @@
                 md-field
                   label 地区
                   md-input(v-model='user.region', type='text')
-              .md-layout-item.md-small-size-100.md-size-33
+              .md-layout-item.md-small-size-100.md-size-33(v-if="user.role === 'customer'")
                 md-field
                   label 星座
                   md-input(v-model='user.constellation', type='text')
