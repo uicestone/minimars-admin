@@ -35,7 +35,7 @@
               md-autocomplete(v-model='eventSearchTerm', :md-options='events', @md-selected='selectEvent' @keypress.enter.native.prevent :disabled='!!booking.id' md-open-on-focus autocomplete="off")
                 label 活动
                 template(slot='md-autocomplete-item', slot-scope='{ item }')
-                  | {{ item.title }}
+                  | {{ item.title }} (剩余 {{ item.kidsCountLeft }} 日期 {{ item.date | date('YYYY-MM-DD') }})
             .md-layout-item.md-small-size-100.md-size-100(v-if="booking.type === 'gift'")
               md-autocomplete(v-model='giftSearchTerm', :md-options='gifts', @md-selected='selectGift' @keypress.enter.native.prevent :disabled='!!booking.id' autocomplete="off")
                 label 礼品

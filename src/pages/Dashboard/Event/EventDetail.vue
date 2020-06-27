@@ -8,6 +8,8 @@
             .card-icon
               md-icon event
             h4.title {{ event.title }}
+              md-button.pull-right.md-sm.md-simple.md-info(type='button' v-if="event.kidsCountLeft || event.kidsCountLeft === 0")
+                | 剩余名额：{{ event.kidsCountLeft }}
           md-card-content.md-layout
             .md-layout-item.md-size-66
               md-field
@@ -45,9 +47,6 @@
                 label 内容
                 editor(v-model='event.content')
             .md-layout-item.md-size-100.md-layout.md-alignment-bottom-space-between
-              .md-layout.md-alignment-bottom-left.pl-0(style='flex:1;flex-wrap:nowrap')
-                md-button.mt-4.md-simple.md-info.md-btn-link(type='button' v-if="event.kidsCountLeft || event.kidsCountLeft === 0")
-                  | 剩余儿童名额：{{ event.kidsCountLeft }}
               .md-layout.md-alignment-bottom-right
                 md-button.mt-4.ml-2.md-simple.md-danger(type='button', @click='remove', v-if='this.event.id') 删除
                 md-button.md-primary.mt-4(type='submit' :class='{"md-simple": event.id,"md-raised": !event.id}') 保存

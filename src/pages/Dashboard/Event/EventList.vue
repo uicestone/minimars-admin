@@ -27,6 +27,8 @@
               | {{ item.priceInPoints }}
             md-table-cell(md-label='收款售价', md-sort-by='price')
               | {{ item.price | currency }}
+            md-table-cell(md-label='剩余名额', md-sort-by='kidsCountLeft')
+              | {{ item.kidsCountLeft }} / {{ item.kidsCountMax }}
             md-table-cell(md-label='创建日期', md-sort-by='createdAt')
               | {{ item.createdAt | date('YYYY-MM-DD') }}
             md-table-cell(md-label='显示顺序', md-sort-by='order')

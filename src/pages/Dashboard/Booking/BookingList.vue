@@ -75,14 +75,14 @@
             md-table-cell(md-label='大 / 小', md-sort-by='adultsCount' v-if="searchQuery.type === 'play'")
               span {{ item.adultsCount }} /
               b  {{ item.kidsCount }}
-            md-table-cell(md-label='礼品', md-sort-by='gift.id' v-if="searchQuery.type === 'gift'")
+            md-table-cell(md-label='礼品', md-sort-by='gift.id' v-if="searchQuery.type === 'gift'" @click.native.stop="goToGift(item.gift)")
               | {{ item.gift.title }}
             md-table-cell(md-label='数量', md-sort-by='quantity' v-if="searchQuery.type === 'gift'")
               | {{ item.quantity }}
-            md-table-cell(md-label='活动', md-sort-by='event.id' v-if="searchQuery.type === 'event'")
+            md-table-cell(md-label='活动', md-sort-by='event.id' v-if="searchQuery.type === 'event'" @click.native.stop="goToEvent(item.event)")
               | {{ item.event.title }}
             md-table-cell(md-label='人数', md-sort-by='kidsCount' v-if="searchQuery.type === 'event'")
-              | {{ item.quantity }}
+              | {{ item.kidsCount }}
             md-table-cell(md-label='收款', md-sort-by='price')
               | {{ item.payments | paidAmount | currency(2, true) }}
             md-table-cell(md-label='优惠/会员卡', md-sort-by='coupon' v-if="searchQuery.type === 'play'")
@@ -110,7 +110,9 @@ import {
   BookingQuery,
   Booking,
   BookingType,
-  User
+  User,
+  Gift,
+  Event
 } from "@/resources/interfaces";
 
 @Component({
@@ -136,6 +138,12 @@ export default class BookingList extends List<Booking> {
   }
   goToCustomer(customer: User) {
     this.$router.push(`/user/${customer.id}`);
+  }
+  goToEvent(event: Event) {
+    this.$router.push(`/event/${event.id}`);
+  }
+  goToGift(gift: Gift) {
+    this.$router.push(`/gift/${gift.id}`);
   }
   created() {
     this.type = this.$route.params.type as BookingType;
