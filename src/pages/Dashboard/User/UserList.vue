@@ -8,12 +8,16 @@
         h4.title 用户列表
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
-          .md-layout-item(v-if="searchQuery.role === 'customer'", style='flex:0;flex-basis:200px')
-            | 总余额：{{ totalBalance | currency }}
+          div(style="padding:0 5px" v-if="searchQuery.role === 'customer'")
+            div 用户余额：{{ totalBalance | currency }}
+            div 其中实收：{{ totalBalanceDeposit | currency }}
+          div(style="padding:0 5px" v-if="searchQuery.role === 'customer'")
+            div 未激活卡：{{ totalValidCardBalance | currency }}
+            div 其中实收：{{ totalValidCardBalanceDeposit | currency }}
           .md-layout.md-layout-item.md-alignment-center-right.search-query
-            md-field.md-layout-item.md-size-25.md-xsmall-size-100
+            md-field.md-layout-item.md-size-50.md-xsmall-size-100
               md-input(type='search', min-length='4', clearable='', placeholder='搜索 手机/姓名', v-model='searchQuery.keyword')
-            md-field.md-layout-item.md-size-20.md-xsmall-size-100
+            md-field.md-layout-item.md-size-30.md-xsmall-size-100
               label 筛选角色
               md-select(v-model='searchQuery.role')
                 md-option(v-for="(name, role) in $userRoles", :key='role', :value='role') {{ name }}
@@ -67,12 +71,25 @@ export default class UserList extends List<User> {
   name = "user";
   resource = UserResource;
   totalBalance: number | null = null;
+  totalBalanceDeposit: number | null = null;
+  totalValidCardBalance: number | null = null;
+  totalValidCardBalanceDeposit: number | null = null;
   async queryData() {
     const queriedData = await (List as any).options.methods.queryData.call(
       this
     );
     if (!queriedData) return;
     this.totalBalance = Number(queriedData.$headers["total-balance"]);
+    this.totalBalanceDeposit = Number(
+      queriedData.$headers["total-balance-deposit"]
+    );
+    this.totalValidCardBalance = Number(
+      queriedData.$headers["total-valid-card-balance"]
+    );
+    this.totalValidCardBalanceDeposit = Number(
+      queriedData.$headers["total-valid-card-balance-deposit"]
+    );
+
     return queriedData;
   }
   created() {
