@@ -141,3 +141,9 @@ export default class Membership extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.md-menu-content {
+  max-height: 60vh;
+}
+</style>
