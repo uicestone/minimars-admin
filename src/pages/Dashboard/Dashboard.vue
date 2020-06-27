@@ -318,6 +318,11 @@ export default class Dashboard extends Vue {
         axisX: {
           showGrid: false
         },
+        axisY: {
+          labelInterpolationFnc: function(value: number) {
+            return value / 10000 + "万";
+          }
+        },
         low,
         high,
         chartPadding: {
@@ -345,6 +350,11 @@ export default class Dashboard extends Vue {
       options: {
         axisX: {
           showGrid: false
+        },
+        axisY: {
+          labelInterpolationFnc: function(value: number) {
+            return value / 10000 + "万";
+          }
         },
         low,
         high,
