@@ -255,9 +255,7 @@ export default class BookingDetail extends Vue {
   get bookingCancelable() {
     return (
       this.booking.id &&
-      !["pending_refund", "canceled"].includes(
-        this.booking.status as BookingStatus
-      ) &&
+      !["canceled"].includes(this.booking.status as BookingStatus) &&
       (this.booking.status === BookingStatus.BOOKED ||
         !this.booking.date ||
         this.booking.date <= moment().format("YYYY-MM-DD"))
