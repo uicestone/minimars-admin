@@ -11,13 +11,17 @@
               md-button.pull-right.md-sm.md-simple.md-info(type='button' v-if="event.kidsCountLeft || event.kidsCountLeft === 0")
                 | 剩余名额：{{ event.kidsCountLeft }}
           md-card-content.md-layout
-            .md-layout-item.md-size-66
+            .md-layout-item.md-size-55
               md-field
                 label 标题
                 md-input(v-model='event.title')
-            .md-layout-item.md-small-size-100.md-size-33
+            .md-layout-item.md-small-size-100.md-size-25
               md-datepicker(v-model='event.date', md-immediately)
                 label 日期
+            .md-layout-item.md-size-20
+              md-field
+                label 适用年龄
+                md-input(v-model='event.kidAgeRange')
             .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 门店
