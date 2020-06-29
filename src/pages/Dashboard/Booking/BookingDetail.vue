@@ -574,6 +574,28 @@ export default class BookingDetail extends Vue {
     });
   }
 
+  async checkExistingBooking() {
+    if (!this.booking.customer || !this.booking.store) return;
+    const bookingsExists = await BookingResource.query({
+      type: BookingType.PLAY,
+      status: BookingStatus.BOOKED,
+      date: this.booking.date,
+      store: this.booking.store.id,
+      customer: this.booking.customer.id
+    });
+    if (bookingsExists.length) {
+      const go = await confirm(
+        "已存在已确认预约",
+        `当前用户在今天已经有${bookingsExists.length}个购票预约，是否查看`,
+        "立即跳转"
+      );
+      if (go) {
+        this.$destroy();
+        this.$router.push(`/booking/play?customer=${this.booking.customer.id}`);
+      }
+    }
+  }
+
   async checkIn() {
     if (!(await confirm("确定已入场", "确定至少1位客人已经入场"))) return;
     this.booking.status = BookingStatus.IN_SERVICE;
@@ -653,6 +675,7 @@ export default class BookingDetail extends Vue {
 
   @Watch("$user.store") onUserStoreUpdate(s: Store) {
     if (s.id !== this.booking.store?.id) this.booking.store = s;
+    this.checkExistingBooking();
   }
 
   @Watch("priceRelatedBookingProperties")
@@ -673,6 +696,7 @@ export default class BookingDetail extends Vue {
     }
     this.booking.card = null;
     this.paymentGateway = null;
+    this.checkExistingBooking();
   }
   @Watch("booking.store") onBookingStoreUpdate(
     v: Store | string | boolean,
