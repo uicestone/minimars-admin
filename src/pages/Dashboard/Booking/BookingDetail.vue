@@ -258,7 +258,7 @@ export default class BookingDetail extends Vue {
       !["canceled"].includes(this.booking.status as BookingStatus) &&
       (this.booking.status === BookingStatus.BOOKED ||
         !this.booking.date ||
-        this.booking.date <= moment().format("YYYY-MM-DD"))
+        this.booking.date >= moment().format("YYYY-MM-DD"))
     );
   }
 
