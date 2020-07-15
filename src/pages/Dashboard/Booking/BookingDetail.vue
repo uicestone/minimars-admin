@@ -201,6 +201,7 @@ export default class BookingDetail extends Vue {
   booking: Partial<Booking> = {};
   price: number | null = null;
   priceInPoints: number | null = null;
+  priceUpdating = false;
   customerSearchTerm = "";
   events: Event[] = [];
   gifts: Gift[] = [];
@@ -236,6 +237,7 @@ export default class BookingDetail extends Vue {
   get bookingValidated() {
     if (this.booking.id) return true;
     if (!this.booking.store) return false;
+    if (this.priceUpdating) return false;
     if (
       !this.paymentGateway &&
       (this.price || this.priceInPoints) &&
@@ -465,11 +467,13 @@ export default class BookingDetail extends Vue {
       "Update booking price:",
       JSON.stringify(this.priceRelatedBookingProperties)
     );
+    this.priceUpdating = true;
     const { price, priceInPoints } = await BookingPriceResource.create(
       this.booking
     );
     this.price = price || null;
     this.priceInPoints = priceInPoints || null;
+    this.priceUpdating = false;
   }
 
   cardAvailable(card: Card) {
