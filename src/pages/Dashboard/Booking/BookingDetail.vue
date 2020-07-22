@@ -11,14 +11,17 @@
               span(@click="$clipboard(booking.id, '订单ID')")
                 span {{ booking.id.substr(-4).toUpperCase() }}
                 md-icon(style="font-size:15px !important") file_copy
-              md-button.pull-right.md-success.md-sm.md-simple(@click="goCustomerDetail" v-if="booking.customer")
+              md-button.pull-right.md-success.md-xs.md-simple(@click="goCustomerDetail" v-if="booking.customer")
                 span 查看客户{{booking.customer.name}}详情
                 md-icon.mini keyboard_arrow_right
-              md-button.pull-right.md-danger.md-sm.md-simple(v-if="!booking.id" @click="destroy")
+              md-button.pull-right.md-info.md-xs.md-simple(v-if="booking.status")
+                md-icon.mini alt_route
+                span {{ booking.status | bookingStatusName }}
+              md-button.pull-right.md-danger.md-xs.md-simple(v-if="!booking.id" @click="destroy")
                 span 清空
                 md-icon.mini close
           md-card-content.md-layout
-            .md-layout-item.md-small-size-100.md-size-50
+            .md-layout-item.md-small-size-100.md-size-75
               md-field
                 label 客户
                 md-input(v-model='customerSearchTerm' :disabled="!!booking.id")
@@ -26,11 +29,6 @@
               md-field
                 label 门店
                 store-select(v-model="booking.store" :disabled='!!booking.id || $user.role !== "admin"')
-            .md-layout-item.md-small-size-50.md-size-25
-              md-field
-                label 状态
-                md-select(v-model='booking.status', @keydown.enter.prevent, :disabled='!!booking.id && booking.status !=="pending_refund"')
-                  md-option(v-for='(name, status) in $bookingStatusNames', :key='status', :value='status') {{ name }}
             .md-layout-item.md-small-size-100.md-size-100(v-if="booking.type === 'event'")
               md-autocomplete(v-model='eventSearchTerm', :md-options='events', @md-selected='selectEvent' @keypress.enter.native.prevent :disabled='!!booking.id' md-open-on-focus autocomplete="off")
                 label 活动
