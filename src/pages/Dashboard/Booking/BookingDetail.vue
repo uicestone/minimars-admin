@@ -476,7 +476,14 @@ export default class BookingDetail extends Vue {
 
   cardAvailable(card: Card) {
     if (card.status !== CardStatus.ACTIVATED) return false;
-    if (card.start && new Date(card.start) > new Date()) return false;
+    if (
+      card.start &&
+      new Date(card.start) >
+        moment(this.booking.date)
+          .endOf("day")
+          .toDate()
+    )
+      return false;
     if (
       this.booking.type === BookingType.PLAY &&
       ["times", "period"].includes(card.type)
