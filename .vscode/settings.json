@@ -5,6 +5,7 @@
     "scss"
   ],
   "prettier.arrowParens": "avoid",
-  "prettier.trailingComma": "none",
-  "vetur.format.defaultFormatter.scss": "none"
+  "vetur.format.defaultFormatter.scss": "none",
+  "vetur.format.defaultFormatter.pug": "none",
+  "prettier.trailingComma": "none"
 }
