@@ -5,12 +5,15 @@
       md-card-header.md-card-header-icon.md-card-header-primary
         .card-icon
           md-icon payment
-        h4.title 流水明细
+        h4.title 支付明细
+          md-button.md-just-icon.md-simple.md-xs.pull-right(@click='queryData')
+            md-icon refresh
+          md-button.md-just-icon.md-simple.md-xs.pull-right(@click='download')
+            md-icon get_app
+          span.pull-right.mr-2 总金额：{{ totalAmount | currency }}
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
-          .md-layout-item(style='flex:0;flex-basis:200px')
-            | 总金额：{{ totalAmount | currency }}
-          .md-layout.md-layout-item.md-alignment-center-right.search-query
+          .md-layout.md-layout-item.search-query
             md-datepicker.md-layout-item.md-size-date.md-xsmall-size-50(v-model='searchQuery.date', :md-model-type='String', md-immediately)
               label 日期开始
             md-datepicker.md-layout-item.md-size-date.md-xsmall-size-50(v-model='searchQuery.dateEnd', :md-model-type='String', md-immediately)
@@ -20,11 +23,6 @@
               md-select(v-model='searchQuery.store')
                 md-option(value='') 全部
                 md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
-            md-field.md-layout-item.md-size-5.md-xsmall-size-50
-              label 完成
-              md-select(v-model='searchQuery.paid')
-                md-option(value='') 全部
-                md-option(v-for="(name, paid) in { true: '是', false: '否' }", :key='paid', :value='paid') {{ name }}
             md-field.md-layout-item.md-size-10.md-xsmall-size-50
               label 支付方式
               md-select(v-model='searchQuery.gateway', multiple)
@@ -34,18 +32,22 @@
               md-select(v-model='searchQuery.attach')
                 md-option(value='') 全部
                 md-option(v-for="(name, attach) in { booking: '消费', card: '充值' }", :key='attach', :value='attach') {{ name }}
+            md-field.md-layout-item.md-size-20.md-xsmall-size-50
+              label 描述
+              md-input(v-model="searchQuery.title")
             md-field.md-layout-item.md-size-10.md-xsmall-size-50
+              label 金额
+              md-input(v-model="searchQuery.amount")
+            md-field.md-layout-item.md-size-5.md-xsmall-size-50
               label 收/退
               md-select(v-model='searchQuery.direction')
                 md-option(value='') 全部
                 md-option(v-for="(name, direction) in { payment: '收款', refund: '退款' }", :key='direction', :value='direction') {{ name }}
-            md-field.md-layout-item.md-size-10.md-xsmall-size-50
-              label 金额
-              md-input(v-model="searchQuery.amount")
-            md-button.md-just-icon.md-simple(@click='queryData')
-              md-icon refresh
-            md-button.md-just-icon.md-simple(@click='download')
-              md-icon get_app
+            md-field.md-layout-item.md-size-5.md-xsmall-size-50
+              label 完成
+              md-select(v-model='searchQuery.paid')
+                md-option(value='') 全部
+                md-option(v-for="(name, paid) in { true: '是', false: '否' }", :key='paid', :value='paid') {{ name }}
         md-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='$noop')
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }')
             md-table-cell(md-label='客户', md-sort-by='customer.name', @click.native.stop='goToCustomer(item.customer)', style='min-width:100px') {{ item.customer ? item.customer.name : "-" }}
@@ -102,10 +104,10 @@ export default class PaymentList extends List<Payment> {
   download() {
     const params: Record<string, any> = {
       token: window.localStorage.token,
-      ...this.searchQuery
+      ...this.searchQuery,
     };
     const queryString = Object.keys(params)
-      .map(key => `${key}=${params[key]}`)
+      .map((key) => `${key}=${params[key]}`)
       .join("&");
     window.location.href =
       process.env.VUE_APP_API_BASE + "/payment-sheet?" + queryString;
@@ -122,8 +124,9 @@ export default class PaymentList extends List<Payment> {
   created() {
     this.searchQuery = {
       date: moment().format("YYYY-MM-DD"),
+      attach: "booking",
       paid: true,
-      gateway: []
+      gateway: [],
     };
     if (this.$user.store) {
       this.searchQuery.store = this.$user.store.id;

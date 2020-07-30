@@ -187,6 +187,9 @@
       overflow: hidden;
       position: relative;
       line-height: 41px;
+      &.md-xs {
+        height: 26px;
+      }
     }
 
     .md-button-content{
