@@ -16,7 +16,7 @@
             div 其中实收：{{ totalValidCardBalanceDeposit | currency }}
           .md-layout.md-layout-item.md-alignment-center-right.search-query
             md-field.md-layout-item.md-size-50.md-xsmall-size-100
-              md-input(type='search', min-length='4', clearable='', placeholder='搜索 手机/姓名', v-model='searchQuery.keyword')
+              md-input(type='search', min-length='4', clearable='', placeholder='搜索 手机/姓名/卡号/标签', v-model='searchQuery.keyword')
             md-field.md-layout-item.md-size-30.md-xsmall-size-100
               label 筛选角色
               md-select(v-model='searchQuery.role')
