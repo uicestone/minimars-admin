@@ -202,6 +202,11 @@ export interface Store extends Model {
   content: string;
   posterUrl: string;
   partyRooms: number;
+  dailyLimit: {
+    common: [];
+    coupon: [];
+    dates: { date?: string; group?: string; limit?: number }[];
+  };
   ip: string;
 }
 
