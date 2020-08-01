@@ -15,76 +15,77 @@
             .md-layout-item.md-size-25
               poster.pt-4(v-model="user.avatarUrl" placeholder="/img/placeholder.jpg" circle disabled)
               .pt-4.pb-1.text-center(v-if="user.role==='customer'") 儿童照片：
-              poster(v-if="user.role==='customer'" v-model="user.childPhotoUrl" placeholder="/img/image_placeholder.jpg")
+              poster(v-if="user.role==='customer'" v-model="user.childPhotoUrl" placeholder="/img/image_placeholder.jpg" :disabled="readonly")
             .md-layout-item.md-size-75.md-layout.md-alignment-vertical
               .md-layout-item.md-small-size-100.md-size-33(v-if="user.role !== 'customer' && $user.can('edit-user')")
                 md-field
                   label 用户类型
-                  md-select(v-model='user.role', @keydown.enter.prevent)
+                  md-select(v-model='user.role', @keydown.enter.prevent :disabled="readonly")
                     md-option(v-for="(name, role) in $userRoles" :key='role' :value='role') {{ name }}
               .md-layout-item.md-small-size-100.md-size-25(v-if="user.role === 'customer'")
                 md-field
                   label 会员姓名
-                  md-input(v-model='user.name')
+                  md-input(v-model='user.name' :disabled="readonly")
               .md-layout-item.md-small-size-100.md-size-33(v-else)
                 md-field
                   label 姓名
-                  md-input(v-model='user.name')
+                  md-input(v-model='user.name' :disabled="readonly")
               .md-layout-item.md-small-size-100.md-size-25(v-if="user.role === 'customer'")
                 md-field
                   label 孩子姓名
-                  md-input(v-model='user.childName')
+                  md-input(v-model='user.childName' :disabled="readonly")
               .md-layout-item.md-small-size-100.md-size-25(v-if="user.role === 'customer'")
                 md-field
                   label 孩子性别
-                  md-select(v-model='user.childGender', @keydown.enter.prevent)
+                  md-select(v-model='user.childGender', @keydown.enter.prevent :disabled="readonly")
                     md-option(value='男') 男
                     md-option(value='女') 女
                     md-option(value='未知') 未知
               .md-layout-item.md-small-size-100.md-size-25(v-if="user.role === 'customer'")
                 md-field
                   label 孩子生日
-                  md-input(v-model='user.childBirthday', type='text')
+                  md-input(v-model='user.childBirthday', type='text' :disabled="readonly")
               .md-layout-item.md-small-size-100.md-size-33
                 md-field
                   label 手机号
-                  md-input(v-model='user.mobile', type='text')
+                  md-input(v-model='user.mobile', type='text' :disabled="readonly")
               .md-layout-item.md-small-size-100.md-size-33(v-if="user.role === 'customer'")
                 md-field
                   label 卡号
-                  md-input(v-model='user.cardNo')
+                  md-input(v-model='user.cardNo' :disabled="readonly")
               .md-layout-item.md-small-size-100.md-size-33
                 md-field
                   label 门店
-                  md-select(v-model='user.store')
+                  md-select(v-model='user.store' :disabled="readonly")
                     md-option 不绑定门店
                     md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
               .md-layout-item.md-small-size-100.md-size-33
                 md-field
                   label 身份证号
-                  md-input(v-model='user.idCardNo')
+                  md-input(v-model='user.idCardNo' :disabled="readonly")
               .md-layout-item.md-small-size-100.md-size-33
                 md-field
                   label 地区
-                  md-input(v-model='user.region', type='text')
+                  md-input(v-model='user.region' :disabled="readonly")
               .md-layout-item.md-small-size-100.md-size-33(v-if="user.role === 'customer'")
                 md-field
                   label 星座
-                  md-input(v-model='user.constellation', type='text')
+                  md-input(v-model='user.constellation'  :disabled="readonly")
               .md-layout-item.md-small-size-100.md-size-50(v-if="user.role === 'customer'")
                 md-field
                   label 余额
-                  md-input(v-model='user.balance', type='text', disabled)
+                  md-input(v-model='user.balance' disabled)
               .md-layout-item.md-small-size-100.md-size-50(v-if="user.role === 'customer'")
                 md-field
                   label 积分
-                  md-input(v-model='user.points', type='text', disabled)
+                  md-input(v-model='user.points' disabled)
               .md-layout-item.md-size-100
                 md-field
                   label 备注
-                  md-textarea(v-model='user.remarks')
+                  md-textarea(v-model='user.remarks' :disabled="readonly")
               .md-layout-item.md-size-100
-                md-chips.md-primary(v-model='user.tags' md-static)
+                md-chips.md-primary.shake-on-error(v-if="$user.role==='admin'" @keypress.native.enter.prevent, v-model='user.tags', md-placeholder='用户内部标签', md-check-duplicated)
+                md-chips.md-primary(v-else v-model='user.tags' md-static)
             .md-layout-item.md-layout.mt-2(v-if="user.role !== 'customer'")
               .md-layout-item.md-small-size-100.md-size-50
                 md-field
@@ -102,7 +103,7 @@
       bookings-card(title="近期礼品兑换" type="gift" :bookings="userBookings.filter(b=>b.type==='gift')" :customer="user" v-if="user.role === 'customer'")
       bookings-card(title="近期餐饮消费" type="food" :bookings="userBookings.filter(b=>b.type==='food')" :customer="user" v-if="user.role === 'customer'")
     .md-layout-item.md-medium-size-100.md-size-40.mx-auto(v-if="user.role === 'customer'")
-      membership(:customer="user" @updated="getUser")
+      membership(:customer="user" @updated="getUser" :allow-buy-card="!readonly")
 </template>
 
 <script lang="ts">
@@ -116,15 +117,26 @@ import { User, Store, Booking } from "@/resources/interfaces";
   components: {
     BookingsCard,
     Membership,
-    Poster
-  }
+    Poster,
+  },
 })
 export default class UserProfile extends Vue {
-  user: Partial<User> = {};
+  user: Partial<User> = { tags: [] };
   userBookings: Booking[] = [];
 
   @Prop({ default: false })
   add!: boolean;
+
+  get readonly() {
+    if (
+      this.$user.role !== "admin" &&
+      this.user.tags &&
+      this.user.tags.includes("pr")
+    ) {
+      return true;
+    }
+    return false;
+  }
 
   async save() {
     this.user = await UserResource.save(this.user);
@@ -133,7 +145,7 @@ export default class UserProfile extends Vue {
       icon: "check",
       horizontalAlign: "center",
       verticalAlign: "bottom",
-      type: "success"
+      type: "success",
     });
     if (this.add) {
       this.$destroy();
@@ -176,7 +188,7 @@ export default class UserProfile extends Vue {
       }
       this.userBookings = await BookingResource.query({
         customer: this.user.id,
-        limit: 50
+        limit: 50,
       });
     }
   }

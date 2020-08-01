@@ -233,6 +233,7 @@ export interface User extends Model {
   cardType?: string;
   cardNo?: string;
   cards: Card[];
+  tags: string[];
 }
 
 export interface AuthLoginPostBody {

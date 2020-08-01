@@ -2,7 +2,7 @@
 #membership
   cards-card(:cards="cardItems" :activate="activateCard" @updated="getCards();getCardPayments()")
     template(v-slot:title-tools)
-      md-menu.pull-right(v-if="cardItems")
+      md-menu.pull-right(v-if="cardItems && allowBuyCard")
         md-button.md-info.md-sm(md-menu-trigger) 购卡
         md-menu-content
           md-menu-item(v-for='cardType in $cardTypes', v-if="$user.role==='admin'||cardType.type !== 'coupon'", :key='cardType.id', @click='createCard(cardType)') {{ cardType.title }}
@@ -40,6 +40,9 @@ export default class Membership extends Vue {
 
   @Prop()
   payments?: Payment[];
+
+  @Prop({ default: true })
+  allowBuyCard!: boolean;
 
   cardItems: Card[] | null = null;
 
