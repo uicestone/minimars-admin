@@ -1,6 +1,6 @@
 <template lang="pug">
 #membership
-  cards-card(:cards="cardItems" :activate="activateCard")
+  cards-card(:cards="cardItems" :activate="activateCard" @updated="getCards();getCardPayments()")
     template(v-slot:title-tools)
       md-menu.pull-right(v-if="cardItems")
         md-button.md-info.md-sm(md-menu-trigger) 购卡
@@ -21,15 +21,15 @@ import {
   Payment,
   Card,
   User,
-  CardStatus
+  CardStatus,
 } from "@/resources/interfaces";
 
 @Component({
   components: {
     BookingsCard,
     CardsCard,
-    PaymentsCard
-  }
+    PaymentsCard,
+  },
 })
 export default class Membership extends Vue {
   @Prop({ required: true })
@@ -50,13 +50,13 @@ export default class Membership extends Vue {
     if (!this.customer.id) return;
     this.paymentItems = await PaymentResource.query({
       customer: this.customer.id,
-      attach: "card "
+      attach: "card ",
     });
   }
 
   async getCards() {
     return (this.cardItems = await CardResource.query({
-      customer: this.customer.id
+      customer: this.customer.id,
     }));
   }
 
@@ -68,7 +68,7 @@ export default class Membership extends Vue {
         dianping: "点评POS",
         shouqianba: "收钱吧",
         cash: "现金",
-        pos: "银行卡"
+        pos: "银行卡",
       },
       "确定购买"
     );

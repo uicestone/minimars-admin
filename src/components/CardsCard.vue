@@ -6,7 +6,7 @@ md-card.codes-card
     h4.title {{ title }}
       slot(name="title-tools")
   md-card-content.md-layout
-    md-table.table-full-width
+    md-table
       md-table-row(v-for='card in cards', :key='card.id', :class="{ 'table-warning': card.status === 'pending' }")
         md-table-cell(md-label='卡名' @click.native="$clipboard(card.id,'卡ID')") {{ card.title }}
         md-table-cell(md-label='门店') {{ cardStoreName(card) }}
@@ -14,6 +14,7 @@ md-card.codes-card
           span(v-if="card.status!=='valid'") {{ card.status | cardStatusName }}
           md-button.md-normal.md-success.md-xs(v-if="card.status === 'valid'" @click="activate(card)" style="width:48px !important") 激活
           md-button.md-normal.md-danger.md-xs.ml-1(v-if="card.status === 'valid'" @click="$clipboard(card.giftCode, '礼品码')" style="width:48px !important") 转赠
+          md-button.md-simple.md-danger.md-xs(v-if="card.status === 'activated' && card.times === card.timesLeft" @click="remove(card)" style="width:48px!important;height:18px!important;padding:0") 撤销
         md-table-cell(md-label='过期日期')
           | {{ card.expiresAt | date("YYYY-MM-DD") }}
         md-table-cell(md-label='剩余次数', v-if="['times','coupon'].includes(card.type)") 剩{{ card.timesLeft }}次
@@ -35,6 +36,7 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { Card } from "@/resources/interfaces";
 import { CardResource } from "@/resources";
+import { confirm } from "../helpers/sweetAlert";
 
 @Component
 export default class CardsCard extends Vue {
@@ -55,11 +57,31 @@ export default class CardsCard extends Vue {
     );
   }
 
+  async remove(card: Card) {
+    try {
+      if (
+        !(await confirm(
+          "确认删除这张卡",
+          `即将删除该客户的 ${card.title}，本操作不可恢复`
+        ))
+      )
+        return;
+      await CardResource.delete({ id: card.id });
+      this.$emit("updated");
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   cardStoreName(card: Card) {
-    const store = this.$stores.find(s => s.id === card.store);
+    const store = this.$stores.find((s) => s.id === card.store);
     return store ? store.name.substr(0, 2) : "通用";
   }
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.md-table.table-full-width {
+  width: calc(100% + 40px);
+}
+</style>
