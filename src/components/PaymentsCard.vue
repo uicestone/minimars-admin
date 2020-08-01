@@ -15,9 +15,9 @@ md-card.payments-card
         md-table-cell(md-label='通道') {{ payment.gateway | paymentGatewayName }}
         md-table-cell(md-label='描述') {{ payment.title }}
         md-table-cell(md-label='收款')
-          md-button.md-success.md-normal(disabled, v-if='payment.paid') 已收款
-          md-button.md-normal.md-warning(v-else-if="payment.valid && !['wechatpay'].includes(payment.gateway)", @click='pay(payment)') 收款
-          md-button.md-normal(v-else disabled) 失效
+          md-button.md-success.md-normal.md-xs(disabled, v-if='payment.paid') 已收款
+          md-button.md-normal.md-warning.md-xs(v-else-if="payment.valid && !['wechatpay'].includes(payment.gateway)", @click='pay(payment)') 收款
+          md-button.md-normal.md-xs(v-else disabled) 失效
         //- md-table-cell
           | card: {{ payment.card && payment.card.substr(-4) }}
 </template>

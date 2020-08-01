@@ -70,6 +70,7 @@ export interface Card extends Model {
   timesLeft: number;
   num?: string;
   status: CardStatus;
+  expiresAt: Date;
   payments?: Payment[];
   giftCode?: string;
   title: string;

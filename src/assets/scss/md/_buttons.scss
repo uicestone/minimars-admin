@@ -158,9 +158,15 @@
         padding: 0.40625rem 1.25rem !important;
         font-size: $mdb-btn-font-size-sm;
     }
-    &.md-xs .md-ripple{
-      padding: 0.40625rem 0.75rem !important;
-      font-size: $mdb-btn-font-size-sm;
+    &.md-xs{
+      &.md-normal {
+        width: auto !important;
+        min-width: 50px;
+      }
+      .md-ripple{
+        padding: 0.40625rem 0.3rem !important;
+        font-size: $mdb-btn-font-size-sm;
+      }
     }
 
     &.btn-just-icon{
