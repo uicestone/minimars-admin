@@ -64,7 +64,9 @@ export default class CardsCard extends Vue {
       if (
         !(await confirm(
           "确认删除这张卡",
-          `即将删除该客户的 ${card.title}，本操作不可恢复`
+          `即将删除该客户的 ${card.title}，本操作不可恢复`,
+          null,
+          "error"
         ))
       )
         return;
@@ -81,7 +83,7 @@ export default class CardsCard extends Vue {
       "更改会员卡过期日期",
       null,
       null,
-      "question",
+      "info",
       "text",
       moment(card.expiresAt).format("YYYY-MM-DD"),
       (v) => {
