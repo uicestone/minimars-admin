@@ -17,6 +17,7 @@ md-card.codes-card
           md-button.md-simple.md-danger.md-xs(v-if="$user.role === 'admin' && card.status === 'activated' && card.times === card.timesLeft" @click="remove(card)" style="width:48px!important;height:18px!important;padding:0") 撤销
         md-table-cell(md-label='过期日期' @click.native="changeExpireDate(card)")
           | {{ card.expiresAt | date("YYYY-MM-DD") }}
+          md-badge.md-primary.card-extend(v-if="card.expiresAtWas" md-content="延" md-dense)
         md-table-cell(md-label='剩余次数', v-if="['times','coupon'].includes(card.type)") 剩{{ card.timesLeft }}次
         md-table-cell(md-label='日期区间', v-if="card.type === 'period'")
           | {{ card.start | date("YY-MM-DD") }} -
@@ -109,5 +110,12 @@ export default class CardsCard extends Vue {
 .md-table-row.table-muted {
   background-color: #e6e6e6;
   color: #828282;
+}
+.md-badge.card-extend {
+  top: 6px;
+  right: 18px;
+  transform: scale(0.8);
+  background-color: #1bbbcf !important;
+  font-weight: bold;
 }
 </style>
