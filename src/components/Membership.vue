@@ -72,6 +72,7 @@ export default class Membership extends Vue {
         shouqianba: "收钱吧",
         cash: "现金",
         pos: "银行卡",
+        pr: "市场公关",
       },
       "确定购买"
     );

@@ -151,7 +151,8 @@ const GlobalLibrariesPlugins = {
           coupon: "团购优惠券",
           balance: "账户余额",
           points: "账户积分",
-          alipay: "支付宝"
+          alipay: "支付宝",
+          pr: "市场公关"
           // scan: "现场扫码",
           // unionpay: "银联"
         };

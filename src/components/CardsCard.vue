@@ -112,8 +112,8 @@ export default class CardsCard extends Vue {
   color: #828282;
 }
 .md-badge.card-extend {
-  top: 6px;
-  right: 18px;
+  top: 5px;
+  right: 2px;
   transform: scale(0.8);
   background-color: #1bbbcf !important;
   font-weight: bold;

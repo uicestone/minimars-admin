@@ -120,6 +120,7 @@
                   md-button.md-n.md-simple(@click="usePaymentGateway('shouqianba')", :class="{'md-primary':usingPaymentGateway('shouqianba')}") 收钱吧
                   md-button.md-n.md-simple(@click="usePaymentGateway('cash')", :class="{'md-primary':usingPaymentGateway('cash')}") 现金
                   md-button.md-n.md-simple(@click="usePaymentGateway('pos')", :class="{'md-primary':usingPaymentGateway('pos')}") 银行卡
+                  md-button.md-n.md-simple(@click="usePaymentGateway('pr')", :class="{'md-primary':usingPaymentGateway('pr')}") 市场公关
               .md-layout-item.md-layout.md-alignment-bottom-right(style='flex:0;flex-wrap:nowrap')
                 md-button.md-simple.md-danger(@click='remove', v-if='this.booking.id && $user.can("delete-booking")') 删除
                 md-button.md-simple.md-warning(@click='cancel', v-if="bookingCancelable") 撤销

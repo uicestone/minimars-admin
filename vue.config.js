@@ -1,7 +1,8 @@
 module.exports = {
   publicPath: process.env.PUBLIC_PATH,
   devServer: {
-    host: "localhost"
+    host: "localhost",
+    port: "8081"
   },
   chainWebpack: config => {
     config.plugin("define").tap(args => {
