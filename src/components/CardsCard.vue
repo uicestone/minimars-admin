@@ -14,7 +14,7 @@ md-card.codes-card
           span(v-if="card.status!=='valid'") {{ card.status | cardStatusName }}
           md-button.md-normal.md-success.md-xs(v-if="card.status === 'valid'" @click="activate(card)" style="width:48px !important") 激活
           md-button.md-normal.md-danger.md-xs.ml-1(v-if="card.status === 'valid'" @click="$clipboard(card.giftCode, '礼品码')" style="width:48px !important") 转赠
-          md-button.md-simple.md-danger.md-xs(v-if="$user.role === 'admin' && card.status === 'activated' && card.times === card.timesLeft" @click="remove(card)" style="width:48px!important;height:18px!important;padding:0") 撤销
+          md-button.md-simple.md-danger.md-xs(v-if="$user.role === 'admin' && card.status === 'activated' && card.type === 'times' && card.times === card.timesLeft" @click="remove(card)" style="width:48px!important;height:18px!important;padding:0") 撤销
         md-table-cell(md-label='过期日期' @click.native="changeExpireDate(card)")
           | {{ card.expiresAt | date("YYYY-MM-DD") }}
           md-badge.md-primary.card-extend(v-if="card.expiresAtWas" md-content="延" md-dense)
