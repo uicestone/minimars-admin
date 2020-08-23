@@ -101,6 +101,7 @@ export interface CardType extends Model {
   times: number;
   start: Date;
   end: Date;
+  dayType?: "onDaysOnly" | "offDaysOnly" | null;
   balance: number;
   price: number;
   maxKids: number;

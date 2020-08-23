@@ -56,6 +56,13 @@
               md-field
                 label 次数
                 md-input(type='number', v-model='cardType.times')
+            .md-layout-item
+              md-field
+                label 节假日限制
+                md-select(v-model='cardType.dayType', @keydown.enter.prevent)
+                  md-option 不限
+                  md-option(value='onDaysOnly') 仅限法定工作日
+                  md-option(value='offDaysOnly') 仅限法定节假日
             .md-layout-item(v-if="['coupon'].includes(cardType.type)")
               md-field
                 label 满
@@ -102,8 +109,8 @@ import { Poster, Editor } from "@/components";
 @Component({
   components: {
     Poster,
-    Editor
-  }
+    Editor,
+  },
 })
 export default class CardTypeDetail extends Vue {
   cardType: Partial<CardType> = {
@@ -111,7 +118,7 @@ export default class CardTypeDetail extends Vue {
     store: null,
     freeParentsPerKid: 2,
     maxKids: 2,
-    customerTags: []
+    customerTags: [],
   };
   async save() {
     this.cardType = await CardTypeResource.save(this.cardType);
@@ -121,7 +128,7 @@ export default class CardTypeDetail extends Vue {
       icon: "check",
       horizontalAlign: "center",
       verticalAlign: "bottom",
-      type: "success"
+      type: "success",
     });
 
     if (this.$route.params.id === "add") {
@@ -157,6 +164,11 @@ export default class CardTypeDetail extends Vue {
   @Watch("cardType.end") onCardTypeEndUpdate(v: Date | string) {
     if (v && (!v.constructor || v.constructor.name !== "Date")) {
       this.cardType.end = new Date((this.cardType as CardType).end);
+    }
+  }
+  @Watch("cardType.dayType") onCardTypeDayTypeUpdate(v: false | string) {
+    if (v === false) {
+      this.cardType.dayType = null;
     }
   }
   @Watch("cardType.store") onCardTypeStoreUpdate(v: Store | false) {
