@@ -16,12 +16,16 @@
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
             md-table-cell(md-label='名称', md-sort-by='title')
               | {{ item.title }}
-            md-table-cell(md-label='门店', md-sort-by='type')
+            md-table-cell(md-label='代号', md-sort-by='slug')
+              | {{ item.slug }}
+            md-table-cell(md-label='门店', md-sort-by='store')
               | {{ item.store ? item.store.name : '通用' }}
             md-table-cell(md-label='类型', md-sort-by='type')
               | {{ item.type | cardTypeName }}
             md-table-cell(md-label='售价', md-sort-by='price')
-              | {{ item.price }}
+              | {{ item.price | currency }}
+            md-table-cell(md-label='客户端开放', md-sort-by='openForClient')
+              | {{ item.openForClient ? '是' : '否' }}
       md-card-actions(md-alignment='space-between')
         div
           p.card-category {{ from }} - {{ to }} / {{ total }}
