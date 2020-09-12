@@ -12,7 +12,7 @@
                 md-switch.md-primary(v-model="cardType.isGift") 可转赠
                 md-switch.md-primary(v-model="cardType.openForClient") 客户端购买
           md-card-content.md-layout
-            .md-layout-item.md-size-40
+            .md-layout-item.md-size-20
               md-field
                 label 名称
                 md-input(v-model='cardType.title')
@@ -24,6 +24,10 @@
               md-field
                 label 代号
                 md-input(v-model='cardType.slug')
+            .md-layout-item.md-size-20
+              md-field
+                label 所属团购代号
+                md-input(v-model='cardType.couponSlug')
             .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 门店
