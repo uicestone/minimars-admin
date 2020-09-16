@@ -21,9 +21,7 @@
             .md-layout-item.md-small-size-100.md-size-33
               md-field
                 label 门店
-                md-select(v-model='coupon.store')
-                  md-option 不绑定门店
-                  md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
+                store-select(v-model='coupon.store')
             .md-layout-item.md-small-size-100.md-size-33
               md-field
                 label 三方平台售价
@@ -54,12 +52,13 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Watch, Component } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import { confirm } from "@/helpers/sweetAlert";
-import { Coupon, Store } from "@/resources/interfaces";
+import { Coupon } from "@/resources/interfaces";
 import { CouponResource } from "@/resources";
+import { StoreSelect } from "@/components";
 
-@Component
+@Component({ components: { StoreSelect } })
 export default class CouponDetail extends Vue {
   coupon: Partial<Coupon> = {
     id: "",
@@ -95,14 +94,6 @@ export default class CouponDetail extends Vue {
       return;
     await CouponResource.delete({ id: this.coupon.id });
     this.$router.go(-1);
-  }
-  @Watch("coupon.store") onCouponStoreUpdate(v: Store | false) {
-    if (typeof v === "object" && v) {
-      // @ts-ignore
-      this.coupon.store = this.coupon.store.id;
-    } else if (v === false) {
-      this.coupon.store = null;
-    }
   }
   async mounted() {
     if (this.$route.params.id !== "add") {

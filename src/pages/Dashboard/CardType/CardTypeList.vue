@@ -18,8 +18,8 @@
               | {{ item.title }}
             md-table-cell(md-label='代号', md-sort-by='slug')
               | {{ item.slug }}
-            md-table-cell(md-label='门店', md-sort-by='store')
-              | {{ item.store ? item.store.name : '通用' }}
+            md-table-cell(md-label='门店', md-sort-by='stores')
+              | {{ item.stores.length ? item.stores.map(s=>s.name).join("、") : '通用' }}
             md-table-cell(md-label='类型', md-sort-by='type')
               | {{ item.type | cardTypeName }}
             md-table-cell(md-label='售价', md-sort-by='price')

@@ -77,7 +77,7 @@ export interface Card extends Model {
   slug: string;
   type: string;
   isGift: boolean;
-  store?: string;
+  stores: string[];
   content: string;
   times: number;
   start: Date;
@@ -96,7 +96,7 @@ export interface CardType extends Model {
   slug: string;
   type: string;
   isGift: boolean;
-  store?: Populated<Store>;
+  stores: Populated<Store>[];
   content: string;
   times: number;
   start: Date;

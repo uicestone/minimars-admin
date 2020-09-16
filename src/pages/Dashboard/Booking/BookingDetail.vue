@@ -490,8 +490,12 @@ export default class BookingDetail extends Vue {
       this.booking.type === BookingType.PLAY &&
       ["times", "period"].includes(card.type)
     ) {
-      if (!card.store) return true;
-      if (card.store === this.booking.store?.id) return true;
+      if (!card.stores.length) return true;
+      if (
+        this.booking.store?.id &&
+        card.stores.includes(this.booking.store?.id)
+      )
+        return true;
     }
     if (this.booking.type === BookingType.FOOD && card.type === "coupon") {
       if (!card.overPrice || (this.booking.price || 0) >= card.overPrice) {

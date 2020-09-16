@@ -87,7 +87,7 @@ export default class CardsCard extends Vue {
       "info",
       "text",
       moment(card.expiresAt).format("YYYY-MM-DD"),
-      (v) => {
+      v => {
         if (!v.match(/^\d{4}-\d{2}-\d{2}$/)) return "请输入正确的日期格式";
       }
     );
@@ -97,8 +97,10 @@ export default class CardsCard extends Vue {
   }
 
   cardStoreName(card: Card) {
-    const store = this.$stores.find((s) => s.id === card.store);
-    return store ? store.name.substr(0, 2) : "通用";
+    const stores = this.$stores.filter(s => card.stores.includes(s.id));
+    return stores.length
+      ? stores.map(s => s.name.substr(0, 2)).join("、")
+      : "通用";
   }
 }
 </script>

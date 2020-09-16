@@ -31,9 +31,7 @@
             .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 门店
-                md-select(v-model='cardType.store')
-                  md-option 不绑定门店
-                  md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
+                store-select(v-model='cardType.stores' :multiple="true")
             .md-layout-item.md-small-size-100.md-size-20
               md-field
                 label 类型
@@ -106,20 +104,21 @@
 import Vue from "vue";
 import { Watch, Component } from "vue-property-decorator";
 import { confirm } from "@/helpers/sweetAlert";
-import { CardType, Store } from "@/resources/interfaces";
+import { CardType } from "@/resources/interfaces";
 import { CardTypeResource } from "@/resources";
-import { Poster, Editor } from "@/components";
+import { Poster, Editor, StoreSelect } from "@/components";
 
 @Component({
   components: {
     Poster,
     Editor,
+    StoreSelect,
   },
 })
 export default class CardTypeDetail extends Vue {
   cardType: Partial<CardType> = {
     id: "",
-    store: null,
+    stores: [],
     freeParentsPerKid: 2,
     maxKids: 2,
     customerTags: [],
@@ -173,14 +172,6 @@ export default class CardTypeDetail extends Vue {
   @Watch("cardType.dayType") onCardTypeDayTypeUpdate(v: false | string) {
     if (v === false) {
       this.cardType.dayType = null;
-    }
-  }
-  @Watch("cardType.store") onCardTypeStoreUpdate(v: Store | false) {
-    if (typeof v === "object" && v) {
-      // @ts-ignore
-      this.cardType.store = this.cardType.store.id;
-    } else if (v === false) {
-      this.cardType.store = null;
     }
   }
   async mounted() {
