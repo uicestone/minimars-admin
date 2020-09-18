@@ -16,6 +16,8 @@
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
             md-table-cell(md-label='名称', md-sort-by='title')
               | {{ item.title }}
+            md-table-cell(md-label='门店', md-sort-by='stores')
+              | {{ item.stores.length ? $stores.filter(s=>item.stores.includes(s.id)).map(s=>s.name).join("、") : '通用' }}
             md-table-cell(md-label='平台售价', md-sort-by='priceThirdParty')
               | {{ item.priceThirdParty | currency }}
             md-table-cell(md-label='免费陪同成人', md-sort-by='freeParentsPerKid')

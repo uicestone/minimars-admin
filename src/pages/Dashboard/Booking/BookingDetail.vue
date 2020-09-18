@@ -92,7 +92,7 @@
                 md-textarea.no-padding(v-model='booking.remarks')
             .md-layout-item.md-size-100.coupon.mt-2(v-if="booking.type === 'play'")
               div.pb-2.bb(v-if="!booking.id")
-                md-button.md-lg-n.mr-1(:class="{'md-warning':usingCoupon(coupon)}" v-for='coupon in $coupons', :key='coupon.id', :value='coupon.id', @click='useCoupon(coupon)')
+                md-button.md-lg-n.mr-1(:class="{'md-warning':usingCoupon(coupon)}" v-for='coupon in availableCoupons', :key='coupon.id', :value='coupon.id', @click='useCoupon(coupon)')
                   span {{ coupon.title }}
                   span.ml-1(v-if="coupon.priceThirdParty")  {{ coupon.priceThirdParty }}
               div.pb-2.bb(v-else-if="booking.coupon")
@@ -268,6 +268,15 @@ export default class BookingDetail extends Vue {
 
   get availableCards() {
     return this.customerCards.filter(card => this.cardAvailable(card));
+  }
+
+  get availableCoupons() {
+    return this.$coupons.filter(coupon => {
+      return (
+        !coupon.stores.length ||
+        coupon.stores.includes(this.booking.store?.id || "")
+      );
+    });
   }
 
   get cardHeaderClass() {

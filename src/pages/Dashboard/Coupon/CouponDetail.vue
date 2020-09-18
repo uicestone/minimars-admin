@@ -21,7 +21,7 @@
             .md-layout-item.md-small-size-100.md-size-33
               md-field
                 label 门店
-                store-select(v-model='coupon.store')
+                store-select(v-model='coupon.stores' :multiple="true")
             .md-layout-item.md-small-size-100.md-size-33
               md-field
                 label 三方平台售价
@@ -62,7 +62,7 @@ import { StoreSelect } from "@/components";
 export default class CouponDetail extends Vue {
   coupon: Partial<Coupon> = {
     id: "",
-    store: null,
+    stores: [],
     kidsCount: 1,
     price: 0,
     enabled: true

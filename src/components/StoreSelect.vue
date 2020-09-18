@@ -23,20 +23,30 @@ export default class StoreSelect extends Vue {
   fieldValue: string[] | string = this.multiple ? [] : "";
 
   isStore(o: any): o is Store {
-    return o && typeof o === "object" && "member" in o;
+    return o && typeof o === "object" && "id" in o;
   }
 
-  @Watch("value", { immediate: true }) onValueChanged() {
-    if (
-      !this.multiple &&
-      this.value &&
-      this.isStore(this.value) &&
-      this.value.name
-    ) {
-      this.fieldValue = this.value.name;
+  isStringArray(o: any): o is string[] {
+    return typeof o[0] === "string";
+  }
+
+  @Watch("value", { immediate: true }) onValueChanged(
+    v: string | string[] | Store | Store[]
+  ) {
+    let value: Store | Store[] | undefined;
+    if (typeof v === "string") {
+      value = this.$stores.find(s => s.id === v);
+    } else if (this.isStringArray(v)) {
+      value = this.$stores.filter(s => v.includes(s.id));
+    } else {
+      value = v;
     }
-    if (this.multiple && !this.isStore(this.value)) {
-      this.fieldValue = this.value.map(v => v.name);
+    if (value === undefined) return;
+    if (!this.multiple && value && this.isStore(value) && value.name) {
+      this.fieldValue = value.name;
+    }
+    if (this.multiple && !this.isStore(value)) {
+      this.fieldValue = value.map(v => v.name);
     }
   }
 

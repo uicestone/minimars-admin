@@ -116,7 +116,7 @@ export interface CardType extends Model {
 
 export interface Coupon extends Model {
   title: string;
-  store?: Populated<Store>;
+  stores: string[];
   content: string;
   kidsCount: number;
   price: number;
