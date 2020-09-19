@@ -130,8 +130,8 @@
                 md-button.md-warning(type='submit' v-if='booking.type==="event"' :class='{"md-simple": booking.id,"md-raised": !booking.id}' :disabled="!bookingValidated") 保存
                 md-button.md-rose(type='submit' v-if='booking.type==="gift"' :class='{"md-simple": booking.id,"md-raised": !booking.id}' :disabled="!bookingValidated") 保存
                 md-button.md-success(type='submit' v-if='booking.type==="food"' :class='{"md-simple": booking.id,"md-raised": !booking.id}' :disabled="!bookingValidated") 保存
-                md-button.md-raised.md-info.ml-2(v-if="bandsPrintable > 0 && ['booked','in_service'].includes(booking.status) && booking.type === 'play'" @click="printBands") 打印手环
-                md-button.md-raised.md-warning.ml-2(v-if="booking.status === 'booked' && ['play','event'].includes(booking.type)" @click="checkIn") 入场
+                md-button.md-raised.md-info.ml-2(v-if="bandsPrintable > 0 && ['booked','in_service'].includes(booking.status) && booking.type === 'play' && booking.date<=today" @click="printBands") 打印手环
+                md-button.md-raised.md-warning.ml-2(v-if="booking.status === 'booked' && ['play','event'].includes(booking.type) && booking.date<=today" @click="checkIn") 入场
                 md-button.md-raised.md-rose.ml-2(v-if="booking.status === 'booked' && ['gift'].includes(booking.type)" @click="redeem") 兑换
         md-card.payments-card(v-if="booking.payments.length")
           md-card-header.md-card-header-icon.md-card-header-danger
@@ -208,6 +208,7 @@ export default class BookingDetail extends Vue {
   eventSearchTerm: string | null = null;
   giftSearchTerm: string | null = null;
   paymentGateway: string | null = null;
+  today = moment().format("YYYY-MM-DD");
 
   @Prop({ default: false })
   add!: boolean;
