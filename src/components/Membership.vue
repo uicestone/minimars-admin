@@ -5,7 +5,7 @@
       md-menu.pull-right(v-if="cardItems && allowBuyCard")
         md-button.md-info.md-sm(md-menu-trigger) 购卡
         md-menu-content
-          md-menu-item(v-for='cardType in $cardTypes', v-if="$user.role==='admin'||cardType.type !== 'coupon'", :key='cardType.id', @click='createCard(cardType)') {{ cardType.title }}
+          md-menu-item(v-for='cardType in $cardTypes', v-if="$user.role==='admin'||cardType.openForReception", :key='cardType.id', @click='createCard(cardType)') {{ cardType.title }}
           md-menu-item(@click="receiveGiftCard") 接收礼品卡
   payments-card(:payments="paymentItems" :pay="pay")
 </template>

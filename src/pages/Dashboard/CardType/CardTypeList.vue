@@ -9,6 +9,28 @@
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
           .md-layout
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100
+              label 类型
+              md-select(v-model='searchQuery.type')
+                md-option(value="") 全部
+                md-option(v-for='(name, type) in $cardTypeNames', :key='type', :value='type') {{ name }}
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100
+              label 门店
+              md-select(v-model='searchQuery.stores')
+                md-option(value='') 全部
+                md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100
+              label 前台开放
+              md-select(v-model='searchQuery.openForReception')
+                md-option(value="") 全部
+                md-option(:value="true") 是
+                md-option(:value="false") 否
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100
+              label 客户端开放
+              md-select(v-model='searchQuery.openForClient')
+                md-option(value="") 全部
+                md-option(:value="true") 是
+                md-option(:value="false") 否
           .toolbar-actions
             md-button.md-primary(@click='showCreate')
               | 添加卡券种类
@@ -26,6 +48,8 @@
               | {{ item.price | currency }}
             md-table-cell(md-label='客户端开放', md-sort-by='openForClient')
               | {{ item.openForClient ? '是' : '否' }}
+            md-table-cell(md-label='前台开放', md-sort-by='openForReception')
+              | {{ item.openForReception ? '是' : '否' }}
       md-card-actions(md-alignment='space-between')
         div
           p.card-category {{ from }} - {{ to }} / {{ total }}
