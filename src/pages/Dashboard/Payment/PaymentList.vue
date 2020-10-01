@@ -8,7 +8,7 @@
         h4.title 支付明细
           md-button.md-just-icon.md-simple.md-xs.pull-right(@click='queryData')
             md-icon refresh
-          md-button.md-just-icon.md-simple.md-xs.pull-right(@click='download')
+          md-button.md-just-icon.md-simple.md-xs.pull-right(@click='download' v-if='searchQuery.date || searchQuery.dateEnd')
             md-icon get_app
           span.pull-right.mr-2 总金额：{{ totalAmount | currency }}
       md-card-content.paginated-table
