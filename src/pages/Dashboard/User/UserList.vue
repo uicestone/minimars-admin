@@ -8,12 +8,13 @@
         h4.title 用户列表
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
-          div(style="padding:0 5px" v-if="searchQuery.role === 'customer'")
-            div 用户余额：{{ totalBalance | currency }}
-            div 其中实收：{{ totalBalanceDeposit | currency }}
-          div(style="padding:0 5px" v-if="searchQuery.role === 'customer'")
-            div 未激活卡：{{ totalValidCardBalance | currency }}
-            div 其中实收：{{ totalValidCardBalanceDeposit | currency }}
+          .md-layout-item.md-size-40.md-layout
+            div(style="padding:0 5px" v-if="searchQuery.role === 'customer'")
+              div 用户余额：{{ totalBalance | currency }}
+              div 其中实收：{{ totalBalanceDeposit | currency }}
+            div(style="padding:0 5px" v-if="searchQuery.role === 'customer'")
+              div 未激活卡：{{ totalValidCardBalance | currency }}
+              div 其中实收：{{ totalValidCardBalanceDeposit | currency }}
           .md-layout.md-layout-item.md-alignment-center-right.search-query
             md-field.md-layout-item.md-size-50.md-xsmall-size-100
               md-input(type='search', min-length='4', clearable='', placeholder='搜索 手机/姓名/卡号/标签', v-model='searchQuery.keyword')
