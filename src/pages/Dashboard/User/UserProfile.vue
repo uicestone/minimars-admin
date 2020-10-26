@@ -22,7 +22,11 @@
                   label 用户类型
                   md-select(v-model='user.role', @keydown.enter.prevent :disabled="readonly")
                     md-option(v-for="(name, role) in $userRoles" :key='role' :value='role') {{ name }}
-              .md-layout-item.md-small-size-100.md-size-25(v-if="user.role === 'customer'")
+              .md-layout-item.md-small-size-100.md-size-33
+                md-field
+                  label 手机号
+                  md-input(v-model='user.mobile', type='text' :disabled="readonly")
+              .md-layout-item.md-small-size-100.md-size-33(v-if="user.role === 'customer'")
                 md-field
                   label 会员姓名
                   md-input(v-model='user.name' :disabled="readonly")
@@ -30,7 +34,7 @@
                 md-field
                   label 姓名
                   md-input(v-model='user.name' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-25(v-if="user.role === 'customer'")
+              .md-layout-item.md-small-size-100.md-size-33(v-if="user.role === 'customer'")
                 md-field
                   label 孩子姓名
                   md-input(v-model='user.childName' :disabled="readonly")
@@ -45,15 +49,11 @@
                 md-field
                   label 孩子生日
                   md-input(v-model='user.childBirthday', type='text' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-33
-                md-field
-                  label 手机号
-                  md-input(v-model='user.mobile', type='text' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-33(v-if="user.role === 'customer'")
+              .md-layout-item.md-small-size-100.md-size-25(v-if="user.role === 'customer'")
                 md-field
                   label 卡号
                   md-input(v-model='user.cardNo' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-33
+              .md-layout-item.md-small-size-100.md-size-25
                 md-field
                   label 门店
                   md-select(v-model='user.store' :disabled="readonly")
@@ -104,6 +104,8 @@
       bookings-card(title="近期餐饮消费" type="food" :bookings="userBookings.filter(b=>b.type==='food')" :customer="user" v-if="user.role === 'customer'")
     .md-layout-item.md-medium-size-100.md-size-40.mx-auto(v-if="user.role === 'customer'")
       membership(:customer="user" @updated="getUser" :allow-buy-card="!readonly")
+        template(v-slot:action-buttons)
+          md-button.md-success.md-sm.pull-right(v-if="creatable" @click="save") 创建会员
 </template>
 
 <script lang="ts">
@@ -138,6 +140,10 @@ export default class UserProfile extends Vue {
     return false;
   }
 
+  get creatable() {
+    return !this.user.id && this.user.mobile?.length === 11;
+  }
+
   async save() {
     this.user = await UserResource.save(this.user);
     this.$notify({
@@ -164,6 +170,24 @@ export default class UserProfile extends Vue {
 
   @Watch("user") onUserUpdate(u: any, pu: any) {
     console.log("onUserUpdate", JSON.stringify(u), JSON.stringify(pu));
+  }
+
+  @Watch("user.mobile") async onUserMobileUpdate() {
+    if (!this.user.id && this.user.mobile?.length === 11) {
+      const [user] = await UserResource.query({ mobile: this.user.mobile });
+      if (user) {
+        this.$destroy();
+        this.$router.replace(`/user/${user.id}`);
+      } else {
+        this.$notify({
+          message: "没有匹配手机号的用户，请继续创建用户",
+          type: "success",
+          icon: "add_alert",
+          horizontalAlign: "center",
+          verticalAlign: "bottom",
+        });
+      }
+    }
   }
 
   @Watch("user.store") onUserStoreUpdate(store: Store | false) {

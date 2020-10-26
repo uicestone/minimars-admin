@@ -38,15 +38,12 @@
               md-icon refresh
         md-table.paginated-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='$noop')
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
-            md-table-cell(md-label='姓名', md-sort-by='name')
-              | {{ item.name }}
-            md-table-cell(md-label='孩子姓名', md-sort-by='gender')
-              | {{ item.childName }}
             md-table-cell(md-label='手机', md-sort-by='mobile')
               | {{ item.mobile }}
+            md-table-cell(md-label='姓名', md-sort-by='name')
+              | {{ item.name }}
             md-table-cell(md-label='卡号', md-sort-by='cardNo')
               | {{ item.cardNo }}
-            md-table-cell(md-label='会员类型', md-sort-by='cardType', v-if="searchQuery.role === 'customer'") {{ item.cardType }}
             md-table-cell(md-label='余额', md-sort-by='balanceDeposit', v-if="searchQuery.role === 'customer'")
               div(v-if='item.balance')
                 | {{ item.balanceDeposit }} 赠{{ item.balanceReward }}

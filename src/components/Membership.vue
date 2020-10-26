@@ -2,6 +2,7 @@
 #membership
   cards-card(:cards="cardItems" :activate="activateCard" @updated="getCards();getCardPayments()")
     template(v-slot:title-tools)
+      slot(name="action-buttons")
       md-menu.pull-right(v-if="cardItems && allowBuyCard")
         md-button.md-info.md-sm(md-menu-trigger) 购卡
         md-menu-content
