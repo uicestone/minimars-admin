@@ -3,7 +3,7 @@
     md-elevation="0"
     class="md-transparent"
     :class="{
-      'md-toolbar-absolute md-white md-fixed-top': $route.meta.navbarAbsolute
+      'md-toolbar-absolute md-white md-fixed-top': $route.meta.navbarAbsolute,
     }"
   >
     <div class="md-toolbar-row">
@@ -11,6 +11,24 @@
         <h3 class="md-title">{{ $route.name }}</h3>
       </div>
       <div class="md-toolbar-section-end">
+        <md-button
+          class="md-just-icon md-round md-simple"
+          @click="openQrcodeScanner"
+        >
+          <md-icon>qr_code_scanner</md-icon>
+        </md-button>
+        <video
+          id="qrcode-scanner"
+          ref="qrcode-scanner"
+          v-if="showQrcodeScanner"
+        ></video>
+        <md-button
+          id="close-qrcode-scanner"
+          class="md-just-icon md-round md-simple"
+          @click="closeQrcodeScanner"
+          v-if="showQrcodeScanner"
+          ><md-icon>close</md-icon></md-button
+        >
         <md-button
           class="md-just-icon md-round md-simple md-toolbar-toggle"
           :class="{ toggled: $sidebar.showSidebar }"
@@ -22,17 +40,6 @@
         </md-button>
 
         <div class="md-collapse">
-          <!-- <div class="md-autocomplete">
-            <md-autocomplete
-              class="search"
-              v-model="selectedEmployee"
-              :md-options="employees"
-              :md-open-on-focus="false"
-            >
-              <label v-if="$route.meta.rtlActive">بحث...</label>
-              <label v-else>Search...</label>
-            </md-autocomplete>
-          </div> -->
           <md-list>
             <md-list-item href="#/">
               <i class="material-icons">dashboard</i>
@@ -79,20 +86,15 @@
 </template>
 
 <script>
+import QrScanner from "qr-scanner";
+import qrScannerWorkerSource from "!!raw-loader!../../../../node_modules/qr-scanner/qr-scanner-worker.min.js";
+QrScanner.WORKER_PATH = URL.createObjectURL(new Blob([qrScannerWorkerSource]));
+
 export default {
   data() {
     return {
-      selectedEmployee: "",
-      employees: [
-        "Jim Halpert",
-        "Dwight Schrute",
-        "Michael Scott",
-        "Pam Beesly",
-        "Angela Martin",
-        "Kelly Kapoor",
-        "Ryan Howard",
-        "Kevin Malone"
-      ]
+      showQrcodeScanner: false,
+      qrScanner: null,
     };
   },
   methods: {
@@ -103,7 +105,48 @@ export default {
       if (this.$sidebar) {
         this.$sidebar.toggleMinimize();
       }
-    }
-  }
+    },
+    async openQrcodeScanner() {
+      this.showQrcodeScanner = true;
+      await this.$nextTick();
+      this.qrScanner = new QrScanner(this.$refs["qrcode-scanner"], (result) => {
+        this.onQrcodeResult(result);
+        this.qrScanner.stop();
+        this.qrScanner.destroy();
+      });
+      this.qrScanner.start();
+    },
+    closeQrcodeScanner() {
+      this.showQrcodeScanner = false;
+      this.qrScanner.stop();
+      this.qrScanner.destroy();
+    },
+    onQrcodeResult(s) {
+      if (!this.showQrcodeScanner) return;
+      this.showQrcodeScanner = false;
+      this.$router.push(`/user/${s}`);
+    },
+  },
 };
 </script>
+
+<style scoped>
+#qrcode-scanner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  height: 100vh;
+  background: black;
+}
+#close-qrcode-scanner {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  z-index: 11;
+}
+#close-qrcode-scanner i {
+  font-size: 36px !important;
+}
+</style>
