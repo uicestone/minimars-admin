@@ -97,7 +97,7 @@
                   md-input(v-model='user.password', type='password', autocomplete='new-password')
             .md-layout-item.md-size-100.text-right
               md-button.md-success.mt-4(type='submit' :class="{'md-raised':!user.id,'md-simple':user.id}") 保存
-              md-button.md-primary.mt-4.pull-right(@click="createBooking" v-if="user.id && user.role === 'customer'") 门票预约
+              md-button.md-primary.mt-4.pull-right(@click="createBooking()" v-if="user.id && user.role === 'customer'") 门票预约
               md-button.md-success.mt-4.mr-1.pull-right(@click="createBooking('food')" v-if="user.id && user.role === 'customer'") 吧台消费
       bookings-card(title="近期门票预约" type="play" :bookings="userBookings.filter(b=>b.type==='play')" :customer="user" v-if="user.role === 'customer'")
       bookings-card(title="近期活动预约" type="event" :bookings="userBookings.filter(b=>b.type==='event')" :customer="user" v-if="user.role === 'customer'")
