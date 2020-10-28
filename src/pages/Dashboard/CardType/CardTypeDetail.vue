@@ -66,14 +66,25 @@
                   md-option 不限
                   md-option(value='onDaysOnly') 仅限法定工作日
                   md-option(value='offDaysOnly') 仅限法定节假日
-            .md-layout-item(v-if="['coupon'].includes(cardType.type)")
+            .md-layout-item.md-size-15(v-if="['coupon'].includes(cardType.type)")
               md-field
                 label 满
+                span.md-prefix ¥
                 md-input(type='number', v-model='cardType.overPrice')
-            .md-layout-item(v-if="['coupon'].includes(cardType.type)")
+            .md-layout-item.md-size-15(v-if="['coupon'].includes(cardType.type)")
               md-field
                 label 减
+                span.md-prefix ¥
                 md-input(type='number', v-model='cardType.discountPrice')
+            .md-layout-item.md-size-15(v-if="['coupon'].includes(cardType.type)")
+              md-field
+                label 折
+                md-input(type='number', step="0.01", min="0.01", max="0.99", v-model='cardType.discountRate')
+            .md-layout-item.md-size-15(v-if="['coupon'].includes(cardType.type)")
+              md-field
+                label 价
+                span.md-prefix ¥
+                md-input(type='number', step="0.01", v-model='cardType.fixedPrice')
             .md-layout-item(v-if="cardType.type === 'balance'")
               md-field
                 label 面值
