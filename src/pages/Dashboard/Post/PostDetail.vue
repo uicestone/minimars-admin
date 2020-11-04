@@ -17,6 +17,12 @@
               md-field
                 label 简称
                 md-input(v-model='post.slug')
+            .md-layout-item.md-size-50
+              md-datepicker(placeholder='开始日期', v-model='post.start', :md-model-type='Date', md-immediately)
+                label 开始日期
+            .md-layout-item.md-size-50
+              md-datepicker(placeholder='结束日期', v-model='post.end', :md-model-type='Date', md-immediately)
+                label 结束日期
             .md-layout-item.md-size-100
               md-chips.md-primary.shake-on-error(@keypress.native.enter.prevent, v-model='post.tags', md-placeholder='添加标签', md-check-duplicated)
             .md-layout-item.md-size-100(v-if='post.tags.includes("home-banner")')
@@ -60,7 +66,7 @@ export default class PostDetail extends Vue {
       icon: "check",
       horizontalAlign: "center",
       verticalAlign: "bottom",
-      type: "success"
+      type: "success",
     });
     if (this.$route.params.id === "add") {
       this.$router.replace(`/post/${this.post.id}`);
