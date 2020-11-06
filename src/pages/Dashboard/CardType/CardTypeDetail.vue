@@ -17,17 +17,21 @@
               md-field
                 label 名称
                 md-input(v-model='cardType.title')
-            .md-layout-item.md-size-20
+            .md-layout-item.md-size-15
+              md-field(md-clearable)
+                label 库存
+                md-input(type="number" min="0" v-model='cardType.quantity')
+            .md-layout-item.md-size-15
               md-field
-                label 每用户最多购买
-                md-input(type="number" min="1" v-model='cardType.maxPerCustomer')
-            .md-layout-item.md-size-20
+                label 限购
+                md-input(type="number" min="0" v-model='cardType.maxPerCustomer')
+            .md-layout-item.md-size-15
               md-field
                 label 代号
                 md-input(v-model='cardType.slug')
-            .md-layout-item.md-size-20
+            .md-layout-item.md-size-15
               md-field
-                label 所属团购代号
+                label 团购代号
                 md-input(v-model='cardType.couponSlug')
             .md-layout-item.md-small-size-100.md-size-20
               md-field
