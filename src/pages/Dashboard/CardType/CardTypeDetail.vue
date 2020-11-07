@@ -107,12 +107,15 @@
                 editor(v-model='cardType.content')
             .md-layout-item.md-size-100.text-right
               md-button.md-raised.md-primary.mt-4(type='submit') 保存
-              md-button.mt-4.ml-2.md-simple.md-danger(type='button', @click='remove', v-if='this.cardType.id') 删除
+              md-button.mt-4.ml-2.md-simple.md-danger(type='button', @click='remove', v-if='cardType.id') 删除
     .md-layout-item.md-size-33.md-small-size-100
       md-card
         .md-layout-item.md-size-100.md-xsmall-size-100.pb-2
           h4.card-title 封面图
           poster(v-model="cardType.posterUrl")
+      md-button.md-block.md-success(v-if="cardType.openForClient" @click="$clipboard('/pages/index/index?cardSell='+cardType.id,'链接')") 点击复制小程序首页跳转链接（购卡）
+      md-button.md-block.md-success(v-if="cardType.couponSlug" @click="$clipboard('/pages/index/index?coupon='+cardType.couponSlug,'链接')") 点击复制小程序首页跳转链接（团购）
+      md-button.md-block.md-warning(v-if="cardType.couponSlug" @click="$router.push('/post/'+cardType.couponSlug)") 前往团购首页内容详情
 
 </template>
 

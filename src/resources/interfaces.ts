@@ -195,6 +195,8 @@ export interface Post extends Model {
   posterUrl: string | null;
   target?: string;
   author: Populated<User>;
+  start?: null | Date;
+  end?: null | Date;
 }
 
 export interface Store extends Model {

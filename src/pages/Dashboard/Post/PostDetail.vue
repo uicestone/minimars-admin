@@ -54,11 +54,11 @@ import { confirm } from "@/helpers/sweetAlert";
 @Component({
   components: {
     Editor,
-    Poster
-  }
+    Poster,
+  },
 })
 export default class PostDetail extends Vue {
-  post: Partial<Post> = { id: "", tags: [] };
+  post: Partial<Post> = { id: "", tags: [], start: null, end: null };
   async save() {
     this.post = await PostResource.save(this.post);
     this.$notify({
