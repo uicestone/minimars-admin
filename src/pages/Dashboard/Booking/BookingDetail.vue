@@ -122,8 +122,9 @@
                   md-button.md-n.md-simple(@click="usePaymentGateway('pos')", :class="{'md-primary':usingPaymentGateway('pos')}") 银行卡
                   md-button.md-n.md-simple(@click="usePaymentGateway('pr')", :class="{'md-primary':usingPaymentGateway('pr')}") 市场公关
               .md-layout-item.md-layout.md-alignment-bottom-right(style='flex:0;flex-wrap:nowrap')
-                md-button.md-simple.md-danger(@click='remove', v-if='this.booking.id && $user.can("delete-booking")') 删除
+                md-button.md-simple.md-danger(@click='remove', v-if='booking.id && $user.can("delete-booking")') 删除
                 md-button.md-simple.md-warning(@click='cancel', v-if="bookingCancelable") 撤销
+                md-button.md-simple.md-success(@click='recover', v-if="booking.status === 'pending_refund' && bookingCancelable") 拒绝撤销
                 md-button.md-primary.md-simple(type='submit' v-if='booking.type==="play" && booking.id') 保存
                 md-button.md-primary.md-raised(type='submit' v-if='booking.type==="play" && !booking.id' :disabled="!bookingValidated") 保存并入场
                 md-button.md-warning.md-raised(@click="checkOut" v-if='booking.type==="play" && booking.status==="in_service"') 出场
@@ -259,11 +260,12 @@ export default class BookingDetail extends Vue {
       this.booking.id &&
       !["canceled"].includes(this.booking.status as BookingStatus) &&
       (this.$user.role === "admin" ||
-        [BookingStatus.BOOKED, BookingStatus.PENDING_REFUND].includes(
-          this.booking.status || BookingStatus.PENDING
-        ) ||
-        !this.booking.date ||
-        this.booking.date >= moment().format("YYYY-MM-DD"))
+        [
+          BookingStatus.BOOKED,
+          BookingStatus.IN_SERVICE,
+          BookingStatus.FINISHED
+        ].includes(this.booking.status || BookingStatus.PENDING) ||
+        !this.booking.date)
     );
   }
 
@@ -400,6 +402,25 @@ export default class BookingDetail extends Vue {
     }
   }
 
+  async recover() {
+    if (!this.booking.statusWas) return;
+    if (
+      !(await confirm(
+        "确定要恢复这个预约？",
+        `这将把这个预约的状态恢复为“${
+          this.$bookingStatusNames[this.booking.statusWas]
+        }”`,
+        "确定恢复",
+        "success"
+      ))
+    )
+      return;
+    this.booking = await BookingResource.update(
+      { id: this.booking.id },
+      { status: this.booking.statusWas }
+    );
+  }
+
   async searchCustomer(q: string) {
     if (!q) {
       this.booking.customer = null;
@@ -490,10 +511,7 @@ export default class BookingDetail extends Vue {
     if (card.status !== CardStatus.ACTIVATED) return false;
     if (
       card.start &&
-      new Date(card.start) >
-        moment(this.booking.date)
-          .endOf("day")
-          .toDate()
+      new Date(card.start) > moment(this.booking.date).endOf("day").toDate()
     )
       return false;
     if (

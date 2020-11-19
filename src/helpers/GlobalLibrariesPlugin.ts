@@ -109,7 +109,7 @@ const GlobalLibrariesPlugins = {
           // eslint-disable-next-line
           in_service: "已入场",
           // eslint-disable-next-line
-          pending_refund: "已冻结",
+          pending_refund: "待撤销",
           finished: "已完成",
           canceled: "已取消"
         };

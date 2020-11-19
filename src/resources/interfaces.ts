@@ -54,6 +54,7 @@ export interface Booking extends Model {
   socksCount: number;
   bandsPrinted: number;
   status: BookingStatus;
+  statusWas: BookingStatus;
   price?: number;
   priceInPoints?: number;
   card?: Populated<Card>;
