@@ -36,7 +36,7 @@ const GlobalLibrariesPlugins = {
       }
     });
 
-    const can = function(this: User, cap: string) {
+    const can = function (this: User, cap: string) {
       const roleCaps: Record<string, string> = {
         admin: ".*",
         manager: "view-(dashboard|booking|user|payment)",
@@ -122,7 +122,8 @@ const GlobalLibrariesPlugins = {
           times: "次卡",
           period: "时效卡",
           balance: "储值卡",
-          coupon: "优惠券"
+          coupon: "优惠券",
+          partner: "合作卡"
         };
       }
     });

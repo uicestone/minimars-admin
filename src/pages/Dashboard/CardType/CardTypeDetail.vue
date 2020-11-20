@@ -70,6 +70,10 @@
                   md-option 不限
                   md-option(value='onDaysOnly') 仅限法定工作日
                   md-option(value='offDaysOnly') 仅限法定节假日
+            .md-layout-item(v-if="['partner'].includes(cardType.type)")
+              md-field
+                label 品牌链接
+                md-input(v-model='cardType.partnerUrl')
             .md-layout-item.md-size-15(v-if="['coupon'].includes(cardType.type)")
               md-field
                 label 满
@@ -131,8 +135,8 @@ import { Poster, Editor, StoreSelect } from "@/components";
   components: {
     Poster,
     Editor,
-    StoreSelect,
-  },
+    StoreSelect
+  }
 })
 export default class CardTypeDetail extends Vue {
   cardType: Partial<CardType> = {
@@ -140,7 +144,7 @@ export default class CardTypeDetail extends Vue {
     stores: [],
     freeParentsPerKid: 2,
     maxKids: 2,
-    customerTags: [],
+    customerTags: []
   };
   async save() {
     this.cardType = await CardTypeResource.save(this.cardType);
@@ -150,7 +154,7 @@ export default class CardTypeDetail extends Vue {
       icon: "check",
       horizontalAlign: "center",
       verticalAlign: "bottom",
-      type: "success",
+      type: "success"
     });
 
     if (this.$route.params.id === "add") {
