@@ -100,7 +100,7 @@
                   | {{ booking.coupon.title }}
             .md-layout-item.md-size-100.card.mt-2(v-if="['play', 'food'].includes(booking.type) && booking.store && booking.customer")
               div.pb-2.bb(v-if="!booking.id")
-                p(v-if="booking.customer && !availableCards.length") 无有效卡券
+                span(v-if="booking.customer && !availableCards.length") 无有效卡券
                 md-button.md-lg-n.mr-1(:class="{'md-info':usingCard(card)}" v-for='card in availableCards' :key='card.id', :value='card.id', @click='useCard(card)')
                   | {{ card.title }} {{card.timesLeft?'剩余'+card.timesLeft+'次':''}}
               div.pb-2.bb(v-else-if="booking.card")
@@ -113,9 +113,9 @@
                 span.ml-1.mr-1(v-if='priceInPoints !== null') /
                 span(v-if='priceInPoints !== null') {{ priceInPoints }} 积分
               .md-layout-item(v-if='!booking.id && (price || priceInPoints)')
-                md-button.md-n.md-simple(@click="usePaymentGateway(null)", :class="{'md-success':paymentGateway!=='points'}", v-if='booking.customer && booking.customer.balance') 账户余额 {{ booking.customer.balance }}
+                md-button.md-n.md-simple(@click="usePaymentGateway(null);toggleUseBalance()", :class="{'md-success':paymentGateway!=='points'&&useBalance}", v-if='booking.customer && booking.customer.balance') 账户余额 {{ booking.customer.balance }}
                 md-button.md-n.md-simple(@click="usePaymentGateway('points')", :class="{'md-primary':usingPaymentGateway('points')}", v-if='priceInPoints') 积分 {{ booking.customer ? Math.round(booking.customer.points) : ''}}
-                span(v-if="!booking.customer || !booking.customer.balance || booking.customer.balance < price")
+                span(v-if="enableExtraPaymentGateways")
                   md-button.md-n.md-simple(@click="usePaymentGateway('dianping')", :class="{'md-primary':usingPaymentGateway('dianping')}") 点评POS
                   md-button.md-n.md-simple(@click="usePaymentGateway('shouqianba')", :class="{'md-primary':usingPaymentGateway('shouqianba')}") 收钱吧
                   md-button.md-n.md-simple(@click="usePaymentGateway('cash')", :class="{'md-primary':usingPaymentGateway('cash')}") 现金
@@ -209,6 +209,7 @@ export default class BookingDetail extends Vue {
   eventSearchTerm: string | null = null;
   giftSearchTerm: string | null = null;
   paymentGateway: string | null = null;
+  useBalance = true;
   today = moment().format("YYYY-MM-DD");
 
   @Prop({ default: false })
@@ -241,9 +242,10 @@ export default class BookingDetail extends Vue {
     if (this.priceUpdating) return false;
     if (
       !this.paymentGateway &&
-      (this.price || this.priceInPoints) &&
-      (!this.booking.customer?.balance ||
-        this.booking.customer.balance < (this.price || 0))
+      (((this.price || this.priceInPoints) &&
+        (!this.booking.customer?.balance ||
+          this.booking.customer.balance < (this.price || 0))) ||
+        !this.useBalance)
     )
       return false;
     if (this.booking.type === BookingType.EVENT && !this.booking.event)
@@ -280,6 +282,13 @@ export default class BookingDetail extends Vue {
         coupon.stores.includes(this.booking.store?.id || "")
       );
     });
+  }
+
+  get enableExtraPaymentGateways() {
+    if (!this.booking.customer || !this.booking.customer.balance) return true;
+    return (
+      !this.useBalance || this.booking.customer.balance < (this.price || 0)
+    );
   }
 
   get cardHeaderClass() {
@@ -332,7 +341,8 @@ export default class BookingDetail extends Vue {
     if (
       paymentGateway !== "points" &&
       this.price &&
-      this.booking.customer?.balance
+      this.booking.customer?.balance &&
+      this.useBalance
     ) {
       paymentGatewayNames.push("账户余额");
     }
@@ -352,7 +362,8 @@ export default class BookingDetail extends Vue {
 
     this.booking = await BookingResource.save(this.booking, {
       paymentGateway,
-      customerKeyword: this.customerSearchTerm
+      customerKeyword: this.customerSearchTerm,
+      useBalance: this.useBalance
     });
 
     this.$notify({
@@ -572,6 +583,10 @@ export default class BookingDetail extends Vue {
     } else {
       this.paymentGateway = gateway;
     }
+  }
+
+  toggleUseBalance() {
+    this.useBalance = !this.useBalance;
   }
 
   usingPaymentGateway(gateway: PaymentGateway) {

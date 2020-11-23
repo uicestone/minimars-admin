@@ -10,7 +10,7 @@ md-card.codes-card
       md-table-row(v-for='card in cards', :key='card.id', :class="{ 'table-warning': card.status === 'pending', 'table-muted': card.status === 'expired' }")
         md-table-cell(md-label='卡名' @click.native="$clipboard(card.id,'卡ID')") {{ card.title }}
         md-table-cell(md-label='门店') {{ cardStoreName(card) }}
-        md-table-cell(md-label='状态' style="text-align:center" :style="{'min-width':card.status == 'valid'?'120px':0}")
+        md-table-cell(md-label='状态' style="text-align:center" :style="{'min-width':card.status == 'valid'?'125px':0}")
           span(v-if="card.status!=='valid'") {{ card.status | cardStatusName }}
           md-button.md-normal.md-success.md-xs(v-if="card.status === 'valid'" @click="activate(card)" style="width:48px !important") 激活
           md-button.md-normal.md-danger.md-xs.ml-1(v-if="card.status === 'valid'" @click="$clipboard(card.giftCode, '礼品码')" style="width:48px !important") 转赠
