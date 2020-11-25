@@ -78,12 +78,13 @@ export default class Membership extends Vue {
       "确定购买"
     );
     if (!paymentGateway) return;
-    const card = await CardResource.save(
+    await CardResource.save(
       // @ts-ignore
       { customer: this.customer.id, ...cardType, id: undefined },
       { paymentGateway }
     );
-    this.cardItems?.unshift(card);
+    // this.cardItems?.unshift(card);
+    this.cardItems = await CardResource.query({ customer: this.customer.id });
     this.$emit("updated");
     this.getCardPayments();
   }
