@@ -22,18 +22,22 @@
               md-field
                 label 门店
                 store-select(v-model='coupon.stores' :multiple="true")
-            .md-layout-item.md-small-size-100.md-size-33
+            .md-layout-item.md-small-size-100.md-size-25
               md-field
                 label 三方平台售价
                 md-input(type='number', step='0.01', v-model='coupon.priceThirdParty')
-            .md-layout-item.md-small-size-100.md-size-33
+            .md-layout-item.md-small-size-100.md-size-25
               md-field
                 label 门店售价
                 md-input(type='number', step='0.01', v-model='coupon.price')
-            .md-layout-item.md-small-size-100.md-size-33
+            .md-layout-item.md-small-size-100.md-size-25
               md-field
                 label 每儿童免费陪同成人
                 md-input(type='number', v-model='coupon.freeParentsPerKid')
+            .md-layout-item.md-small-size-100.md-size-25
+              md-field
+                label 赠卡代号（空格分隔）
+                md-input(v-model='coupon.rewardCardTypes')
             .md-layout-item.md-small-size-100.md-size-50(v-if="coupon.type === 'period'")
               md-datepicker(placeholder='开始日期', v-model='coupon.start', :md-model-type='Date', md-immediately)
                 label 开始日期
