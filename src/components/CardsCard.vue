@@ -14,7 +14,7 @@ md-card.codes-card
           span(v-if="card.status!=='valid'") {{ card.status | cardStatusName }}
           md-button.md-normal.md-success.md-xs(v-if="card.status === 'valid'" @click="activate(card)" style="width:48px !important") 激活
           md-button.md-normal.md-danger.md-xs.ml-1(v-if="card.status === 'valid'" @click="$clipboard(card.giftCode, '礼品码')" style="width:48px !important") 转赠
-          md-button.md-simple.md-danger.md-xs(v-if="$user.role === 'admin' && card.status === 'activated' && (['coupon', 'partner', 'period'].includes(card.type) || (card.type === 'times' && card.times === card.timesLeft))" @click="remove(card)" style="width:48px!important;height:18px!important;padding:0") 撤销
+          md-button.md-simple.md-danger.md-xs(v-if="$user.role === 'admin' && cardCancelable(card)" @click="remove(card)" style="width:48px!important;height:18px!important;padding:0") 撤销
         md-table-cell(md-label='过期日期' @click.native="changeExpireDate(card)")
           | {{ card.expiresAt | date("YYYY-MM-DD") }}
           md-badge.md-primary.card-extend(v-if="card.expiresAtWas" md-content="延" md-dense)
@@ -37,7 +37,7 @@ md-card.codes-card
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import { Card } from "@/resources/interfaces";
+import { Card, CardStatus } from "@/resources/interfaces";
 import { CardResource } from "@/resources";
 import { confirm, promptInput } from "../helpers/sweetAlert";
 import moment from "moment";
@@ -89,7 +89,7 @@ export default class CardsCard extends Vue {
       "info",
       "text",
       moment(card.expiresAt).format("YYYY-MM-DD"),
-      (v) => {
+      v => {
         if (!v.match(/^\d{4}-\d{2}-\d{2}$/)) return "请输入正确的日期格式";
       }
     );
@@ -99,10 +99,25 @@ export default class CardsCard extends Vue {
   }
 
   cardStoreName(card: Card) {
-    const stores = this.$stores.filter((s) => card.stores.includes(s.id));
+    const stores = this.$stores.filter(s => card.stores.includes(s.id));
     return stores.length
-      ? stores.map((s) => s.name.substr(0, 2)).join("、")
+      ? stores.map(s => s.name.substr(0, 2)).join("、")
       : "通用";
+  }
+
+  cardCancelable(card: Card) {
+    if (card.status === CardStatus.ACTIVATED) {
+      if (["coupon", "partner", "period", "balance"].includes(card.type)) {
+        return true;
+      }
+      if (card.type === "times" && card.times === card.timesLeft) {
+        return true;
+      }
+    }
+    if (card.status === CardStatus.VALID) {
+      return true;
+    }
+    return false;
   }
 }
 </script>
