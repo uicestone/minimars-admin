@@ -5,9 +5,11 @@ md-card.codes-card
       md-icon card_membership
     h4.title {{ title }}
       slot(name="title-tools")
+      md-button.md-simple.md-just-icon.pull-right.mr-1(@click="showInvalid=!showInvalid" style="height:30px" :class="{'md-success':showInvalid}")
+        md-icon restore
   md-card-content.md-layout
     md-table.table-full-width
-      md-table-row(v-for='card in cards', :key='card.id', :class="{ 'table-warning': card.status === 'pending', 'table-muted': card.status === 'expired' }")
+      md-table-row(v-for='card in cards', :key='card.id', v-if="showInvalid || (!['canceled','expired'].includes(card.status))", :class="{ 'table-warning': card.status === 'pending', 'table-muted': card.status === 'expired' }")
         md-table-cell(md-label='卡名' @click.native="$clipboard(card.id,'卡ID')") {{ card.title }}
         md-table-cell(md-label='门店') {{ cardStoreName(card) }}
         md-table-cell(md-label='状态' style="text-align:center" :style="{'min-width':card.status == 'valid'?'125px':0}")
@@ -52,6 +54,8 @@ export default class CardsCard extends Vue {
 
   @Prop({ default: () => {} })
   activate!: Function;
+
+  showInvalid = false;
 
   save(card: Card) {
     CardResource.update(
