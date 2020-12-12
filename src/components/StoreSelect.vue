@@ -27,7 +27,7 @@ export default class StoreSelect extends Vue {
   }
 
   isStringArray(o: any): o is string[] {
-    return typeof o[0] === "string";
+    return o && typeof o[0] === "string";
   }
 
   @Watch("value", { immediate: true }) onValueChanged(
