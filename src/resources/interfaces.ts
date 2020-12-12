@@ -90,6 +90,7 @@ export interface Card extends Model {
   overPrice?: number;
   discountPrice?: number;
   discountRate?: number;
+  fixedPrice?: number;
 }
 
 export interface CardType extends Model {

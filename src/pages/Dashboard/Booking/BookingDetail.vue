@@ -59,7 +59,7 @@
                 md-field
                   label 金额
                   span.md-prefix ¥
-                  md-input(v-model='booking.price', type='number', min='0', step='0.01', :disabled='!!booking.id')
+                  md-input(v-model='booking.price', type='number', min='0', step='0.01', :disabled='!!booking.id || isBookingPriceFixed')
               //- .md-layout-item(v-if="booking.type==='play'", style="flex:1;min-width:33%")
                 md-field
                   label 袜子
@@ -325,6 +325,16 @@ export default class BookingDetail extends Vue {
       [BookingType.PARTY]: "派对"
     };
     return map[this.booking.type];
+  }
+
+  get isBookingPriceFixed() {
+    const isFixed = this.booking.card?.fixedPrice !== undefined;
+    if (isFixed) {
+      this.booking.price = this.booking.card?.fixedPrice;
+    } else {
+      this.booking.price = undefined;
+    }
+    return isFixed;
   }
 
   async save() {
@@ -762,7 +772,7 @@ export default class BookingDetail extends Vue {
     v: Store | string | boolean,
     p: Store | string | boolean
   ) {
-    console.log("Booking store changed", JSON.stringify(v), JSON.stringify(p));
+    // console.log("Booking store changed", JSON.stringify(v), JSON.stringify(p));
     if (v === false) {
       this.booking.store = null;
     }
