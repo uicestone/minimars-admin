@@ -332,7 +332,7 @@ export default class BookingDetail extends Vue {
     if (isFixed) {
       this.booking.price = this.booking.card?.fixedPrice;
     } else {
-      this.booking.price = undefined;
+      // this.booking.price = undefined;
     }
     return isFixed;
   }
