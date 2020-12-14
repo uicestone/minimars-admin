@@ -36,12 +36,12 @@ const GlobalLibrariesPlugins = {
       }
     });
 
-    const can = function (this: User, cap: string) {
+    const can = function(this: User, cap: string) {
       const roleCaps: Record<string, string> = {
         admin: ".*",
         manager: "view-(dashboard|booking|user|payment)",
         eventManager: "view-(event-booking)",
-        accountant: "view-(dashboard|payments)"
+        accountant: "view-(dashboard|card-type|payment)"
       };
       return this.role && cap.match(new RegExp(`^${roleCaps[this.role]}$`));
     };

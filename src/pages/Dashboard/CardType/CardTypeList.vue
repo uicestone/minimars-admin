@@ -9,6 +9,7 @@
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
           .md-layout-item.md-size-40.md-layout
+            b 次卡当前余额：
             .md-size-100(style="width:100%" v-for="stats in timesCardStatsByStore" :key="stats.storeNames") {{ stats.storeNames }}：{{ stats.times }}次，{{ stats.priceLeft | currency }} 
           .md-layout.md-layout-item.md-alignment-center-right.search-query
             md-field.md-layout-item.md-size-25.md-xsmall-size-100
