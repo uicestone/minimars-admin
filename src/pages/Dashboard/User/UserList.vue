@@ -10,11 +10,11 @@
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
           .md-layout-item.md-size-40.md-layout
             div(style="padding:0 5px" v-if="searchQuery.role === 'customer'")
-              div 用户余额：{{ totalBalance | currency }}
-              div 其中实收：{{ totalBalanceDeposit | currency }}
+              div 用户余额：{{ stats.totalBalance | currency }}
+              div 其中实收：{{ stats.totalBalanceDeposit | currency }}
             div(style="padding:0 5px" v-if="searchQuery.role === 'customer'")
-              div 未激活卡：{{ totalValidCardBalance | currency }}
-              div 其中实收：{{ totalValidCardBalanceDeposit | currency }}
+              div 未激活卡：{{ stats.totalValidCardBalance | currency }}
+              div 其中实收：{{ stats.totalValidCardBalanceDeposit | currency }}
           .md-layout.md-layout-item.md-alignment-center-right.search-query
             md-field.md-layout-item.md-size-50.md-xsmall-size-100
               md-input(type='search', min-length='4', clearable='', placeholder='搜索 手机/姓名/卡号/标签', v-model='searchQuery.keyword')
@@ -61,37 +61,29 @@
 <script lang="ts">
 import { Component } from "vue-property-decorator";
 import List from "@/components/List";
-import { UserResource } from "@/resources";
+import { http, UserResource } from "@/resources";
 import { User } from "@/resources/interfaces";
 
 @Component
 export default class UserList extends List<User> {
   name = "user";
   resource = UserResource;
-  totalBalance: number | null = null;
-  totalBalanceDeposit: number | null = null;
-  totalValidCardBalance: number | null = null;
-  totalValidCardBalanceDeposit: number | null = null;
+  stats: {
+    totalBalance?: number;
+    totalBalanceDeposit?: number;
+    totalValidCardBalance?: number;
+    totalValidCardBalanceDeposit?: number;
+  } = {};
   async queryData() {
     const queriedData = await (List as any).options.methods.queryData.call(
       this
     );
     if (!queriedData) return;
-    this.totalBalance = Number(queriedData.$headers["total-balance"]);
-    this.totalBalanceDeposit = Number(
-      queriedData.$headers["total-balance-deposit"]
-    );
-    this.totalValidCardBalance = Number(
-      queriedData.$headers["total-valid-card-balance"]
-    );
-    this.totalValidCardBalanceDeposit = Number(
-      queriedData.$headers["total-valid-card-balance-deposit"]
-    );
-
     return queriedData;
   }
-  created() {
+  async created() {
     this.searchQuery = { role: "customer" };
+    this.stats = (await http.get("stats/user-balance")).data;
   }
 }
 </script>
