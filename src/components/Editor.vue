@@ -30,7 +30,7 @@
         >
           <md-icon>format_clear</md-icon>
         </md-button>
-        <md-menu style="margin:.3125rem 1px">
+        <md-menu style="margin: 0.3125rem 1px;">
           <md-button class="md-simple md-sm md-just-icon" md-menu-trigger>
             <md-icon>format_size</md-icon>
           </md-button>
@@ -194,8 +194,10 @@ export default {
     });
   },
   watch: {
-    value(v) {
-      this.editor.setContent(v);
+    value(v, p) {
+      if (v && !p) {
+        this.editor.setContent(v);
+      }
     }
   },
   beforeDestroy() {
