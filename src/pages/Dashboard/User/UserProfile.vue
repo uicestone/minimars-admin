@@ -74,11 +74,11 @@
               .md-layout-item.md-small-size-100.md-size-50(v-if="user.role === 'customer'")
                 md-field
                   label 余额
-                  md-input(v-model='user.balance' disabled)
+                  md-input(:value='user.balance | round(2)' disabled)
               .md-layout-item.md-small-size-100.md-size-50(v-if="user.role === 'customer'")
                 md-field
                   label 积分
-                  md-input(v-model='user.points' disabled)
+                  md-input(:value='user.points | round(2)' disabled)
               .md-layout-item.md-size-100
                 md-field
                   label 备注
@@ -120,8 +120,8 @@ import { User, Store, Booking } from "@/resources/interfaces";
   components: {
     BookingsCard,
     Membership,
-    Poster,
-  },
+    Poster
+  }
 })
 export default class UserProfile extends Vue {
   user: Partial<User> = { tags: [] };
@@ -152,7 +152,7 @@ export default class UserProfile extends Vue {
       icon: "check",
       horizontalAlign: "center",
       verticalAlign: "bottom",
-      type: "success",
+      type: "success"
     });
     if (this.add) {
       this.$destroy();
@@ -185,7 +185,7 @@ export default class UserProfile extends Vue {
           type: "success",
           icon: "add_alert",
           horizontalAlign: "center",
-          verticalAlign: "bottom",
+          verticalAlign: "bottom"
         });
       }
     }
@@ -213,7 +213,7 @@ export default class UserProfile extends Vue {
       }
       this.userBookings = await BookingResource.query({
         customer: this.user.id,
-        limit: 50,
+        limit: 50
       });
     }
   }
