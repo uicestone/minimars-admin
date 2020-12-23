@@ -16,7 +16,8 @@ md-card.codes-card
           span(v-if="card.status!=='valid'") {{ card.status | cardStatusName }}
           md-button.md-normal.md-success.md-xs(v-if="card.status === 'valid'" @click="activate(card)" style="width:48px !important") 激活
           md-button.md-normal.md-danger.md-xs.ml-1(v-if="card.status === 'valid'" @click="$clipboard(card.giftCode, '礼品码')" style="width:48px !important") 转赠
-          md-button.md-simple.md-danger.md-xs(v-if="$user.role === 'admin' && cardCancelable(card)" @click="remove(card)" style="width:48px!important;height:18px!important;padding:0") 删除
+          md-button.md-simple.md-danger.md-xs(v-if="$user.role === 'admin' && cardRemovable(card)" @click="remove(card)" style="width:48px!important;height:18px!important;padding:0") 删除
+          md-button.md-simple.md-danger.md-xs(v-if="$user.role === 'admin' && cardRefundable(card)" @click="refund(card)" style="width:48px!important;height:18px!important;padding:0") 退卡
         md-table-cell(md-label='过期日期' @click.native="changeExpireDate(card)")
           | {{ card.expiresAt | date("YYYY-MM-DD") }}
           md-badge.md-primary.card-extend(v-if="card.expiresAtWas" md-content="延" md-dense)
@@ -84,6 +85,28 @@ export default class CardsCard extends Vue {
     }
   }
 
+  async refund(card: Card) {
+    if (this.$user.role !== "admin") return;
+    try {
+      if (
+        !(await confirm(
+          "确认对这张卡进行退款",
+          `即将对该客户进行退款 ${card.title}，本操作不可恢复`,
+          null,
+          "error"
+        ))
+      )
+        return;
+      await CardResource.update(
+        { id: card.id },
+        { status: CardStatus.CANCELED }
+      );
+      this.$emit("updated");
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   async changeExpireDate(card: Card) {
     if (this.$user.role !== "admin") return;
     const expiresAt = await promptInput(
@@ -109,7 +132,24 @@ export default class CardsCard extends Vue {
       : "通用";
   }
 
-  cardCancelable(card: Card) {
+  cardRemovable(card: Card) {
+    if (card.payments && card.payments.some(p => p.paid)) return false;
+    if (card.status === CardStatus.ACTIVATED) {
+      if (["coupon", "partner", "period", "balance"].includes(card.type)) {
+        return true;
+      }
+      if (card.type === "times" && card.times === card.timesLeft) {
+        return true;
+      }
+    }
+    if (card.status === CardStatus.VALID) {
+      return true;
+    }
+    return false;
+  }
+
+  cardRefundable(card: Card) {
+    if (!card.payments || !card.payments.some(p => p.paid)) return false;
     if (card.status === CardStatus.ACTIVATED) {
       if (["coupon", "partner", "period", "balance"].includes(card.type)) {
         return true;
