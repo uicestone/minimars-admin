@@ -34,12 +34,7 @@ md-card.bookings-card
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import {
-  Booking,
-  User,
-  BookingQuery,
-  BookingType
-} from "../resources/interfaces";
+import { Booking, User, BookingQuery, Scene } from "../resources/interfaces";
 import { BookingResource } from "../resources";
 
 @Component
@@ -48,7 +43,7 @@ export default class BookingsCard extends Vue {
   title!: string;
 
   @Prop({ default: "play" })
-  type!: BookingType;
+  type!: Scene;
 
   @Prop()
   bookings?: Booking[];
@@ -62,11 +57,11 @@ export default class BookingsCard extends Vue {
   get cardHeaderClass() {
     if (!this.type) return "";
     const map = {
-      [BookingType.PLAY]: "primary",
-      [BookingType.EVENT]: "warning",
-      [BookingType.GIFT]: "rose",
-      [BookingType.FOOD]: "green",
-      [BookingType.PARTY]: "blue"
+      [Scene.PLAY]: "primary",
+      [Scene.EVENT]: "warning",
+      [Scene.GIFT]: "rose",
+      [Scene.FOOD]: "green",
+      [Scene.PARTY]: "blue"
     };
     return "md-card-header-" + map[this.type];
   }
@@ -74,11 +69,11 @@ export default class BookingsCard extends Vue {
   get cardHeaderIcon() {
     if (!this.type) return "";
     const map = {
-      [BookingType.PLAY]: "timer",
-      [BookingType.EVENT]: "event",
-      [BookingType.GIFT]: "card_giftcard",
-      [BookingType.FOOD]: "fastfood",
-      [BookingType.PARTY]: ""
+      [Scene.PLAY]: "timer",
+      [Scene.EVENT]: "event",
+      [Scene.GIFT]: "card_giftcard",
+      [Scene.FOOD]: "fastfood",
+      [Scene.PARTY]: ""
     };
     return map[this.type];
   }
@@ -86,11 +81,11 @@ export default class BookingsCard extends Vue {
   get buttonClass() {
     if (!this.type) return "";
     const map = {
-      [BookingType.PLAY]: "primary",
-      [BookingType.EVENT]: "warning",
-      [BookingType.GIFT]: "rose",
-      [BookingType.FOOD]: "success",
-      [BookingType.PARTY]: "blue"
+      [Scene.PLAY]: "primary",
+      [Scene.EVENT]: "warning",
+      [Scene.GIFT]: "rose",
+      [Scene.FOOD]: "success",
+      [Scene.PARTY]: "blue"
     };
     return "md-" + map[this.type];
   }

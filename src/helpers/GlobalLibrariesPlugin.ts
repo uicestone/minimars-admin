@@ -96,7 +96,8 @@ const GlobalLibrariesPlugins = {
           // party: "派对",
           event: "活动",
           gift: "礼品兑换",
-          food: "餐饮消费"
+          food: "餐饮消费",
+          card: "购卡充值"
         };
       }
     });

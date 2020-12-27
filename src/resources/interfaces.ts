@@ -7,12 +7,13 @@ export enum BookingStatus {
   CANCELED = "canceled"
 }
 
-export enum BookingType {
+export enum Scene {
   PLAY = "play",
   PARTY = "party",
   EVENT = "event",
   GIFT = "gift",
-  FOOD = "food"
+  FOOD = "food",
+  CARD = "card"
 }
 
 export enum CardStatus {
@@ -46,7 +47,7 @@ type Populated<T> = T | null;
 export interface Booking extends Model {
   customer: Populated<User>;
   store: Populated<Store>;
-  type: BookingType;
+  type: Scene;
   date: string;
   checkInAt: string;
   adultsCount: number;
@@ -176,6 +177,7 @@ export interface Gift extends Model {
 }
 
 export interface Payment extends Model {
+  scene: Scene;
   customer: Populated<User>;
   amount: number;
   amountForceDeposit?: number;

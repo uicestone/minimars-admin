@@ -109,7 +109,7 @@ import {
   Payment,
   BookingQuery,
   Booking,
-  BookingType,
+  Scene,
   User,
   Gift,
   Event
@@ -128,12 +128,12 @@ import {
 export default class BookingList extends List<Booking> {
   name = "booking";
   resource = BookingResource;
-  type: BookingType = BookingType.PLAY;
+  type: Scene = Scene.PLAY;
   searchQuery: BookingQuery = {};
   showDetail(item: Booking) {
     this.$router.push(`/booking/${item.type}/${item.id}`);
   }
-  showCreate(type?: BookingType) {
+  showCreate(type?: Scene) {
     this.$router.push(`/booking/${type}/add`);
   }
   goToCustomer(customer: User) {
@@ -146,7 +146,7 @@ export default class BookingList extends List<Booking> {
     this.$router.push(`/gift/${gift.id}`);
   }
   created() {
-    this.type = this.$route.params.type as BookingType;
+    this.type = this.$route.params.type as Scene;
     this.searchQuery = {
       type: this.type,
       date: this.$route.query.customer

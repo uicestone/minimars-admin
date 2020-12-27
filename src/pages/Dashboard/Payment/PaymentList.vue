@@ -59,7 +59,9 @@
             md-table-cell(md-label='描述', md-sort-by='title', style='min-width:25em') {{ item.title }}
             md-table-cell(md-label='通道', md-sort-by='gateway') {{ item.gateway | paymentGatewayName }}
             md-table-cell(md-label='时间', md-sort-by='createdAt') {{ item.createdAt | date }}
-            md-table-cell(md-label='相关链接', @click.native.stop='goToRelatedItem(item)') {{ relatedItem(item) }}
+            md-table-cell(md-label='相关链接', @click.native.stop='goToRelatedItem(item)')
+              | {{ item.scene | bookingTypeName }}
+              md-icon.mini(style="margin:0") keyboard_arrow_right
       md-card-actions(md-alignment='space-between')
         div
           p.card-category {{ from }} - {{ to }} / {{ total }}
@@ -71,7 +73,7 @@ import moment from "moment";
 import Component from "vue-class-component";
 import { PaymentResource } from "@/resources";
 import List from "@/components/List";
-import { Payment, User } from "@/resources/interfaces";
+import { Payment, User, Scene } from "@/resources/interfaces";
 
 @Component
 export default class PaymentList extends List<Payment> {
@@ -94,11 +96,10 @@ export default class PaymentList extends List<Payment> {
   }
   goToRelatedItem(item: Payment) {
     const attach = item.attach.split(" ");
-    switch (attach[0]) {
-      case "booking":
-        return this.$router.push(`/booking/${attach[1]}`);
-      case "deposit":
-        return this.$router.push(`/user/${attach[1]}`);
+    if (item.scene === Scene.CARD) {
+      return this.$router.push(`/user/${attach[1]}`);
+    } else {
+      return this.$router.push(`/booking/${item.scene}/${attach[1]}`);
     }
   }
   download() {

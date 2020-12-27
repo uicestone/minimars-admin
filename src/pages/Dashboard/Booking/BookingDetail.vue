@@ -182,7 +182,7 @@ import {
   Card,
   Store,
   Booking,
-  BookingType,
+  Scene,
   BookingStatus,
   Payment,
   Coupon,
@@ -248,10 +248,8 @@ export default class BookingDetail extends Vue {
         !this.useBalance)
     )
       return false;
-    if (this.booking.type === BookingType.EVENT && !this.booking.event)
-      return false;
-    if (this.booking.type === BookingType.GIFT && !this.booking.gift)
-      return false;
+    if (this.booking.type === Scene.EVENT && !this.booking.event) return false;
+    if (this.booking.type === Scene.GIFT && !this.booking.gift) return false;
     if (!this.booking.customer && this.customerSearchTerm.length !== 11)
       return false;
     return true;
@@ -294,11 +292,11 @@ export default class BookingDetail extends Vue {
   get cardHeaderClass() {
     if (!this.booking.type) return "";
     const map = {
-      [BookingType.PLAY]: "primary",
-      [BookingType.EVENT]: "warning",
-      [BookingType.GIFT]: "rose",
-      [BookingType.FOOD]: "green",
-      [BookingType.PARTY]: "blue"
+      [Scene.PLAY]: "primary",
+      [Scene.EVENT]: "warning",
+      [Scene.GIFT]: "rose",
+      [Scene.FOOD]: "green",
+      [Scene.PARTY]: "blue"
     };
     return "md-card-header-" + map[this.booking.type];
   }
@@ -306,11 +304,11 @@ export default class BookingDetail extends Vue {
   get cardHeaderIcon() {
     if (!this.booking.type) return "";
     const map = {
-      [BookingType.PLAY]: "timer",
-      [BookingType.EVENT]: "event",
-      [BookingType.GIFT]: "card_giftcard",
-      [BookingType.FOOD]: "fastfood",
-      [BookingType.PARTY]: ""
+      [Scene.PLAY]: "timer",
+      [Scene.EVENT]: "event",
+      [Scene.GIFT]: "card_giftcard",
+      [Scene.FOOD]: "fastfood",
+      [Scene.PARTY]: ""
     };
     return map[this.booking.type];
   }
@@ -318,11 +316,11 @@ export default class BookingDetail extends Vue {
   get cardHeaderTitle() {
     if (!this.booking.type) return "";
     const map = {
-      [BookingType.PLAY]: "购票预约",
-      [BookingType.EVENT]: "活动预约",
-      [BookingType.GIFT]: "礼品兑换",
-      [BookingType.FOOD]: "餐饮消费",
-      [BookingType.PARTY]: "派对"
+      [Scene.PLAY]: "购票预约",
+      [Scene.EVENT]: "活动预约",
+      [Scene.GIFT]: "礼品兑换",
+      [Scene.FOOD]: "餐饮消费",
+      [Scene.PARTY]: "派对"
     };
     return map[this.booking.type];
   }
@@ -507,14 +505,12 @@ export default class BookingDetail extends Vue {
   async updateBookingPrice() {
     if (
       this.booking.type &&
-      [BookingType.PLAY, BookingType.EVENT, BookingType.PARTY].includes(
-        this.booking.type
-      ) &&
+      [Scene.PLAY, Scene.EVENT, Scene.PARTY].includes(this.booking.type) &&
       (this.booking.adultsCount === undefined ||
         this.booking.kidsCount === undefined)
     )
       return;
-    if (this.booking.type === BookingType.FOOD && this.booking.id) return;
+    if (this.booking.type === Scene.FOOD && this.booking.id) return;
     console.log(
       "Update booking price:",
       JSON.stringify(this.priceRelatedBookingProperties)
@@ -536,7 +532,7 @@ export default class BookingDetail extends Vue {
     )
       return false;
     if (
-      this.booking.type === BookingType.PLAY &&
+      this.booking.type === Scene.PLAY &&
       ["times", "period"].includes(card.type)
     ) {
       if (!card.stores.length) return true;
@@ -546,7 +542,7 @@ export default class BookingDetail extends Vue {
       )
         return true;
     }
-    if (this.booking.type === BookingType.FOOD && card.type === "coupon") {
+    if (this.booking.type === Scene.FOOD && card.type === "coupon") {
       if (!card.overPrice || (this.booking.price || 0) >= card.overPrice) {
         return true;
       }
@@ -647,7 +643,7 @@ export default class BookingDetail extends Vue {
   async checkExistingBooking() {
     if (!this.booking.customer || !this.booking.store) return;
     const bookingsExists = await BookingResource.query({
-      type: BookingType.PLAY,
+      type: Scene.PLAY,
       status: BookingStatus.BOOKED,
       date: this.booking.date,
       store: this.booking.store.id,
@@ -825,7 +821,7 @@ export default class BookingDetail extends Vue {
       coupon: null,
       event: null,
       gift: null,
-      type: (this.$route.params.type as BookingType) || BookingType.PLAY,
+      type: (this.$route.params.type as Scene) || Scene.PLAY,
       status: BookingStatus.PENDING,
       date: moment().format("YYYY-MM-DD"),
       checkInAt: moment().format("HH:mm:ss"),
@@ -838,14 +834,12 @@ export default class BookingDetail extends Vue {
     };
     if (
       this.booking.type &&
-      [BookingType.PARTY, BookingType.PLAY, BookingType.EVENT].includes(
-        this.booking.type
-      )
+      [Scene.PARTY, Scene.PLAY, Scene.EVENT].includes(this.booking.type)
     ) {
       this.booking.kidsCount = 1;
       this.booking.adultsCount = 1;
     }
-    if (this.booking.type === BookingType.GIFT) {
+    if (this.booking.type === Scene.GIFT) {
       this.booking.quantity = 1;
     }
     console.log(
