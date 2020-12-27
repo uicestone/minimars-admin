@@ -24,8 +24,9 @@
         </ul>
       </nav>
       <div class="copyright text-center">
-        MINI MARS 管理后台 v{{ $version }} &copy;
-        {{ new Date().getFullYear() }}
+        MINI MARS 管理后台 v{{ $version }} &copy; 2020-{{
+          new Date().getFullYear()
+        }}
         <a href="https://codeispoetry.tech" target="_blank">诗序软件</a>
       </div>
     </div>
