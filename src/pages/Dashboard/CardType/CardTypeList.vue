@@ -8,7 +8,7 @@
         h4.title 卡券种类
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
-          .md-layout-item.md-size-30.md-layout
+          .md-layout-item.md-size-30.md-xsmall-size-100.md-layout
             b 次卡当前余额：
             .md-size-100(style="width:100%" v-for="stats in timesCardStatsByStore" :key="stats.storeNames") {{ stats.storeNames }}：{{ stats.times }}次，{{ stats.priceLeft | currency }} 
           .md-layout.md-layout-item.md-alignment-center-right.search-query

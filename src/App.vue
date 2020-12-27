@@ -108,6 +108,9 @@ export default class App extends Vue {
     left: 0;
     width: 100%;
   }
+  .paginated-table .md-table-toolbar .md-field {
+    margin-top: 10px;
+  }
 }
 .mapboxgl-ctrl-logo {
   display: none !important;

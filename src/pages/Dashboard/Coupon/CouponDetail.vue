@@ -10,7 +10,7 @@
             h4.title {{ coupon.title }}
               md-switch.pull-right(v-model="coupon.enabled") 启用
           md-card-content.md-layout
-            .md-layout-item.md-size-33
+            .md-layout-item.md-small-size-100.md-size-33
               md-field
                 label 名称
                 md-input(v-model='coupon.title')

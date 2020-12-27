@@ -8,7 +8,7 @@
         h4.title 用户列表
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
-          .md-layout-item.md-size-40.md-layout
+          .md-layout-item.md-size-40.md-xsmall-size-100.md-layout
             div(style="padding:0 5px" v-if="searchQuery.role === 'customer'")
               div 用户余额：{{ stats.totalBalance | currency }}
               div 其中实收：{{ stats.totalBalanceDeposit | currency }}

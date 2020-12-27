@@ -13,23 +13,23 @@
                 md-switch.md-primary(v-model="cardType.isGift") 可转赠
                 md-switch.md-primary(v-model="cardType.openForClient") 客户端购买
           md-card-content.md-layout
-            .md-layout-item.md-size-20
+            .md-layout-item.md-size-20.md-xsmall-size-100
               md-field
                 label 名称
                 md-input(v-model='cardType.title')
-            .md-layout-item.md-size-15
+            .md-layout-item.md-size-15.md-xsmall-size-50
               md-field(md-clearable)
                 label 库存
                 md-input(type="number" min="0" v-model='cardType.quantity')
-            .md-layout-item.md-size-15
+            .md-layout-item.md-size-15.md-xsmall-size-50
               md-field
                 label 限购
                 md-input(type="number" min="0" v-model='cardType.maxPerCustomer')
-            .md-layout-item.md-size-15
+            .md-layout-item.md-size-15.md-xsmall-size-50
               md-field
                 label 代号
                 md-input(v-model='cardType.slug')
-            .md-layout-item.md-size-15
+            .md-layout-item.md-size-15.md-xsmall-size-50
               md-field
                 label 团购代号
                 md-input(v-model='cardType.couponSlug')
@@ -74,21 +74,21 @@
               md-field
                 label 品牌链接
                 md-input(v-model='cardType.partnerUrl')
-            .md-layout-item.md-size-15(v-if="['coupon'].includes(cardType.type)")
+            .md-layout-item.md-size-15.md-xsmall-size-25(v-if="['coupon'].includes(cardType.type)")
               md-field
                 label 满
                 span.md-prefix ¥
                 md-input(type='number', v-model='cardType.overPrice')
-            .md-layout-item.md-size-15(v-if="['coupon'].includes(cardType.type)")
+            .md-layout-item.md-size-15.md-xsmall-size-25(v-if="['coupon'].includes(cardType.type)")
               md-field
                 label 减
                 span.md-prefix ¥
                 md-input(type='number', v-model='cardType.discountPrice')
-            .md-layout-item.md-size-15(v-if="['coupon'].includes(cardType.type)")
+            .md-layout-item.md-size-15.md-xsmall-size-25(v-if="['coupon'].includes(cardType.type)")
               md-field
                 label 折
                 md-input(type='number', step="0.01", min="0.01", max="0.99", v-model='cardType.discountRate')
-            .md-layout-item.md-size-15(v-if="['coupon'].includes(cardType.type)")
+            .md-layout-item.md-size-15.md-xsmall-size-25(v-if="['coupon'].includes(cardType.type)")
               md-field
                 label 价
                 span.md-prefix ¥

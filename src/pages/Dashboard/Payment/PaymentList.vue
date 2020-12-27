@@ -104,10 +104,10 @@ export default class PaymentList extends List<Payment> {
   download() {
     const params: Record<string, any> = {
       token: window.localStorage.token,
-      ...this.searchQuery,
+      ...this.searchQuery
     };
     const queryString = Object.keys(params)
-      .map((key) => `${key}=${params[key]}`)
+      .map(key => `${key}=${params[key]}`)
       .join("&");
     window.location.href =
       process.env.VUE_APP_API_BASE + "/payment-sheet?" + queryString;
@@ -126,7 +126,7 @@ export default class PaymentList extends List<Payment> {
       date: moment().format("YYYY-MM-DD"),
       attach: "booking",
       paid: true,
-      gateway: [],
+      gateway: []
     };
     if (this.$user.store) {
       this.searchQuery.store = this.$user.store.id;
@@ -152,7 +152,7 @@ export default class PaymentList extends List<Payment> {
   font-size: 16px !important;
 }
 .md-size-date {
-  min-width: 140px;
+  min-width: 135px;
   max-width: 140px;
 }
 </style>
