@@ -35,7 +35,7 @@
               md-select(v-model='searchQuery.store')
                 md-option(value='') 全部
                 md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
-            md-field.md-layout-item.md-size-15.md-xsmall-size-100(v-if="type==='play'")
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100(v-if="['play','food'].includes(type)")
               label 客户类型
               md-select(v-model='searchQuery.paymentType')
                 md-option(value="") 全部
