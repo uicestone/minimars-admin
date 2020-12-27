@@ -61,7 +61,8 @@ export default class BookingsCard extends Vue {
       [Scene.EVENT]: "warning",
       [Scene.GIFT]: "rose",
       [Scene.FOOD]: "green",
-      [Scene.PARTY]: "blue"
+      [Scene.PARTY]: "blue",
+      [Scene.CARD]: ""
     };
     return "md-card-header-" + map[this.type];
   }
@@ -73,7 +74,8 @@ export default class BookingsCard extends Vue {
       [Scene.EVENT]: "event",
       [Scene.GIFT]: "card_giftcard",
       [Scene.FOOD]: "fastfood",
-      [Scene.PARTY]: ""
+      [Scene.PARTY]: "",
+      [Scene.CARD]: ""
     };
     return map[this.type];
   }
@@ -85,7 +87,8 @@ export default class BookingsCard extends Vue {
       [Scene.EVENT]: "warning",
       [Scene.GIFT]: "rose",
       [Scene.FOOD]: "success",
-      [Scene.PARTY]: "blue"
+      [Scene.PARTY]: "blue",
+      [Scene.CARD]: ""
     };
     return "md-" + map[this.type];
   }

@@ -296,7 +296,8 @@ export default class BookingDetail extends Vue {
       [Scene.EVENT]: "warning",
       [Scene.GIFT]: "rose",
       [Scene.FOOD]: "green",
-      [Scene.PARTY]: "blue"
+      [Scene.PARTY]: "blue",
+      [Scene.CARD]: ""
     };
     return "md-card-header-" + map[this.booking.type];
   }
@@ -308,7 +309,8 @@ export default class BookingDetail extends Vue {
       [Scene.EVENT]: "event",
       [Scene.GIFT]: "card_giftcard",
       [Scene.FOOD]: "fastfood",
-      [Scene.PARTY]: ""
+      [Scene.PARTY]: "",
+      [Scene.CARD]: ""
     };
     return map[this.booking.type];
   }
@@ -320,7 +322,8 @@ export default class BookingDetail extends Vue {
       [Scene.EVENT]: "活动预约",
       [Scene.GIFT]: "礼品兑换",
       [Scene.FOOD]: "餐饮消费",
-      [Scene.PARTY]: "派对"
+      [Scene.PARTY]: "派对",
+      [Scene.CARD]: ""
     };
     return map[this.booking.type];
   }
@@ -764,10 +767,7 @@ export default class BookingDetail extends Vue {
     this.paymentGateway = null;
     this.checkExistingBooking();
   }
-  @Watch("booking.store") onBookingStoreUpdate(
-    v: Store | string | boolean,
-    p: Store | string | boolean
-  ) {
+  @Watch("booking.store") onBookingStoreUpdate(v: Store | string | boolean) {
     // console.log("Booking store changed", JSON.stringify(v), JSON.stringify(p));
     if (v === false) {
       this.booking.store = null;
