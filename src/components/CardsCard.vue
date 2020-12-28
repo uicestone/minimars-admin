@@ -11,7 +11,7 @@ md-card.codes-card
     md-table.table-full-width
       md-table-row(v-for='card in cards', :key='card.id', v-if="showInvalid || (!['canceled','expired'].includes(card.status))", :class="{ 'table-warning': card.status === 'pending', 'table-muted': card.status === 'expired' }")
         md-table-cell(md-label='卡名' @click.native="$clipboard(card.id,'卡ID')") {{ card.title }}
-        md-table-cell(md-label='门店') {{ cardStoreName(card) }}
+        md-table-cell.nowrap(md-label='门店') {{ cardStoreName(card) }}
         md-table-cell(md-label='状态' style="text-align:center" :style="{'min-width':card.status == 'valid'?'125px':0}")
           span(v-if="card.status!=='valid'") {{ card.status | cardStatusName }}
           md-button.md-normal.md-success.md-xs(v-if="card.status === 'valid'" @click="activate(card)" style="width:48px !important") 激活
@@ -21,7 +21,7 @@ md-card.codes-card
         md-table-cell(md-label='过期日期' @click.native="changeExpireDate(card)")
           | {{ card.expiresAt | date("YYYY-MM-DD") }}
           md-badge.md-primary.card-extend(v-if="card.expiresAtWas" md-content="延" md-dense)
-        md-table-cell(md-label='剩余次数', v-if="['times','coupon'].includes(card.type)") 剩{{ card.timesLeft }}次
+        md-table-cell.nowrap(md-label='剩余次数', v-if="['times','coupon'].includes(card.type)") 剩{{ card.timesLeft }}次
         md-table-cell(md-label='日期区间', v-if="card.type === 'period'")
           | {{ card.start | date("YY-MM-DD") }} -
           br
