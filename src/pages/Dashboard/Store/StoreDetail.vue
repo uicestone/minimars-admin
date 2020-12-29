@@ -9,10 +9,14 @@
               md-icon store
             h4.title {{ store.name }}
           md-card-content.md-layout
-            .md-layout-item.md-size-100
+            .md-layout-item.md-size-80.md-small-size-100
               md-field
                 label 名称
                 md-input(v-model='store.name')
+            .md-layout-item.md-size-20.md-small-size-100
+              md-field
+                label 代号
+                md-input(v-model='store.code')
             .md-layout-item.md-size-100
               md-field
                 label 地址
@@ -85,7 +89,7 @@ import { confirm } from "@/helpers/sweetAlert";
 @Component({
   components: {
     Editor,
-    Poster,
+    Poster
   },
   filters: {
     dayOfWeekName(n: number) {
@@ -95,8 +99,8 @@ import { confirm } from "@/helpers/sweetAlert";
     dailyLimitGroupName(group: "coupon" | "common") {
       const names = { coupon: "优惠活动", common: "会员散客" };
       return names[group];
-    },
-  },
+    }
+  }
 })
 export default class StoreDetail extends Vue {
   store: Partial<Store> = {
@@ -104,8 +108,8 @@ export default class StoreDetail extends Vue {
     dailyLimit: {
       common: [],
       coupon: [],
-      dates: [],
-    },
+      dates: []
+    }
   };
   newDailyLimitDateItem: { date?: string; group?: string; limit?: number } = {};
   async save() {
@@ -115,7 +119,7 @@ export default class StoreDetail extends Vue {
       icon: "check",
       horizontalAlign: "center",
       verticalAlign: "bottom",
-      type: "success",
+      type: "success"
     });
     if (this.$route.params.id === "add") {
       this.$router.replace(`/store/${this.store.id}`);
