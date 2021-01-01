@@ -49,7 +49,7 @@
       template(slot='header')
         .card-icon
           md-icon store
-        p.category 当日累计入场人数
+        p.category 当日入场人数
         h3.title
           animated-number(:value='stats.customerCount')
       template(slot='footer')
