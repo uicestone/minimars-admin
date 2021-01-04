@@ -137,6 +137,7 @@ export default class BookingList extends List<Booking> {
     this.$router.push(`/booking/${type}/add`);
   }
   goToCustomer(customer: User) {
+    if (!customer) return;
     this.$router.push(`/user/${customer.id}`);
   }
   goToEvent(event: Event) {
