@@ -154,7 +154,8 @@ const GlobalLibrariesPlugins = {
           balance: "账户余额",
           points: "账户积分",
           alipay: "支付宝",
-          pr: "市场公关"
+          pr: "市场公关",
+          internal: "内部消费"
           // scan: "现场扫码",
           // unionpay: "银联"
         };
