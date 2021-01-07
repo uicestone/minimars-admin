@@ -27,12 +27,11 @@
               label 支付方式
               md-select(v-model='searchQuery.gateway', multiple)
                 md-option(v-for='(name, gateway) in $gatewayNames', :key='gateway', :value='gateway') {{ name }}
-            md-field.md-layout-item.md-size-10.md-xsmall-size-50
-              label 消费/充值
-              md-select(v-model='searchQuery.attach')
-                md-option(value='') 全部
-                md-option(v-for="(name, attach) in { booking: '消费', card: '充值' }", :key='attach', :value='attach') {{ name }}
-            md-field.md-layout-item.md-size-20.md-xsmall-size-50
+            md-field.md-layout-item.md-size-15.md-xsmall-size-50
+              label 业务场景
+              md-select(v-model='searchQuery.scene' multiple)
+                md-option(v-for="(label, scene) in $bookingTypeNames", :key='scene', :value='scene') {{ label }}
+            md-field.md-layout-item.md-size-15.md-xsmall-size-50
               label 描述
               md-input(v-model="searchQuery.title")
             md-field.md-layout-item.md-size-10.md-xsmall-size-50
@@ -59,7 +58,7 @@
             md-table-cell(md-label='描述', md-sort-by='title', style='min-width:25em') {{ item.title }}
             md-table-cell(md-label='通道', md-sort-by='gateway') {{ item.gateway | paymentGatewayName }}
             md-table-cell(md-label='时间', md-sort-by='createdAt') {{ item.createdAt | date }}
-            md-table-cell(md-label='相关链接', @click.native.stop='goToRelatedItem(item)')
+            md-table-cell(md-label='业务场景', @click.native.stop='goToRelatedItem(item)')
               | {{ item.scene | bookingTypeName }}
               md-icon.mini(style="margin:0") keyboard_arrow_right
       md-card-actions(md-alignment='space-between')
@@ -113,19 +112,10 @@ export default class PaymentList extends List<Payment> {
     window.location.href =
       process.env.VUE_APP_API_BASE + "/payment-sheet?" + queryString;
   }
-  relatedItem(item: Payment) {
-    const attach = item.attach.split(" ");
-    switch (attach[0]) {
-      case "booking":
-        return "预约";
-      case "deposit":
-        return "充值";
-    }
-  }
   created() {
     this.searchQuery = {
       date: moment().format("YYYY-MM-DD"),
-      attach: "booking",
+      scene: ["play", "event", "gift", "food"],
       paid: true,
       gateway: []
     };

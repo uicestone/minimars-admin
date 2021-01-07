@@ -95,9 +95,9 @@ const GlobalLibrariesPlugins = {
           play: "门票",
           // party: "派对",
           event: "活动",
-          gift: "礼品兑换",
-          food: "餐饮消费",
-          card: "购卡充值"
+          gift: "礼品",
+          food: "餐饮",
+          card: "购卡"
         };
       }
     });
