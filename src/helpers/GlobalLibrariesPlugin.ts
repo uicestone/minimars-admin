@@ -146,7 +146,7 @@ const GlobalLibrariesPlugins = {
         return {
           dianping: "点评POS",
           shouqianba: "收钱吧",
-          wechatpay: "微信小程序",
+          wechatpay: "微信支付",
           pos: "银行卡",
           cash: "现金",
           card: "会员卡",
