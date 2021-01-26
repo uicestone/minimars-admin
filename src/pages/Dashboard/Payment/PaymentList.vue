@@ -96,7 +96,8 @@ export default class PaymentList extends List<Payment> {
   goToRelatedItem(item: Payment) {
     const attach = item.attach.split(" ");
     if (item.scene === Scene.CARD) {
-      return this.$router.push(`/user/${attach[1]}`);
+      if (!item.customer) return;
+      return this.$router.push(`/user/${item.customer.id}`);
     } else {
       return this.$router.push(`/booking/${item.scene}/${attach[1]}`);
     }
