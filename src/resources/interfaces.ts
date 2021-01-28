@@ -108,6 +108,7 @@ export interface CardType extends Model {
   balance: number;
   price: number;
   maxKids: number;
+  minKids: number;
   freeParentsPerKid: number;
   openForClient: boolean;
   customerTags: string[];
