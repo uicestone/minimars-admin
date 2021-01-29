@@ -124,7 +124,7 @@ import { User, Store, Booking } from "@/resources/interfaces";
   }
 })
 export default class UserProfile extends Vue {
-  user: Partial<User> = { tags: [] };
+  user: Partial<User> = { tags: [], role: "customer" };
   userBookings: Booking[] = [];
 
   @Prop({ default: false })
@@ -209,7 +209,8 @@ export default class UserProfile extends Vue {
       if (this.$route.params.id === this.$user.id) {
         this.user = this.$user;
       } else {
-        await this.getUser();
+        this.$set(this.user, "id", this.$route.params.id);
+        this.getUser();
       }
       this.userBookings = await BookingResource.query({
         customer: this.user.id,

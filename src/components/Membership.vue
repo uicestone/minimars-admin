@@ -131,19 +131,13 @@ export default class Membership extends Vue {
     this.$router.push(`/user/${this.customer.id}`);
   }
 
-  @Watch("customer") customerUpdated() {
-    console.log("Membership customerUpdated", JSON.stringify(this.customer));
-    if (this.customer && this.customer.id && !this.cardItems) {
+  @Watch("customer", { immediate: true }) customerUpdated(c: User, p: User) {
+    if (c && c.id && c.id !== p?.id && !this.cardItems) {
       this.getCards();
     }
-    if (this.customer && this.customer.id && !this.paymentItems) {
+    if (c && c.id && c.id !== p?.id && !this.paymentItems) {
       this.getCardPayments();
     }
-  }
-
-  created() {
-    console.log("Membership created", this.customer);
-    this.customerUpdated();
   }
 }
 </script>
