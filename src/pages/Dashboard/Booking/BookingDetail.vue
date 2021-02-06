@@ -132,6 +132,7 @@
                 md-button.md-rose(type='submit' v-if='booking.type==="gift"' :class='{"md-simple": booking.id,"md-raised": !booking.id}' :disabled="!bookingValidated") 保存
                 md-button.md-success(type='submit' v-if='booking.type==="food"' :class='{"md-simple": booking.id,"md-raised": !booking.id}' :disabled="!bookingValidated") 保存
                 md-button.md-raised.md-info.ml-2(v-if="bandsPrintable > 0 && ['booked','in_service'].includes(booking.status) && booking.type === 'play' && booking.date<=today" @click="printBands") 打印手环
+                md-button.md-raised.md-rose.ml-2(v-if="['booked','in_service'].includes(booking.status) && booking.type === 'play' && booking.date<=today" @click="showFacesSnapshotModal = true") 拍摄头像
                 md-button.md-raised.md-warning.ml-2(v-if="booking.status === 'booked' && ['play','event'].includes(booking.type) && booking.date<=today" @click="checkIn") 入场
                 md-button.md-raised.md-rose.ml-2(v-if="booking.status === 'booked' && ['gift'].includes(booking.type)" @click="redeem") 兑换
         md-card.payments-card(v-if="booking.payments.length")
@@ -159,6 +160,7 @@
 
     .md-layout-item.md-size-40.md-small-size-100.mx-auto(v-if="booking.type==='play' && booking.customer")
       membership(:customer="booking.customer" @updated="getCustomer();getCustomerCards()" :booking="booking")
+  faces-snapshot-modal(v-if="showFacesSnapshotModal" @close="showFacesSnapshotModal=false")
 </template>
 
 <script lang="ts">
@@ -189,12 +191,13 @@ import {
   PaymentGateway,
   CardStatus
 } from "@/resources/interfaces";
-import { Membership, StoreSelect } from "@/components";
+import { Membership, StoreSelect, FacesSnapshotModal } from "@/components";
 
 @Component({
   components: {
     Membership,
-    StoreSelect
+    StoreSelect,
+    FacesSnapshotModal
   }
 })
 export default class BookingDetail extends Vue {
@@ -211,6 +214,7 @@ export default class BookingDetail extends Vue {
   paymentGateway: string | null = null;
   useBalance = true;
   today = moment().format("YYYY-MM-DD");
+  showFacesSnapshotModal = false;
 
   @Prop({ default: false })
   add!: boolean;

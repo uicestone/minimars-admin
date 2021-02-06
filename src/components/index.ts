@@ -39,6 +39,7 @@ import PaymentsCard from "./PaymentsCard.vue";
 import BookingsCard from "./BookingsCard.vue";
 import Membership from "./Membership.vue";
 import StoreSelect from "./StoreSelect.vue";
+import FacesSnapshotModal from "./FacesSnapshotModal.vue";
 
 export {
   IconCheckbox,
@@ -72,5 +73,6 @@ export {
   PaymentsCard,
   BookingsCard,
   Membership,
-  StoreSelect
+  StoreSelect,
+  FacesSnapshotModal
 };
