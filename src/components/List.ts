@@ -79,7 +79,7 @@ export default class List<M extends Model> extends Vue {
   > {
     if (this.queryCoolingDown) return;
     this.queryCoolingDown = true;
-    setTimeout(() => {
+    window.setTimeout(() => {
       this.queryCoolingDown = false;
     }, this.minQueryInterval);
     if (!this.resource) throw Error("invalid_resource");
@@ -104,7 +104,7 @@ export default class List<M extends Model> extends Vue {
     if (Object.keys(o).length === 0) return;
     console.log("onSearchQueryUpdate", JSON.stringify(n), JSON.stringify(o));
     clearTimeout(this.searchDelayTimeout);
-    this.searchDelayTimeout = setTimeout(() => {
+    this.searchDelayTimeout = window.setTimeout(() => {
       this.queryData();
     }, 200);
   }
