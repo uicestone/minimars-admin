@@ -1,5 +1,5 @@
 <template lang="pug">
-div
+#app
   md-progress-bar(md-mode="indeterminate" v-if="pendingRequests > 0")
   notifications
   router-view
@@ -96,7 +96,7 @@ export default class App extends Vue {
 
 <style lang="scss">
 @import "./assets/scss/md/variables";
-.md-progress-bar {
+#app > .md-progress-bar {
   position: fixed;
   left: 0;
   top: 0;

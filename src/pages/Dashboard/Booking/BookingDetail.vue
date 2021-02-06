@@ -160,7 +160,7 @@
 
     .md-layout-item.md-size-40.md-small-size-100.mx-auto(v-if="booking.type==='play' && booking.customer")
       membership(:customer="booking.customer" @updated="getCustomer();getCustomerCards()" :booking="booking")
-  faces-snapshot-modal(v-if="showFacesSnapshotModal" @close="showFacesSnapshotModal=false")
+  faces-snapshot-modal(v-if="showFacesSnapshotModal" @close="showFacesSnapshotModal=false" @photo-upload="onFaceUpload" :photo-url="booking.photo" :faces-url="booking.faces")
 </template>
 
 <script lang="ts">
@@ -744,6 +744,15 @@ export default class BookingDetail extends Vue {
       verticalAlign: "bottom",
       type: "success"
     });
+  }
+
+  onFaceUpload(data: { photo: string; faces: string[] }) {
+    const { photo, faces } = data;
+    this.booking.photo = photo;
+    this.booking.faces = faces;
+    if (this.booking.id) {
+      this.save();
+    }
   }
 
   @Watch("$user.store") onUserStoreUpdate(s: Store) {
