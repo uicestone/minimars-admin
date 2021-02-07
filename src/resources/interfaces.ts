@@ -54,7 +54,7 @@ export interface Booking extends Model {
   kidsCount: number;
   socksCount: number;
   bandsPrinted: number;
-  photo?: string;
+  photos?: string[];
   faces?: string[];
   status: BookingStatus;
   statusWas: BookingStatus;

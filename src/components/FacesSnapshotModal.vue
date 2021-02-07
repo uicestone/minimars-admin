@@ -5,27 +5,32 @@
         video(autoplay ref="video" v-show="state==='capture'")
         canvas(ref="canvas" v-show="state==='preview'")
         //- img(:src="photoPreviewUrl" v-show="state==='preview'")
-        img(:src="photoUrl" v-show="state==='view'")
+        slider(v-show="state==='view'" height="100%")
+          slider-item(v-for="photo in booking.photos" :key="photo")
+            img(:src="photo")
       md-progress-bar(v-if="detecting" md-mode="indeterminate")
       .md-layout.md-alignment-center-left.mt-2(v-if="state==='preview'")
         .mr-2(v-for="(detection,index) in detections" )
           canvas.face-cropped(:ref="'face-'+index" v-if="!faces.length")
           img.face-cropped(:src="faces[index].url" v-else :class="{disabled:!faces[index].selected}" @click="toggleSelectFace(index)")
+        .alert.alert-warning.mt-2(v-if="booking.faces.length+selectedFaces.length > booking.kidsCount+booking.adultsCount" style="width:100%;padding:7px") 人脸数量大于订单人数，请点击不需要的人脸取消
       .md-layout.md-alignment-center-left.mt-2(v-if="state==='view'")
-        .mr-2(v-for="(faceUrl,index) in facesUrl")
+        .mr-2(v-for="(faceUrl,index) in booking.faces")
           img.face-cropped(:src="faceUrl")
     template(#footer)
       md-button.md-just-icon.md-simple.md-rose.float-left(v-if="cameras.length>1" @click="switchCamera")
         md-icon cameraswitch
-      md-button.pull-right.md-danger.md-simple(@click="close") 取消
+      md-button.pull-right.md-danger.md-simple(@click="close") 关闭
       md-button.pull-right.md-rose(@click="snapshot" v-if="state==='capture'") 拍摄
-      md-button.pull-right.md-rose(@click="resetSnapshot" v-else) 重拍
-      md-button.pull-right.md-primary.ml-2(@click="save" v-if="state==='preview' && detections.length") 保存
+      md-button.pull-right.md-rose(@click="resetSnapshot" v-if="state==='preview'") 重拍
+      md-button.pull-right.md-success(@click="resetSnapshot" v-if="state==='view' && booking.faces.length < booking.kidsCount+booking.adultsCount") 加拍
+      md-button.pull-right.md-primary.ml-2(@click="save" v-if="state==='preview' && selectedFaces.length") 保存
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
+import { Slider, SliderItem } from "vue-easy-slider";
 import Modal from "./Modal.vue";
 import {
   loadSsdMobilenetv1Model,
@@ -33,11 +38,13 @@ import {
   FaceDetection
 } from "face-api.js";
 import { http } from "@/resources";
-import { File as FileDoc } from "@/resources/interfaces";
+import { File as FileDoc, Booking } from "@/resources/interfaces";
 
 @Component({
   components: {
-    Modal
+    Modal,
+    Slider,
+    SliderItem
   }
 })
 export default class FacesSnapshotModal extends Vue {
@@ -52,11 +59,12 @@ export default class FacesSnapshotModal extends Vue {
   faces: { url: string; file?: File; selected: boolean }[] = [];
   state: "capture" | "preview" | "view" = "view";
 
-  @Prop()
-  photoUrl?: string;
+  @Prop({ required: true })
+  booking!: Booking;
 
-  @Prop()
-  facesUrl?: string[];
+  get selectedFaces() {
+    return this.faces.filter(face => face.selected);
+  }
 
   @Watch("state") onStateChange() {
     console.log("state:", this.state);
@@ -195,7 +203,7 @@ export default class FacesSnapshotModal extends Vue {
     const [photoFile, faceFiles] = await Promise.all([
       this.uploadImage(this.photoFile),
       Promise.all(
-        this.faces.map(face => {
+        this.selectedFaces.map(face => {
           if (!face.file) return;
           return this.uploadImage(face.file);
         })
@@ -252,7 +260,7 @@ export default class FacesSnapshotModal extends Vue {
 
   mounted() {
     this.loadModels();
-    if (!this.photoUrl) {
+    if (!this.booking.photos?.length) {
       this.state = "capture";
     }
   }
@@ -273,13 +281,23 @@ export default class FacesSnapshotModal extends Vue {
   //   top: 0;
   // }
   video,
-  canvas {
+  canvas,
+  img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 6px 6px 0 0;
   }
 }
+// .full-card ::v-deep {
+//   .VueCarousel,
+//   .VueCarousel-wrapper,
+//   VueCarousel-inner,
+//   VueCarousel-slide {
+//     height: 100%;
+//     width: 100%;
+//   }
+// }
 .face-cropped {
   width: 100px;
   height: 100px;
