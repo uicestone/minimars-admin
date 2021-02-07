@@ -15,10 +15,12 @@
         .mr-2(v-for="(faceUrl,index) in facesUrl")
           img.face-cropped(:src="faceUrl")
     template(#footer)
+      md-button.md-just-icon.md-simple.md-rose.float-left(v-if="cameras.length>1" @click="switchCamera")
+        md-icon cameraswitch
       md-button.pull-right.md-danger.md-simple(@click="close") 取消
       md-button.pull-right.md-rose(@click="snapshot" v-if="state==='capture'") 拍摄
       md-button.pull-right.md-rose(@click="resetSnapshot" v-else) 重拍
-      md-button.pull-right.md-primary.ml-2(@click="save" v-if="state==='preview'") 保存
+      md-button.pull-right.md-primary.ml-2(@click="save" v-if="state==='preview' && detections.length") 保存
 </template>
 
 <script lang="ts">
@@ -42,6 +44,8 @@ export default class FacesSnapshotModal extends Vue {
   stream?: MediaStream;
   modelLoaded = false;
   detecting = false;
+  cameras: MediaDeviceInfo[] = [];
+  selectedCamera: MediaDeviceInfo | null = null;
   photoPreviewUrl: string | null = null;
   photoFile: File | null = null;
   detections: FaceDetection[] = [];
@@ -67,6 +71,30 @@ export default class FacesSnapshotModal extends Vue {
     await loadSsdMobilenetv1Model("https://cdn.mini-mars.com/face-models/");
     this.modelLoaded = true;
     console.log("Model loaded.");
+  }
+
+  switchCamera() {
+    const index = this.cameras.findIndex(
+      c => c.deviceId === this.selectedCamera?.deviceId
+    );
+    if (index < this.cameras.length) {
+      this.selectedCamera = this.cameras[index + 1];
+    } else {
+      this.selectedCamera = null;
+    }
+    console.log("selected:", this.selectedCamera?.label);
+    if (this.selectedCamera) {
+      window.localStorage.setItem(
+        "selectedCameraDeviceId",
+        this.selectedCamera.deviceId
+      );
+    } else {
+      window.localStorage.removeItem("selectedCameraDeviceId");
+    }
+    if (this.state === "capture") {
+      this.stopStream();
+      this.startStream();
+    }
   }
 
   async snapshot() {
@@ -185,10 +213,26 @@ export default class FacesSnapshotModal extends Vue {
     this.$emit("close");
   }
 
+  async getVideoInputDevices() {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    this.cameras = devices.filter(d => d.kind === "videoinput");
+    const selectedCamera = this.cameras.find(
+      d => d.deviceId === window.localStorage.getItem("selectedCameraDeviceId")
+    );
+    if (selectedCamera) {
+      this.selectedCamera = selectedCamera;
+    }
+  }
+
   startStream() {
     const video = this.$refs.video as HTMLVideoElement;
     navigator.mediaDevices
-      .getUserMedia({ video: true, audio: false })
+      .getUserMedia({
+        video: this.selectedCamera
+          ? { deviceId: { exact: this.selectedCamera.deviceId } }
+          : { facingMode: "environment" },
+        audio: false
+      })
       .then(stream => {
         this.stream = stream;
         (video as HTMLVideoElement).srcObject = stream;
@@ -200,6 +244,10 @@ export default class FacesSnapshotModal extends Vue {
 
   stopStream() {
     this.stream?.getTracks().forEach(track => track.stop());
+  }
+
+  created() {
+    this.getVideoInputDevices();
   }
 
   mounted() {
