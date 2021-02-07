@@ -6,9 +6,11 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --modern",
     "build:testing": "vue-cli-service build --modern --mode testing",
+    "build:production": "vue-cli-service build --modern --mode production",
     "lint": "vue-cli-service lint",
     "dev": "npm run serve",
     "deploy:testing": "yarn build:testing && rsync -a -e ssh dist/ www-data@stirad.com:~/minimars-admin/",
+    "deploy:production": "yarn build:production && rsync -a -e ssh dist/ www-data@mini-mars.com:~/minimars-admin/",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm run dev"
   },
   "dependencies": {
