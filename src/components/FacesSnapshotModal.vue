@@ -21,7 +21,7 @@
       md-button.md-just-icon.md-simple.md-rose.float-left(v-if="cameras.length>1" @click="switchCamera")
         md-icon cameraswitch
       md-button.pull-right.md-danger.md-simple(@click="close") 关闭
-      md-button.pull-right.md-rose(@click="snapshot" v-if="state==='capture'") 拍摄
+      md-button.pull-right.md-rose(@click="snapshot" v-if="state==='capture'" :disabled="!modelLoaded") 拍摄
       md-button.pull-right.md-rose(@click="resetSnapshot" v-if="state==='preview'") 重拍
       md-button.pull-right.md-success(@click="resetSnapshot" v-if="state==='view' && booking.faces.length < booking.kidsCount+booking.adultsCount") 加拍
       md-button.pull-right.md-primary.ml-2(@click="save" v-if="state==='preview' && selectedFaces.length") 保存
