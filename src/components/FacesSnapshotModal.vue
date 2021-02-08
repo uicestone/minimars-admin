@@ -228,6 +228,7 @@ export default class FacesSnapshotModal extends Vue {
       d => d.deviceId === window.localStorage.getItem("selectedCameraDeviceId")
     );
     if (selectedCamera) {
+      console.log("found selected camera", selectedCamera.label);
       this.selectedCamera = selectedCamera;
     }
   }
@@ -254,12 +255,9 @@ export default class FacesSnapshotModal extends Vue {
     this.stream?.getTracks().forEach(track => track.stop());
   }
 
-  created() {
-    this.getVideoInputDevices();
-  }
-
-  mounted() {
+  async mounted() {
     this.loadModels();
+    await this.getVideoInputDevices();
     if (!this.booking.photos?.length) {
       this.state = "capture";
     }
