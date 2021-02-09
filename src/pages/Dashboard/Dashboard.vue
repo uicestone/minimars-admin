@@ -105,12 +105,12 @@
         .stats
           md-icon access_time
           | 实时
-  .md-layout-item.md-size-25.md-xsmall-size-100
+  .md-layout-item.md-size-33.md-xsmall-size-100
     global-sales-card(header-color='blue')
       template(slot='header')
         .card-icon
           md-icon language
-        h4.title 当日流水分类汇总
+        h4.title 当日收款方式分类汇总
       template(slot='content')
         .md-layout
           .md-layout-item.md-size-100
@@ -118,26 +118,20 @@
               md-table-row(slot='md-table-row', slot-scope='{ item }')
                 md-table-cell {{ item.name }}
                 md-table-cell {{ item.amount | currency(0) }}
-  .md-layout-item.md-size-50.md-xsmall-size-100
+  .md-layout-item.md-size-33.md-xsmall-size-100
     global-sales-card(header-color='green')
       template(slot='header')
         .card-icon
           md-icon language
-        h4.title 当日核销卡券分类汇总
+        h4.title 当日收款场景分类汇总
       template(slot='content')
         .md-layout
-          .md-layout-item.md-size-100.md-layout
-            md-table.md-layout-item(:value='cardCouponByTypes')
-              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 2 == 0")
+          .md-layout-item.md-size-100
+            md-table(v-model='flowAmountBySceneNames')
+              md-table-row(slot='md-table-row', slot-scope='{ item }')
                 md-table-cell {{ item.name }}
-                md-table-cell {{ item.kidsCount }}
                 md-table-cell {{ item.amount | currency(0) }}
-            md-table.md-layout-item(:value='cardCouponByTypes')
-              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 2 == 1")
-                md-table-cell {{ item.name }}
-                md-table-cell {{ item.kidsCount }}
-                md-table-cell {{ item.amount | currency(0) }}
-  .md-layout-item.md-size-25.md-xsmall-size-100
+  .md-layout-item.md-size-33.md-xsmall-size-100
     global-sales-card(header-color='rose')
       template(slot='header')
         .card-icon
@@ -162,6 +156,30 @@
                 md-table-cell 
                   span {{ stats.customersByType.card.adultsCount }} /
                   b  {{ stats.customersByType.card.kidsCount }}
+  .md-layout-item.md-size-100.md-xsmall-size-100
+    global-sales-card(header-color='primary')
+      template(slot='header')
+        .card-icon
+          md-icon language
+        h4.title 当日核销卡券分类汇总
+      template(slot='content')
+        .md-layout
+          .md-layout-item.md-size-100.md-layout
+            md-table.md-layout-item(:value='cardCouponByTypes')
+              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 3 == 0")
+                md-table-cell {{ item.name }}
+                md-table-cell {{ item.kidsCount }}
+                md-table-cell {{ item.amount | currency(0) }}
+            md-table.md-layout-item(:value='cardCouponByTypes')
+              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 3 == 1")
+                md-table-cell {{ item.name }}
+                md-table-cell {{ item.kidsCount }}
+                md-table-cell {{ item.amount | currency(0) }}
+            md-table.md-layout-item(:value='cardCouponByTypes')
+              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 3 == 2")
+                md-table-cell {{ item.name }}
+                md-table-cell {{ item.kidsCount }}
+                md-table-cell {{ item.amount | currency(0) }}
 </template>
 
 <script lang="ts">
@@ -198,6 +216,7 @@ export default class Dashboard extends Vue {
     cardCouponAmount: number;
     customerCount: number;
     flowAmountByGateways: Record<string, number>;
+    flowAmountByScenes: Record<string, number>;
     couponsCount: [];
     cardsCount: [];
     balanceCount: {};
@@ -220,6 +239,7 @@ export default class Dashboard extends Vue {
     cardCouponAmount: 0,
     customerCount: 0,
     flowAmountByGateways: {},
+    flowAmountByScenes: {},
     couponsCount: [],
     cardsCount: [],
     balanceCount: {},
@@ -243,9 +263,7 @@ export default class Dashboard extends Vue {
   };
 
   addDate(add: number) {
-    this.date = moment(this.date)
-      .add(add, "days")
-      .format("YYYY-MM-DD");
+    this.date = moment(this.date).add(add, "days").format("YYYY-MM-DD");
   }
 
   selectStore(store: Store | null) {
@@ -268,6 +286,15 @@ export default class Dashboard extends Vue {
       .map(gateway => ({
         name: this.$gatewayNames[gateway],
         amount: this.stats.flowAmountByGateways[gateway]
+      }))
+      .filter(p => p.amount);
+  }
+
+  get flowAmountBySceneNames() {
+    return Object.keys(this.stats.flowAmountByScenes)
+      .map(scene => ({
+        name: this.$sceneNames[scene],
+        amount: this.stats.flowAmountByScenes[scene]
       }))
       .filter(p => p.amount);
   }
@@ -319,7 +346,7 @@ export default class Dashboard extends Vue {
           showGrid: false
         },
         axisY: {
-          labelInterpolationFnc: function(value: number) {
+          labelInterpolationFnc: function (value: number) {
             return value / 10000 + "万";
           }
         },
@@ -352,7 +379,7 @@ export default class Dashboard extends Vue {
           showGrid: false
         },
         axisY: {
-          labelInterpolationFnc: function(value: number) {
+          labelInterpolationFnc: function (value: number) {
             return value / 10000 + "万";
           }
         },

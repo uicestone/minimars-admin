@@ -14,6 +14,7 @@ declare module "vue/types/vue" {
     $cardTypeNames: any;
     $cardStatusNames: any;
     $gatewayNames: any;
+    $sceneNames: any;
     $notify: any;
     $material: any;
     $sidebar: any;

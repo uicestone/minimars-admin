@@ -162,6 +162,20 @@ const GlobalLibrariesPlugins = {
       }
     });
 
+    Object.defineProperty(Vue.prototype, "$sceneNames", {
+      get() {
+        return {
+          play: "门票",
+          food: "餐饮",
+          event: "活动",
+          gift: "礼品",
+          mall: "电商",
+          card: "购卡",
+          party: "派对"
+        };
+      }
+    });
+
     Object.defineProperty(Vue.prototype, "$noop", {
       get() {
         return () => {};
