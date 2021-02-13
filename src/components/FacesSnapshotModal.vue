@@ -3,8 +3,8 @@
     template(#body)
       .full-card
         video(autoplay ref="video" v-show="state==='capture'")
-        canvas(ref="canvas" v-show="state==='preview'")
-        //- img(:src="photoPreviewUrl" v-show="state==='preview'")
+        canvas(ref="canvas" v-show="state==='preview'" v-if="!photoPreviewUrl")
+        img(:src="photoPreviewUrl" ref="previewImage" v-show="state==='preview'" v-else)
         slider(v-show="state==='view'" height="100%")
           slider-item(v-for="photo in booking.photos" :key="photo")
             img(:src="photo")
@@ -33,9 +33,11 @@ import { Component, Prop, Watch } from "vue-property-decorator";
 import { Slider, SliderItem } from "vue-easy-slider";
 import Modal from "./Modal.vue";
 import {
-  loadSsdMobilenetv1Model,
+  // loadSsdMobilenetv1Model,
   detectAllFaces,
-  FaceDetection
+  FaceDetection,
+  TinyFaceDetectorOptions,
+  loadTinyFaceDetectorModel
 } from "face-api.js";
 import { http } from "@/resources";
 import { File as FileDoc, Booking } from "@/resources/interfaces";
@@ -76,7 +78,8 @@ export default class FacesSnapshotModal extends Vue {
   }
 
   async loadModels() {
-    await loadSsdMobilenetv1Model("https://cdn.mini-mars.com/face-models/");
+    // await loadSsdMobilenetv1Model("https://cdn.mini-mars.com/face-models/");
+    await loadTinyFaceDetectorModel("https://cdn.mini-mars.com/face-models/");
     this.modelLoaded = true;
     console.log("Model loaded.");
   }
@@ -134,13 +137,16 @@ export default class FacesSnapshotModal extends Vue {
     );
     this.state = "preview";
     setTimeout(() => {
-      this.detectFaces(canvas);
+      const previewImage = this.$refs.previewImage as HTMLImageElement;
+      this.detectFaces(previewImage);
     });
   }
 
-  async detectFaces(canvas: HTMLCanvasElement) {
+  async detectFaces(img: HTMLImageElement) {
     this.detecting = true;
-    this.detections = await detectAllFaces(canvas);
+    console.log(`detect face from canvas w:${img.width} h:${img.height}`);
+    this.detections = await detectAllFaces(img, new TinyFaceDetectorOptions());
+    console.log(this.detections);
     await this.$nextTick();
     this.detecting = false;
     this.detections.forEach((d, i) => {
@@ -151,7 +157,7 @@ export default class FacesSnapshotModal extends Vue {
       faceCanvas
         .getContext("2d")
         ?.drawImage(
-          canvas,
+          img,
           d.box.x,
           d.box.y,
           d.box.width,
