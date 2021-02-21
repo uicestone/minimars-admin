@@ -145,8 +145,41 @@ export default class FacesSnapshotModal extends Vue {
   async detectFaces(img: HTMLImageElement) {
     this.detecting = true;
     console.log(`detect face from canvas w:${img.width} h:${img.height}`);
-    this.detections = await detectAllFaces(img, new TinyFaceDetectorOptions());
-    console.log(this.detections);
+    const detections = await detectAllFaces(img, new TinyFaceDetectorOptions());
+    if (!detections.length) {
+      this.$notify({
+        message: `没有检测到人脸，请重新拍摄`,
+        icon: "close",
+        horizontalAlign: "center",
+        verticalAlign: "bottom",
+        type: "warning"
+      });
+      this.detecting = false;
+      this.resetSnapshot();
+      return;
+    }
+    this.detections = detections.filter(d => d.score >= 0.8);
+    if (!this.detections.length) {
+      this.$notify({
+        message: `拍摄的人脸过小、过暗或过于倾斜，请重新拍摄`,
+        icon: "close",
+        horizontalAlign: "center",
+        verticalAlign: "bottom",
+        type: "warning"
+      });
+      this.detecting = false;
+      this.resetSnapshot();
+      return;
+    }
+    if (detections.length !== this.detections.length) {
+      this.$notify({
+        message: `有部分人脸过小、过暗或过于倾斜，请追加拍摄`,
+        icon: "close",
+        horizontalAlign: "center",
+        verticalAlign: "bottom",
+        type: "warning"
+      });
+    }
     await this.$nextTick();
     this.detecting = false;
     this.detections.forEach((d, i) => {
