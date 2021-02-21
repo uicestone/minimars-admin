@@ -102,16 +102,14 @@ export default class App extends Vue {
   }
 
   async prepareFaceDetection() {
+    if (this.$user.role !== "manager") return;
     await loadTinyFaceDetectorModel("https://cdn.mini-mars.com/face-models/");
     console.log("Model loaded.");
     const prepareImage = document.createElement("img");
     prepareImage.src = "/img/face-test.jpg";
     prepareImage.setAttribute("style", "display:none");
     document.querySelector("body")?.appendChild(prepareImage);
-    const td = await detectAllFaces(
-      prepareImage,
-      new TinyFaceDetectorOptions()
-    );
+    await detectAllFaces(prepareImage, new TinyFaceDetectorOptions());
     console.log("Face detection prepared.");
     prepareImage.remove();
   }
