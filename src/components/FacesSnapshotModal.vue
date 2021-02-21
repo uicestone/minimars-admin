@@ -73,7 +73,7 @@ export default class FacesSnapshotModal extends Vue {
     if (this.state === "capture") {
       this.startStream();
     } else {
-      this.stopStream();
+      this.stopStream(true);
     }
   }
 
@@ -256,7 +256,7 @@ export default class FacesSnapshotModal extends Vue {
   }
 
   close() {
-    this.stopStream();
+    this.stopStream(true);
     this.$emit("close");
   }
 
@@ -290,7 +290,8 @@ export default class FacesSnapshotModal extends Vue {
       });
   }
 
-  stopStream() {
+  stopStream(nonReception = false) {
+    if (nonReception && this.$user.role === "manager") return;
     this.stream?.getTracks().forEach(track => track.stop());
   }
 
@@ -300,6 +301,10 @@ export default class FacesSnapshotModal extends Vue {
     if (!this.booking.photos?.length) {
       this.state = "capture";
     }
+  }
+
+  async destroyed() {
+    this.stopStream(true);
   }
 }
 </script>
