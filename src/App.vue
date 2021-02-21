@@ -21,12 +21,14 @@ import {
 export default class App extends Vue {
   pendingRequests = 0;
   configFetched = false;
-  created() {
+  async created() {
     http.interceptors.request.use(this.requestFullfilled);
     http.interceptors.response.use(
       this.responseFullfilled,
       this.responseRejected
     );
+
+    await this.loadConfig();
 
     this.$router.beforeResolve(async (to, from, next) => {
       if (to.path === "/login") next();
@@ -112,6 +114,10 @@ export default class App extends Vue {
     );
     console.log("Face detection prepared.");
     prepareImage.remove();
+  }
+
+  async loadConfig() {
+    this.$config = await loadConfig();
   }
 }
 </script>

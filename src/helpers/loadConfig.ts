@@ -2,15 +2,15 @@ import { http } from "@/resources";
 import { Config, Store, User, CardType, Coupon } from "@/resources/interfaces";
 
 async function getHttpData(path: string) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     http
       .get(path)
-      .then(res => {
+      .then((res) => {
         resolve(res.data);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err.message);
-        resolve();
+        resolve(true);
       });
   });
 }
@@ -23,7 +23,7 @@ const loadConfig = async (configLoaded: Config = {}) => {
     configLoaded.cardTypes ||
       (localStorage.token && getHttpData("card-type?limit=false")),
     configLoaded.coupons ||
-      (localStorage.token && getHttpData("coupon?enabled=true"))
+      (localStorage.token && getHttpData("coupon?enabled=true&limit=false"))
   ]);
 
   return {

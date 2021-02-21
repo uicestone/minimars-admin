@@ -861,10 +861,6 @@ export default class BookingDetail extends Vue {
     if (this.booking.type === Scene.GIFT) {
       this.booking.quantity = 1;
     }
-    console.log(
-      "Created. Booking with store:",
-      JSON.stringify(this.$user.store)
-    );
 
     if (this.add) {
       console.log("Add booking:", this.booking.type);

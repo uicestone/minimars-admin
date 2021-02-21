@@ -10,7 +10,6 @@ import App from "./App.vue";
 
 // router setup
 import routes from "./routes/routes";
-import loadConfig from "./helpers/loadConfig";
 
 // plugin setup
 Vue.use(VueRouter);
@@ -74,7 +73,7 @@ Vue.use(GlobalLibrariesPlugins);
 // configure router
 const router = new VueRouter({
   routes, // short for routes: routes
-  scrollBehavior: to => {
+  scrollBehavior: (to) => {
     if (to.hash) {
       return { selector: to.hash };
     } else {
@@ -84,13 +83,11 @@ const router = new VueRouter({
   linkExactActiveClass: "nav-item active"
 });
 
-loadConfig().then(config => {
-  new Vue({
-    el: "#app",
-    render: h => h(App),
-    router,
-    data: {
-      config
-    }
-  });
+new Vue({
+  el: "#app",
+  render: (h) => h(App),
+  router,
+  data: {
+    config: { coupons: [], cardTypes: [], stores: [] }
+  }
 });
