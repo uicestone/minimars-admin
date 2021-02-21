@@ -11,6 +11,11 @@ import Component from "vue-class-component";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { http } from "@/resources";
 import loadConfig from "./helpers/loadConfig";
+import {
+  detectAllFaces,
+  TinyFaceDetectorOptions,
+  loadTinyFaceDetectorModel
+} from "face-api.js";
 
 @Component
 export default class App extends Vue {
@@ -31,6 +36,8 @@ export default class App extends Vue {
         next();
       }
     });
+
+    this.prepareFaceDetection();
   }
 
   requestFullfilled(request: AxiosRequestConfig) {
@@ -90,6 +97,21 @@ export default class App extends Vue {
       return Promise.reject(new Error(message));
     }
     return response;
+  }
+
+  async prepareFaceDetection() {
+    await loadTinyFaceDetectorModel("https://cdn.mini-mars.com/face-models/");
+    console.log("Model loaded.");
+    const prepareImage = document.createElement("img");
+    prepareImage.src = "/img/face-test.jpg";
+    prepareImage.setAttribute("style", "display:none");
+    document.querySelector("body")?.appendChild(prepareImage);
+    const td = await detectAllFaces(
+      prepareImage,
+      new TinyFaceDetectorOptions()
+    );
+    console.log("Face detection prepared.");
+    prepareImage.remove();
   }
 }
 </script>
