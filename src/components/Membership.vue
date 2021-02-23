@@ -9,6 +9,9 @@
           md-menu-item(v-for='cardType in $cardTypes', v-if="$user.role==='admin'||cardType.openForReception", :key='cardType.id', @click='createCard(cardType)') {{ cardType.title }}
           md-menu-item(@click="receiveGiftCard") 接收礼品卡
   payments-card(:payments="paymentItems" :pay="pay")
+    template(v-slot:title-tools)
+      slot(name="action-buttons")
+        md-button.md-danger.md-sm.pull-right.md-simple(md-menu-trigger @click="$router.push('/payment?customer='+customer.id)") 全部明细
 </template>
 
 <script lang="ts">

@@ -121,6 +121,11 @@ export default class PaymentList extends List<Payment> {
       paid: true,
       gateway: []
     };
+    if (this.$route.query.customer) {
+      this.searchQuery.customer = this.$route.query.customer;
+      this.searchQuery.date = undefined;
+      this.searchQuery.scene = [];
+    }
     if (this.$user.store) {
       this.searchQuery.store = this.$user.store.id;
     }

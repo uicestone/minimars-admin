@@ -4,6 +4,7 @@ md-card.payments-card
     .card-icon
       md-icon payment
     h4.title {{ title }}
+      slot(name="title-tools")
   md-card-content.md-layout
     md-table
       md-table-row(v-for='payment in payments', :key='payment.id' v-if="payment.valid")
