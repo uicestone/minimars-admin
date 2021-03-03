@@ -60,7 +60,7 @@
           md-icon bookmark_border
           | 实时，包含所有成功付款订单的成人数及儿童数
   .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
-    chart-card(header-animation='false', :chart-data='dailyFlowChart.data', :chart-options='dailyFlowChart.options', chart-type='Line', chart-inside-header='', background-color='blue')
+    chart-card(header-animation='false', :chart-data='dailyFlowChart.data', :chart-options='dailyFlowChart.options', chart-type='Line', chart-inside-header, background-color='blue')
       md-button.md-simple.md-info.md-just-icon(slot='first-button')
         md-icon refresh
         md-tooltip(md-direction='bottom') Refresh
@@ -76,7 +76,7 @@
           md-icon access_time
           | 实时
   .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
-    chart-card(header-animation='false', :chart-data='dailyCardCouponPaymentChart.data', :chart-options='dailyCardCouponPaymentChart.options', chart-type='Line', chart-inside-header='', background-color='green')
+    chart-card(header-animation='false', :chart-data='dailyCardCouponPaymentChart.data', :chart-options='dailyCardCouponPaymentChart.options', chart-type='Line', chart-inside-header, background-color='green')
       md-button.md-simple.md-info.md-just-icon(slot='first-button')
         md-icon refresh
         md-tooltip(md-direction='bottom') Refresh
@@ -92,7 +92,7 @@
           md-icon access_time
           | 实时
   .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
-    chart-card(header-animation='false', :chart-data='dailyCustomersChart.data', :chart-options='dailyCustomersChart.options', chart-type='Line', chart-inside-header='', background-color='rose')
+    chart-card(header-animation='false', :chart-data='dailyCustomersChart.data', :chart-options='dailyCustomersChart.options', chart-type='Line', chart-inside-header, background-color='rose')
       md-icon(slot='fixed-button') build
       md-button.md-simple.md-info.md-just-icon(slot='first-button')
         md-icon refresh
@@ -426,6 +426,12 @@ export default class Dashboard extends Vue {
       ...this.stats.cardsCount,
       this.stats.balanceCount
     ];
+  }
+
+  created() {
+    if (this.$user.role === "admin") {
+      this.$router.push("/boss-board");
+    }
   }
 
   mounted() {

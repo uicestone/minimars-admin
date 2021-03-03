@@ -3,6 +3,7 @@ import AuthLayout from "@/pages/Dashboard/Pages/AuthLayout.vue";
 
 // Dashboard pages
 import Dashboard from "@/pages/Dashboard/Dashboard.vue";
+import BossBoard from "@/pages/Dashboard/BossBoard.vue";
 import { RouteConfig } from "vue-router";
 
 // Pages
@@ -329,6 +330,11 @@ const routes: RouteConfig[] = [
         path: "dashboard",
         name: "数据统计",
         components: { default: Dashboard }
+      },
+      {
+        path: "boss-board",
+        name: "数据统计",
+        components: { default: BossBoard }
       }
     ]
   }
