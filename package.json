@@ -25,7 +25,7 @@
     "moment": "^2.24.0",
     "nouislider": "^14.2.0",
     "perfect-scrollbar": "^1.5.0",
-    "pug": "^2.0.4",
+    "pug": "^3.0.1",
     "pug-plain-loader": "^1.0.0",
     "qr-scanner": "^1.2.0",
     "sweetalert2": "^8.11.6",
