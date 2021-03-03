@@ -1,9 +1,12 @@
 <template lang="pug">
 .md-layout
   .md-layout-item.md-size-100.md-layout.md-alignment-center-right
-    .md-layout-item.md-size-20.md-xsmall-size-100.stats-date
-      md-datepicker(v-model='date', :md-model-type='String', md-immediately)
-    .md-layout-item.md-xsmall-size-100.stats-date(style='display:flex;justify-content:space-between;width:330px;flex:0')
+    .md-layout-item.md-size-30.md-xsmall-size-100.stats-date
+      md-datepicker(v-model='date', :md-model-type='String', md-immediately style="width:140px")
+        label 开始日期
+      md-datepicker.ml-2(v-model='dateEnd', :md-model-type='String', md-immediately style="width:140px")
+        label 结束日期
+    .md-layout-item.md-xsmall-size-100(style='display:flex;justify-content:space-between;width:330px;flex:0')
       md-menu.md-button(v-if="$user.role==='admin'")
         md-button.md-info(md-menu-trigger) {{ store ? store.name : '全部门店' }}
         md-menu-content
@@ -23,7 +26,7 @@
       template(slot='header')
         .card-icon
           md-icon playlist_add_check
-        p.category 当日累计资金流水（合计）
+        p.category {{rangeText}}累计资金流水（合计）
         h3.title
           | ¥ 
           animated-number(:value='stats.flowAmount')
@@ -36,7 +39,7 @@
       template(slot='header')
         .card-icon
           md-icon payment
-        p.category 当日核销卡券累计值（合计）
+        p.category {{rangeText}}核销卡券累计值（合计）
         h3.title
           | ¥ 
           animated-number(:value='stats.cardCouponAmount')
@@ -49,7 +52,7 @@
       template(slot='header')
         .card-icon
           md-icon store
-        p.category 当日入场人数
+        p.category {{rangeText}}入场人数
         h3.title
           animated-number(:value='stats.customerCount')
       template(slot='footer')
@@ -110,7 +113,7 @@
       template(slot='header')
         .card-icon
           md-icon language
-        h4.title 当日收款方式分类汇总
+        h4.title {{rangeText}}收款方式分类汇总
       template(slot='content')
         .md-layout
           .md-layout-item.md-size-100
@@ -123,7 +126,7 @@
       template(slot='header')
         .card-icon
           md-icon language
-        h4.title 当日收款场景分类汇总
+        h4.title {{rangeText}}收款场景分类汇总
       template(slot='content')
         .md-layout
           .md-layout-item.md-size-100
@@ -136,7 +139,7 @@
       template(slot='header')
         .card-icon
           md-icon language
-        h4.title 当日人数分类汇总
+        h4.title {{rangeText}}人数分类汇总
       template(slot='content')
         .md-layout
           .md-layout-item.md-size-100
@@ -161,7 +164,7 @@
       template(slot='header')
         .card-icon
           md-icon language
-        h4.title 当日核销卡券分类汇总
+        h4.title {{rangeText}}核销卡券分类汇总
       template(slot='content')
         .md-layout
           .md-layout-item.md-size-100.md-layout
@@ -210,6 +213,7 @@ import { Store } from "../../resources/interfaces";
 export default class Dashboard extends Vue {
   store: Store | null = null;
   date = moment().format("YYYY-MM-DD");
+  dateEnd: null | string = null;
   today = moment().format("YYYY-MM-DD");
   stats: {
     flowAmount: number;
@@ -264,6 +268,9 @@ export default class Dashboard extends Vue {
 
   addDate(add: number) {
     this.date = moment(this.date).add(add, "days").format("YYYY-MM-DD");
+    if (this.dateEnd) {
+      this.dateEnd = moment(this.dateEnd).add(add, "days").format("YYYY-MM-DD");
+    }
   }
 
   selectStore(store: Store | null) {
@@ -275,10 +282,21 @@ export default class Dashboard extends Vue {
     if (this.date) {
       url += `/${this.date}`;
     }
+    if (this.dateEnd) {
+      url += `/${this.dateEnd}`;
+    }
     if (this.store) {
       url += `?store=${this.store.id}`;
     }
     this.stats = (await http.get(url)).data;
+  }
+
+  get rangeText() {
+    if (!this.dateEnd || this.dateEnd === this.date) {
+      return "当日";
+    } else {
+      return "区间";
+    }
   }
 
   get flowAmountByGatewayNames() {
@@ -415,6 +433,10 @@ export default class Dashboard extends Vue {
     // console.log(this.stats);
   }
 
+  @Watch("dateEnd") onDateEndUpdate() {
+    this.updateStats();
+  }
+
   @Watch("store") onStoreUpdate() {
     this.updateStats();
   }
@@ -429,5 +451,9 @@ export default class Dashboard extends Vue {
 * >>> .md-table-cell {
   padding-top: 0;
   padding-bottom: 0;
+}
+.stats-date {
+  display: flex;
+  justify-content: flex-end;
 }
 </style>
