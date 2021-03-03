@@ -84,7 +84,7 @@
             md-table-cell(md-label='人数', md-sort-by='kidsCount' v-if="searchQuery.type === 'event'")
               | {{ item.kidsCount }}
             md-table-cell(md-label='收款', md-sort-by='price')
-              | {{ item.payments | paidAmount | currency(2, true) }}
+              | {{ item.amountPaid | currency(2, true) }}
             md-table-cell(md-label='优惠/会员卡', md-sort-by='coupon' v-if="searchQuery.type === 'play' || ['card', 'coupon'].includes(searchQuery.paymentType)")
               span(v-if='item.coupon') {{ item.coupon.title }}
               span(v-else-if='item.card') {{ item.card.title }}
