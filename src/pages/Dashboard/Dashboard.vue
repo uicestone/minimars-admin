@@ -215,6 +215,7 @@ export default class Dashboard extends Vue {
   date = moment().format("YYYY-MM-DD");
   dateEnd: null | string = null;
   today = moment().format("YYYY-MM-DD");
+  queryStartTimeout: null | number = null;
   stats: {
     flowAmount: number;
     cardCouponAmount: number;
@@ -277,7 +278,10 @@ export default class Dashboard extends Vue {
     this.store = store;
   }
 
-  async updateStats() {
+  updateStats() {
+    if (this.queryStartTimeout) {
+      window.clearTimeout(this.queryStartTimeout);
+    }
     let url = `stats`;
     if (this.date) {
       url += `/${this.date}`;
@@ -288,7 +292,10 @@ export default class Dashboard extends Vue {
     if (this.store) {
       url += `?store=${this.store.id}`;
     }
-    this.stats = (await http.get(url)).data;
+    this.queryStartTimeout = window.setTimeout(async () => {
+      this.stats = (await http.get(url)).data;
+      this.queryStartTimeout = null;
+    }, 100);
   }
 
   get rangeText() {
