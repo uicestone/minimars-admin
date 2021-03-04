@@ -71,6 +71,24 @@
     &.md-rose{
       @include btn-styles($brand-rose);
     }
+    &.md-play{
+      @include btn-styles($brand-play);
+    }
+    &.md-food{
+      @include btn-styles($brand-food);
+    }
+    &.md-mall{
+      @include btn-styles($brand-mall);
+    }
+    &.md-card{
+      @include btn-styles($brand-card);
+    }
+    &.md-balance{
+      @include btn-styles($brand-balance);
+    }
+    &.md-period{
+      @include btn-styles($brand-period);
+    }
 
     &:focus,
     &:active,

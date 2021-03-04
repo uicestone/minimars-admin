@@ -8,21 +8,21 @@
         label 结束日期
     .md-layout-item.md-xsmall-size-100(style='display:flex;justify-content:space-between;width:330px;flex:0')
       md-menu.md-button(v-if="$user.role==='admin'")
-        md-button.md-info(md-menu-trigger) {{ store ? store.name : '全部门店' }}
+        md-button.md-period(md-menu-trigger) {{ store ? store.name : '全部门店' }}
         md-menu-content
           md-menu-item(@click="selectStore(false)") 全部门店
           md-menu-item(v-for="store in $stores" :key="store.id" @click="selectStore(store)") {{ store.name }}
-      md-button.md-info(style='flex:0', @click='addDate(-1)')
+      md-button.md-period(style='flex:0', @click='addDate(-1)')
         span.md-label
           md-icon keyboard_arrow_left
         | 前一天
-      md-button.md-info(style='flex:0', @click='addDate(1)', :disabled='date >= today')
+      md-button.md-period(style='flex:0', @click='addDate(1)', :disabled='date >= today')
         | 后一天
         md-icon keyboard_arrow_right
     //- .md-layout-item.md-size-10.md-xsmall-size-100
     //-   md-button.md-info(:href="$http.options.root + 'daily-report/' + date", style='width:100%') 下载日报表
   .md-layout-item.md-size-40.md-xsmall-size-100
-    stats-card(header-color='primary')
+    stats-card(header-color='period')
       template(slot='header')
         .card-icon
           md-icon payment
@@ -34,7 +34,7 @@
         .stats
           md-icon bookmark_border
           | 实时，包含各项现金类收款
-    chart-card(header-animation='false', :chart-data='dailyFlowChart.data', :chart-options='dailyFlowChart.options', chart-type='Line', chart-inside-header, background-color='primary')
+    chart-card.two-card-height(header-animation='false', :chart-data='dailyFlowChart.data', :chart-options='dailyFlowChart.options', chart-type='Line', chart-inside-header, background-color='period')
       md-button.md-simple.md-info.md-just-icon(slot='first-button')
         md-icon refresh
         md-tooltip(md-direction='bottom') Refresh
@@ -49,7 +49,7 @@
         .stats
           md-icon access_time
           | 实时
-    global-sales-card(header-color='primary')
+    global-sales-card(header-color='period')
       template(slot='header')
         .card-icon
           md-icon sort
@@ -63,7 +63,7 @@
                 md-table-cell {{ item.amount | currency(0) }}
   .md-layout-item.md-size-60.md-xsmall-size-100.md-layout
     .pl-0.md-layout-item.md-size-50.md-xsmall-size-100
-      stats-card(header-color='warning')
+      stats-card(header-color='play')
         template(slot='header')
           .card-icon
             md-icon credit_score
@@ -75,7 +75,7 @@
           .stats
             md-icon bookmark_border
             | 实时
-      stats-card(header-color='green')
+      stats-card(header-color='food')
         template(slot='header')
           .card-icon
             md-icon fastfood
@@ -87,7 +87,7 @@
           .stats
             md-icon bookmark_border
             | 实时
-      stats-card(header-color='rose')
+      stats-card(header-color='mall')
         template(slot='header')
           .card-icon
             md-icon shopping_cart
@@ -100,7 +100,7 @@
             md-icon bookmark_border
             | 实时
     .pr-0.md-layout-item.md-size-50.md-xsmall-size-100
-      stats-card(header-color='warning')
+      stats-card(header-color='play')
         template(slot='header')
           .card-icon
             md-icon people
@@ -111,26 +111,24 @@
           .stats
             md-icon bookmark_border
             | 实时
-      stats-card(header-color='green')
+      stats-card(header-color='food')
         template(slot='header')
           .card-icon
             md-icon microwave
           p.category {{rangeText}}餐饮订单数
           h3.title
-            | ¥ 
-            animated-number(:value='stats.cardCouponAmount')
+            animated-number(:value='stats.customerCount')
         template(slot='footer')
           .stats
             md-icon bookmark_border
             | 实时
-      stats-card(header-color='rose')
+      stats-card(header-color='mall')
         template(slot='header')
           .card-icon
             md-icon local_shipping
           p.category {{rangeText}}电商订单数
           h3.title
-            | ¥ 
-            animated-number(:value='stats.cardCouponAmount')
+            animated-number(:value='stats.customerCount')
         template(slot='footer')
           .stats
             md-icon bookmark_border
@@ -319,10 +317,14 @@ export default class BossBoard extends Vue {
       key => this.$sceneNames[key]
     );
     const sceneColor = {
-      play: "#1565c0",
-      food: "#4caf50",
-      gift: "#e91e63",
-      card: "#fb8c00"
+      play: "#C2ACE5",
+      food: "#FFDEC0",
+      gift: "#FFCCE9",
+      mall: "#A8FC90",
+      event: "#FFDD7D",
+      balance: "#D1D1D1",
+      card: "#97F2E1",
+      period: "#93C4F9"
     };
     return {
       data: {
@@ -382,6 +384,11 @@ export default class BossBoard extends Vue {
 .stats-date {
   display: flex;
   justify-content: flex-end;
+}
+.two-card-height /deep/ {
+  .md-card-header {
+    min-height: 191px !important;
+  }
 }
 .pie /deep/ {
   .md-card-header {

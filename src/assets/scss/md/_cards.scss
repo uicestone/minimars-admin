@@ -407,7 +407,53 @@
         background: linear-gradient(60deg, $pink-400, $pink-600);
     }
 
+    .md-card-header-play .card-icon,
+    .md-card-header-play .card-text,
+    .md-card-header-play:not(.md-card-header-icon):not(.md-card-header-text),
+    [data-background-color="play"],
+    .md-tabs.md-play .md-tabs-navigation{
+        background: linear-gradient(60deg, $deep-purple-100, $deep-purple-200);
+    }
 
+    .md-card-header-food .card-icon,
+    .md-card-header-food .card-text,
+    .md-card-header-food:not(.md-card-header-icon):not(.md-card-header-text),
+    [data-background-color="food"],
+    .md-tabs.md-food .md-tabs-navigation{
+        background: linear-gradient(60deg, $orange-100, $orange-200);
+    }
+
+    .md-card-header-mall .card-icon,
+    .md-card-header-mall .card-text,
+    .md-card-header-mall:not(.md-card-header-icon):not(.md-card-header-text),
+    [data-background-color="mall"],
+    .md-tabs.md-play .md-tabs-navigation{
+        background: linear-gradient(60deg, $light-green-300, $light-green-400);
+    }
+
+    .md-card-header-card .card-icon,
+    .md-card-header-card .card-text,
+    .md-card-header-card:not(.md-card-header-icon):not(.md-card-header-text),
+    [data-background-color="card"],
+    .md-tabs.md-card .md-tabs-navigation{
+        background: linear-gradient(60deg, $teal-200, $teal-300);
+    }
+
+    .md-card-header-period .card-icon,
+    .md-card-header-period .card-text,
+    .md-card-header-period:not(.md-card-header-icon):not(.md-card-header-text),
+    [data-background-color="period"],
+    .md-tabs.md-play .md-tabs-navigation{
+        background: linear-gradient(60deg, $blue-200, $blue-300);
+    }
+
+    .md-card-header-balance .card-icon,
+    .md-card-header-balance .card-text,
+    .md-card-header-balance:not(.md-card-header-icon):not(.md-card-header-text),
+    [data-background-color="balance"],
+    .md-tabs.md-play .md-tabs-navigation{
+        background: linear-gradient(60deg, $grey-400, $grey-500);
+    }
 
 
     [data-background-color="red"],
@@ -456,6 +502,54 @@
     .md-card-header-green:not(.md-card-header-icon):not(.md-card-header-text),
     .md-card-header-green .card-text{
         @include shadow-big-color($brand-success);
+    }
+
+    [data-background-color="play"],
+    .md-tabs.md-play .md-tabs-navigation,
+    .md-card-header-play .card-icon,
+    .md-card-header-play:not(.md-card-header-icon):not(.md-card-header-text),
+    .md-card-header-play .card-text{
+        @include shadow-big-color($brand-play);
+    }
+
+    [data-background-color="food"],
+    .md-tabs.md-food .md-tabs-navigation,
+    .md-card-header-food .card-icon,
+    .md-card-header-food:not(.md-card-header-icon):not(.md-card-header-text),
+    .md-card-header-food .card-text{
+        @include shadow-big-color($brand-food);
+    }
+
+    [data-background-color="mall"],
+    .md-tabs.md-mall .md-tabs-navigation,
+    .md-card-header-mall .card-icon,
+    .md-card-header-mall:not(.md-card-header-icon):not(.md-card-header-text),
+    .md-card-header-mall .card-text{
+        @include shadow-big-color($brand-mall);
+    }
+
+    [data-background-color="card"],
+    .md-tabs.md-card .md-tabs-navigation,
+    .md-card-header-card .card-icon,
+    .md-card-header-card:not(.md-card-header-icon):not(.md-card-header-text),
+    .md-card-header-card .card-text{
+        @include shadow-big-color($brand-card);
+    }
+
+    [data-background-color="period"],
+    .md-tabs.md-period .md-tabs-navigation,
+    .md-card-header-period .card-icon,
+    .md-card-header-period:not(.md-card-header-icon):not(.md-card-header-text),
+    .md-card-header-period .card-text{
+        @include shadow-big-color($brand-period);
+    }
+
+    [data-background-color="balance"],
+    .md-tabs.md-balance .md-tabs-navigation,
+    .md-card-header-balance .card-icon,
+    .md-card-header-balance:not(.md-card-header-icon):not(.md-card-header-text),
+    .md-card-header-balance .card-text{
+        @include shadow-big-color($brand-balance);
     }
 
     [data-background-color]{
