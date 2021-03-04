@@ -116,6 +116,12 @@ export default class App extends Vue {
 
   async loadConfig() {
     this.$config = await loadConfig();
+    if (
+      this.$user.role === "admin" &&
+      this.$router.currentRoute.path === "/dashboard"
+    ) {
+      this.$router.push("/boss-board");
+    }
   }
 }
 </script>

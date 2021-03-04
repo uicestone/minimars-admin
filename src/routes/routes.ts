@@ -333,7 +333,7 @@ const routes: RouteConfig[] = [
       },
       {
         path: "boss-board",
-        name: "数据统计",
+        name: "Boss Board",
         components: { default: BossBoard }
       }
     ]

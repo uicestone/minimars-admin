@@ -428,11 +428,7 @@ export default class Dashboard extends Vue {
     ];
   }
 
-  created() {
-    if (this.$user.role === "admin") {
-      this.$router.push("/boss-board");
-    }
-  }
+  created() {}
 
   mounted() {
     this.updateStats();
