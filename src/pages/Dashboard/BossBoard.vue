@@ -21,7 +21,7 @@
         md-icon keyboard_arrow_right
     //- .md-layout-item.md-size-10.md-xsmall-size-100
     //-   md-button.md-info(:href="$http.options.root + 'daily-report/' + date", style='width:100%') 下载日报表
-  .md-layout-item.md-size-40.md-xsmall-size-100
+  .md-layout-item.md-size-45.md-xsmall-size-100
     stats-card(header-color='period')
       template(slot='header')
         .card-icon
@@ -34,7 +34,7 @@
         .stats
           md-icon bookmark_border
           | 实时，包含各项现金类收款
-    chart-card.two-card-height(header-animation='false', :chart-data='dailyFlowChart.data', :chart-options='dailyFlowChart.options', chart-type='Line', chart-inside-header, background-color='period')
+    chart-card.mt-8.two-card-height(header-animation='false', :chart-data='dailyFlowChart.data', :chart-options='dailyFlowChart.options', chart-type='Line', chart-inside-header, background-color='period')
       md-button.md-simple.md-info.md-just-icon(slot='first-button')
         md-icon refresh
         md-tooltip(md-direction='bottom') Refresh
@@ -49,7 +49,7 @@
         .stats
           md-icon access_time
           | 实时
-    global-sales-card(header-color='period')
+    global-sales-card.mt-8(header-color='period')
       template(slot='header')
         .card-icon
           md-icon sort
@@ -57,11 +57,11 @@
       template(slot='content')
         .md-layout
           .md-layout-item.md-size-100
-            md-table(v-model='flowAmountByGatewayNames')
+            md-table(v-model='flowAmountByStoreNames')
               md-table-row(slot='md-table-row', slot-scope='{ item }')
                 md-table-cell {{ item.name }}
                 md-table-cell {{ item.amount | currency(0) }}
-  .md-layout-item.md-size-60.md-xsmall-size-100.md-layout
+  .md-layout-item.md-size-55.md-xsmall-size-100.md-layout
     .pl-0.md-layout-item.md-size-50.md-xsmall-size-100
       stats-card(header-color='play')
         template(slot='header')
@@ -70,31 +70,31 @@
           p.category {{rangeText}}票务销售额
           h3.title
             | ¥ 
-            animated-number(:value='stats.cardCouponAmount')
+            animated-number(:value='stats.playAmount')
         template(slot='footer')
           .stats
             md-icon bookmark_border
             | 实时
-      stats-card(header-color='food')
+      stats-card.mt-8(header-color='food')
         template(slot='header')
           .card-icon
             md-icon fastfood
           p.category {{rangeText}}餐饮销售额
           h3.title
             | ¥ 
-            animated-number(:value='stats.cardCouponAmount')
+            animated-number(:value='stats.foodAmount')
         template(slot='footer')
           .stats
             md-icon bookmark_border
             | 实时
-      stats-card(header-color='mall')
+      stats-card.mt-8(header-color='mall')
         template(slot='header')
           .card-icon
             md-icon shopping_cart
           p.category {{rangeText}}电商销售额
           h3.title
             | ¥ 
-            animated-number(:value='stats.cardCouponAmount')
+            animated-number(:value='stats.mallAmount')
         template(slot='footer')
           .stats
             md-icon bookmark_border
@@ -111,29 +111,29 @@
           .stats
             md-icon bookmark_border
             | 实时
-      stats-card(header-color='food')
+      stats-card.mt-8(header-color='food')
         template(slot='header')
           .card-icon
             md-icon microwave
           p.category {{rangeText}}餐饮订单数
           h3.title
-            animated-number(:value='stats.customerCount')
+            animated-number(:value='stats.foodBookingsCount')
         template(slot='footer')
           .stats
             md-icon bookmark_border
             | 实时
-      stats-card(header-color='mall')
+      stats-card.mt-8(header-color='mall')
         template(slot='header')
           .card-icon
             md-icon local_shipping
           p.category {{rangeText}}电商订单数
           h3.title
-            animated-number(:value='stats.customerCount')
+            animated-number(:value='stats.mallBookingsCount')
         template(slot='footer')
           .stats
             md-icon bookmark_border
             | 实时
-    .md-layout-item.md-size-100(style="display:flex;justify-content:center")
+    .md-layout-item.md-size-100.px-0(style="display:flex;justify-content:center")
       doughnut-chart(:chart-data="sceneFlowPieChart.data")
 </template>
 
@@ -172,44 +172,26 @@ export default class BossBoard extends Vue {
   queryStartTimeout: null | number = null;
   stats: {
     flowAmount: number;
-    cardCouponAmount: number;
+    playAmount: number;
+    foodAmount: number;
+    mallAmount: number;
     customerCount: number;
-    flowAmountByGateways: Record<string, number>;
-    flowAmountByScenes: Record<string, number>;
-    couponsCount: [];
-    cardsCount: [];
-    balanceCount: {};
-    customersByType: Record<
-      "card" | "coupon" | "guest",
-      { adultsCount: number; kidsCount: number }
-    >;
-    dailyCustomers: {
-      adultsCount: number;
-      kidsCount: number;
-      day: 1 | 2 | 3 | 4 | 5 | 6 | 7;
-    }[];
+    foodBookingsCount: number;
+    mallBookingsCount: number;
     dailyFlowAmount: { amount: number; day: 1 | 2 | 3 | 4 | 5 | 6 | 7 }[];
-    dailyCardCouponPayment: {
-      amount: number;
-      day: 1 | 2 | 3 | 4 | 5 | 6 | 7;
-    }[];
+    flowAmountByScenes: Record<string, number>;
+    flowAmountByStores: Record<string, number>;
   } = {
     flowAmount: 0,
-    cardCouponAmount: 0,
+    playAmount: 0,
+    foodAmount: 0,
+    mallAmount: 0,
     customerCount: 0,
-    flowAmountByGateways: {},
-    flowAmountByScenes: {},
-    couponsCount: [],
-    cardsCount: [],
-    balanceCount: {},
-    customersByType: {
-      card: { adultsCount: 0, kidsCount: 0 },
-      coupon: { adultsCount: 0, kidsCount: 0 },
-      guest: { adultsCount: 0, kidsCount: 0 }
-    },
-    dailyCustomers: [],
+    foodBookingsCount: 0,
+    mallBookingsCount: 0,
     dailyFlowAmount: [],
-    dailyCardCouponPayment: []
+    flowAmountByScenes: {},
+    flowAmountByStores: {}
   };
   weekdayMapping = {
     1: "一",
@@ -260,15 +242,6 @@ export default class BossBoard extends Vue {
     }
   }
 
-  get flowAmountByGatewayNames() {
-    return Object.keys(this.stats.flowAmountByGateways)
-      .map(gateway => ({
-        name: this.$gatewayNames[gateway],
-        amount: this.stats.flowAmountByGateways[gateway]
-      }))
-      .filter(p => p.amount);
-  }
-
   get flowAmountBySceneNames() {
     return Object.keys(this.stats.flowAmountByScenes)
       .map(scene => ({
@@ -276,6 +249,15 @@ export default class BossBoard extends Vue {
         amount: this.stats.flowAmountByScenes[scene]
       }))
       .filter(p => p.amount);
+  }
+
+  get flowAmountByStoreNames() {
+    return [
+      ...this.$stores.map(s => ({
+        name: s.name,
+        amount: this.stats.flowAmountByStores[s.id]
+      }))
+    ].sort((a, b) => b.amount - a.amount);
   }
 
   get dailyFlowChart() {
@@ -342,14 +324,6 @@ export default class BossBoard extends Vue {
     };
   }
 
-  get cardCouponByTypes() {
-    return [
-      ...this.stats.couponsCount,
-      ...this.stats.cardsCount,
-      this.stats.balanceCount
-    ];
-  }
-
   mounted() {
     this.updateStats();
   }
@@ -387,7 +361,7 @@ export default class BossBoard extends Vue {
 }
 .two-card-height /deep/ {
   .md-card-header {
-    min-height: 191px !important;
+    min-height: 210px !important;
   }
 }
 .pie /deep/ {
