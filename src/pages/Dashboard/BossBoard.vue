@@ -33,7 +33,7 @@
       template(slot='footer')
         .stats
           md-icon bookmark_border
-          | 实时，包含各项现金类收款
+          | 实时，各项收款和
     chart-card.mt-8.two-card-height(header-animation='false', :chart-data='dailyFlowChart.data', :chart-options='dailyFlowChart.options', chart-type='Line', chart-inside-header, background-color='period')
       md-button.md-simple.md-info.md-just-icon(slot='first-button')
         md-icon refresh
@@ -62,7 +62,7 @@
                 md-table-cell {{ item.name }}
                 md-table-cell {{ item.amount | currency(0) }}
   .md-layout-item.md-size-55.md-xsmall-size-100.md-layout
-    .pl-0.md-layout-item.md-size-50.md-xsmall-size-100
+    .pl-0.md-layout-item.md-size-50.md-xsmall-size-50
       stats-card(header-color='play')
         template(slot='header')
           .card-icon
@@ -99,7 +99,7 @@
           .stats
             md-icon bookmark_border
             | 实时
-    .pr-0.md-layout-item.md-size-50.md-xsmall-size-100
+    .pr-0.md-layout-item.md-size-50.md-xsmall-size-50
       stats-card(header-color='play')
         template(slot='header')
           .card-icon
@@ -134,7 +134,7 @@
             md-icon bookmark_border
             | 实时
     .md-layout-item.md-size-100.px-0(style="display:flex;justify-content:center")
-      doughnut-chart(:chart-data="sceneFlowPieChart.data")
+      doughnut-chart(:chart-data="sceneFlowPieChart.data" style="min-height:300px")
 </template>
 
 <script lang="ts">
@@ -372,6 +372,34 @@ export default class BossBoard extends Vue {
     min-height: 300px !important;
     .ct-chart {
       height: 100%;
+    }
+  }
+}
+
+@media (max-width: 400px) {
+  .md-layout-item {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .md-card /deep/ {
+    margin-bottom: 0px;
+    .category {
+      clear: left;
+      text-align: center;
+    }
+    h3 {
+      // margin-top: 10px !important;
+      // font-size: rem;
+      text-align: center;
+    }
+    .md-card-header.md-card-header-icon i {
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+      font-size: 24px !important;
+    }
+    .md-card-header + .md-card-actions {
+      margin-top: 0;
     }
   }
 }
