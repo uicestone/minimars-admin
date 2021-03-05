@@ -85,7 +85,7 @@
               MINI MARS 管理后台 v{{ $version }} &copy; 2020-{{
                 new Date().getFullYear()
               }}
-              <a href="https://codeispoetry.tech" target="_blank">诗序软件</a>
+              <a href="http://www.mini-mars.com/" target="_blank">朝和信息</a>
             </div>
           </div>
         </footer>
