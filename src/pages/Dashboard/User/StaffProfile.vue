@@ -19,7 +19,7 @@
                 md-field
                   label 职员类型
                   md-select(v-model='user.role', @keydown.enter.prevent :disabled="readonly")
-                    md-option(v-for="(name, role) in $userRoles" :key='role' :value='role') {{ name }}
+                    md-option(v-for="(name, role) in $userRoles" :key='role' :value='role' v-if="role!=='customer'") {{ name }}
               .md-layout-item.md-small-size-100.md-size-33
                 md-field
                   label 手机号
@@ -47,7 +47,7 @@
                   label 备注
                   md-textarea(v-model='user.remarks' :disabled="readonly")
             .md-layout-item.md-size-100.text-right
-              md-button.md-success.mt-4(type='submit' :class="{'md-raised':!user.id,'md-simple':user.id}" :disabled="!userValidated") {{ user.id ? "更新" : "创建" }}
+              md-button.md-success.mt-4(type='submit' :class="{'md-raised':!user.id,'md-simple':user.id}") {{ user.id ? "更新" : "创建" }}
 
 </template>
 
@@ -87,11 +87,6 @@ export default class UserProfile extends Vue {
     return !this.user.id && this.user.mobile?.length === 11;
   }
 
-  get userValidated() {
-    if (!this.user.mobile || this.user.mobile.length !== 11) return false;
-    return true;
-  }
-
   async save() {
     this.user = await UserResource.save(this.user);
     this.$notify({
@@ -103,7 +98,7 @@ export default class UserProfile extends Vue {
     });
     if (this.add) {
       this.$destroy();
-      this.$router.replace(`/user/${this.user.id}`);
+      this.$router.replace(`/staff/${this.user.id}`);
     }
   }
 
