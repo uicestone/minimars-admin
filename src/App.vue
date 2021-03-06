@@ -118,7 +118,10 @@ export default class App extends Vue {
   async loadConfig() {
     this.$config = await loadConfig();
     // console.log(`[App] Config loaded.`);
-    if (this.$router.currentRoute.path === "/") {
+    if (
+      this.$router.currentRoute.path === "/" &&
+      window.location.hash === "#/"
+    ) {
       this.$router.push(
         this.$user.role === "admin" ? "/boss-board" : "/dashboard"
       );
