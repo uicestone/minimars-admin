@@ -72,6 +72,9 @@ export default class UserList extends List<User> {
   showDetail(item: User) {
     this.$router.push(`/staff/${item.id}`);
   }
+  showCreate() {
+    this.$router.push(`/staff/add`);
+  }
   async created() {
     this.searchQuery = { role: "manager" };
   }
