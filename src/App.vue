@@ -31,6 +31,7 @@ export default class App extends Vue {
     await this.loadConfig();
 
     this.$router.beforeResolve(async (to, from, next) => {
+      console.log(`[App] Before resolve ${to.path}.`);
       if (to.path === "/login") next();
       else {
         const config = await loadConfig(this.$config);
@@ -116,11 +117,11 @@ export default class App extends Vue {
 
   async loadConfig() {
     this.$config = await loadConfig();
-    if (
-      this.$user.role === "admin" &&
-      this.$router.currentRoute.path === "/dashboard"
-    ) {
-      this.$router.push("/boss-board");
+    // console.log(`[App] Config loaded.`);
+    if (this.$router.currentRoute.path === "/") {
+      this.$router.push(
+        this.$user.role === "admin" ? "/boss-board" : "/dashboard"
+      );
     }
   }
 }

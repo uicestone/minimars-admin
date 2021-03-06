@@ -428,7 +428,9 @@ export default class Dashboard extends Vue {
     ];
   }
 
-  created() {}
+  created() {
+    // console.log("[DASHBOARD] Created.");
+  }
 
   mounted() {
     this.updateStats();
