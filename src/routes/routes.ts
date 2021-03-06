@@ -265,10 +265,9 @@ const configMenu: RouteConfig = {
 const userMenu: RouteConfig = {
   path: "/user",
   component: DashboardLayout,
-  redirect: "/user/customer",
   children: [
     {
-      path: "staff",
+      path: "/staff",
       name: "职员列表",
       component: StaffList,
       meta: {
@@ -276,7 +275,7 @@ const userMenu: RouteConfig = {
       }
     },
     {
-      path: "staff/add",
+      path: "/staff/add",
       name: "添加职员",
       component: StaffProfile,
       props: {
@@ -287,12 +286,12 @@ const userMenu: RouteConfig = {
       }
     },
     {
-      path: "staff/:id",
+      path: "/staff/:id",
       name: "职员详情",
       component: StaffProfile
     },
     {
-      path: "customer",
+      path: "/user",
       name: "客户列表",
       component: UserList,
       meta: {
@@ -300,7 +299,7 @@ const userMenu: RouteConfig = {
       }
     },
     {
-      path: "add",
+      path: "/user/add",
       name: "添加客户",
       component: UserProfile,
       props: {
@@ -311,7 +310,7 @@ const userMenu: RouteConfig = {
       }
     },
     {
-      path: ":id",
+      path: "/user/:id",
       name: "客户详情",
       component: UserProfile
     }

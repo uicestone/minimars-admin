@@ -5,7 +5,7 @@
       md-card-header.md-card-header-icon.md-card-header-primary
         .card-icon
           md-icon supervisor_account
-        h4.title 用户列表
+        h4.title 客户列表
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
           .md-layout-item.md-size-40.md-xsmall-size-100.md-layout

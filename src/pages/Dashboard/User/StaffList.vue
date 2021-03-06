@@ -70,7 +70,7 @@ export default class UserList extends List<User> {
     return queriedData;
   }
   showDetail(item: User) {
-    this.$router.push(`/user/staff/${item.id}`);
+    this.$router.push(`/staff/${item.id}`);
   }
   async created() {
     this.searchQuery = { role: "manager" };
