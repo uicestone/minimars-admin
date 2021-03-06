@@ -9,6 +9,8 @@ import { RouteConfig } from "vue-router";
 // Pages
 const UserProfile = () => import("@/pages/Dashboard/User/UserProfile.vue");
 const UserList = () => import("@/pages/Dashboard/User/UserList.vue");
+const StaffProfile = () => import("@/pages/Dashboard/User/StaffProfile.vue");
+const StaffList = () => import("@/pages/Dashboard/User/StaffList.vue");
 const BookingDetail = () =>
   import("@/pages/Dashboard/Booking/BookingDetail.vue");
 const BookingList = () => import("@/pages/Dashboard/Booking/BookingList.vue");
@@ -263,11 +265,35 @@ const configMenu: RouteConfig = {
 const userMenu: RouteConfig = {
   path: "/user",
   component: DashboardLayout,
-  redirect: "/user/index",
+  redirect: "/user/customer",
   children: [
     {
-      path: "index",
-      name: "用户列表",
+      path: "staff",
+      name: "职员列表",
+      component: StaffList,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: "staff/add",
+      name: "添加职员",
+      component: StaffProfile,
+      props: {
+        add: true
+      },
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: "staff/:id",
+      name: "职员详情",
+      component: StaffProfile
+    },
+    {
+      path: "customer",
+      name: "客户列表",
       component: UserList,
       meta: {
         keepAlive: true
@@ -275,7 +301,7 @@ const userMenu: RouteConfig = {
     },
     {
       path: "add",
-      name: "添加用户",
+      name: "添加客户",
       component: UserProfile,
       props: {
         add: true
@@ -286,7 +312,7 @@ const userMenu: RouteConfig = {
     },
     {
       path: ":id",
-      name: "用户详情",
+      name: "客户详情",
       component: UserProfile
     }
   ]

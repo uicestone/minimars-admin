@@ -5,19 +5,17 @@
       md-card-header.md-card-header-icon.md-card-header-primary
         .card-icon
           md-icon supervisor_account
-        h4.title 用户列表
+        h4.title 职员列表
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
           .md-layout-item.md-size-40.md-xsmall-size-100.md-layout
-            div(style="padding:0 5px")
-              div 用户余额：{{ stats.totalBalance | currency }}
-              div 其中实收：{{ stats.totalBalanceDeposit | currency }}
-            div(style="padding:0 5px")
-              div 未激活卡：{{ stats.totalValidCardBalance | currency }}
-              div 其中实收：{{ stats.totalValidCardBalanceDeposit | currency }}
           .md-layout.md-layout-item.md-alignment-center-right.search-query
             md-field.md-layout-item.md-size-50.md-xsmall-size-100
               md-input(type='search', min-length='4', clearable='', placeholder='搜索 手机/姓名/卡号/标签', v-model='searchQuery.keyword')
+            md-field.md-layout-item.md-size-30.md-xsmall-size-100
+              label 筛选角色
+              md-select(v-model='searchQuery.role')
+                md-option(v-for="(name, role) in $userRoles", :key='role', :value='role') {{ name }}
             //- md-field.md-layout-item.md-size-20.md-xsmall-size-100(v-if="searchQuery.role === 'customer'")
               label 会员类型
               md-select(v-model='searchQuery.membership', multiple)
@@ -29,25 +27,19 @@
                 md-option(v-for='level in $config.depositLevels', :key='level.slug', :value='level.cardType') {{ level.cardType }}
           .toolbar-actions
             md-button.md-primary(@click='showCreate')
-              | 添加用户
+              | 添加职员
             md-button.md-just-icon.md-simple(@click='queryData')
               md-icon refresh
         md-table.paginated-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='$noop')
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
-            md-table-cell(md-label='手机', md-sort-by='mobile')
-              | {{ item.mobile }}
             md-table-cell(md-label='姓名', md-sort-by='name')
               | {{ item.name }}
-            md-table-cell(md-label='卡号', md-sort-by='cardNo')
-              | {{ item.cardNo }}
-            md-table-cell(md-label='余额', md-sort-by='balanceDeposit')
-              div(v-if='item.balance')
-                | {{ item.balanceDeposit }} 赠{{ item.balanceReward }}
-              div(v-if='item.codeAmount') 券值：{{ item.codeAmount }}
-              div(v-if='!item.balance && !item.codeAmount')
-                | -
-            md-table-cell(md-label='注册时间', md-sort-by='createdAt')
-              | {{ item.createdAt | date }}
+            md-table-cell(md-label='登录名', md-sort-by='login')
+              | {{ item.login }}
+            md-table-cell(md-label='角色', md-sort-by='role')
+              | {{ item.role | roleName }}
+            md-table-cell(md-label='手机', md-sort-by='mobile')
+              | {{ item.mobile }}
       md-card-actions(md-alignment='space-between')
         div
           p.card-category {{ from }} - {{ to }} / {{ total }}
@@ -57,7 +49,7 @@
 <script lang="ts">
 import { Component } from "vue-property-decorator";
 import List from "@/components/List";
-import { http, UserResource } from "@/resources";
+import { UserResource } from "@/resources";
 import { User } from "@/resources/interfaces";
 
 @Component
@@ -77,9 +69,11 @@ export default class UserList extends List<User> {
     if (!queriedData) return;
     return queriedData;
   }
+  showDetail(item: User) {
+    this.$router.push(`/user/staff/${item.id}`);
+  }
   async created() {
-    this.searchQuery = { role: "customer" };
-    this.stats = (await http.get("stats/user-balance")).data;
+    this.searchQuery = { role: "manager" };
   }
 }
 </script>

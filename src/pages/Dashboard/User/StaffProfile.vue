@@ -7,44 +7,28 @@
           md-card-header.md-card-header-icon.md-card-header-green
             .card-icon
               md-icon perm_identity
-            h4.title 用户详情
-              span(v-if="user.id" @click="$clipboard(user.id, '用户ID')")
+            h4.title 职员详情
+              span(v-if="user.id" @click="$clipboard(user.id, '职员ID')")
                 span {{ user.id.substr(-4).toUpperCase() }}
                 md-icon(style="font-size:15px !important") file_copy
           md-card-content.md-layout
             .md-layout-item.md-size-25
               poster.pt-4(v-model="user.avatarUrl" placeholder="/img/placeholder.jpg" circle disabled)
-              .pt-4.pb-1.text-center 儿童照片：
-              poster(v-model="user.childPhotoUrl" placeholder="/img/image_placeholder.jpg" :disabled="readonly")
             .md-layout-item.md-size-75.md-layout.md-alignment-vertical
+              .md-layout-item.md-small-size-100.md-size-33(v-if="$user.can('edit-user')")
+                md-field
+                  label 职员类型
+                  md-select(v-model='user.role', @keydown.enter.prevent :disabled="readonly")
+                    md-option(v-for="(name, role) in $userRoles" :key='role' :value='role') {{ name }}
               .md-layout-item.md-small-size-100.md-size-33
                 md-field
                   label 手机号
                   md-input(v-model='user.mobile', type='text' :disabled="readonly")
               .md-layout-item.md-small-size-100.md-size-33
                 md-field
-                  label 会员姓名
+                  label 姓名
                   md-input(v-model='user.name' :disabled="readonly")
               .md-layout-item.md-small-size-100.md-size-33
-                md-field
-                  label 孩子姓名
-                  md-input(v-model='user.childName' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-25
-                md-field
-                  label 孩子性别
-                  md-select(v-model='user.childGender', @keydown.enter.prevent :disabled="readonly")
-                    md-option(value='男') 男
-                    md-option(value='女') 女
-                    md-option(value='未知') 未知
-              .md-layout-item.md-small-size-100.md-size-25
-                md-field
-                  label 孩子生日
-                  md-input(v-model='user.childBirthday', type='text' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-25
-                md-field
-                  label 卡号
-                  md-input(v-model='user.cardNo' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-25
                 md-field
                   label 门店
                   md-select(v-model='user.store' :disabled="readonly")
@@ -52,43 +36,19 @@
                     md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
               .md-layout-item.md-small-size-100.md-size-33
                 md-field
-                  label 身份证号
-                  md-input(v-model='user.idCardNo' :disabled="readonly")
+                  label 登录名
+                  md-input(v-model='user.login', type='text', autocomplete='new-password')
               .md-layout-item.md-small-size-100.md-size-33
                 md-field
-                  label 地区
-                  md-input(v-model='user.region' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-33
-                md-field
-                  label 星座
-                  md-input(v-model='user.constellation'  :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-50
-                md-field
-                  label 余额
-                  md-input(:value='user.balance | round(2)' disabled)
-              .md-layout-item.md-small-size-100.md-size-50
-                md-field
-                  label 积分
-                  md-input(:value='user.points | round(2)' disabled)
+                  label 重置密码
+                  md-input(v-model='user.password', type='password', autocomplete='new-password')
               .md-layout-item.md-size-100
                 md-field
                   label 备注
                   md-textarea(v-model='user.remarks' :disabled="readonly")
-              .md-layout-item.md-size-100
-                md-chips.md-primary.shake-on-error(v-if="$user.role==='admin'" @keypress.native.enter.prevent, v-model='user.tags', md-placeholder='客户内部标签', md-check-duplicated)
-                md-chips.md-primary(v-else v-model='user.tags' md-static)
             .md-layout-item.md-size-100.text-right
               md-button.md-success.mt-4(type='submit' :class="{'md-raised':!user.id,'md-simple':user.id}" :disabled="!userValidated") {{ user.id ? "更新" : "创建" }}
-              md-button.md-primary.mt-4.pull-right(@click="createBooking()" v-if="user.id") 门票预约
-              md-button.md-success.mt-4.mr-1.pull-right(@click="createBooking('food')" v-if="user.id") 吧台消费
-      bookings-card(title="近期门票预约" type="play" :bookings="userBookings.filter(b=>b.type==='play')" :customer="user")
-      bookings-card(title="近期活动预约" type="event" :bookings="userBookings.filter(b=>b.type==='event')" :customer="user")
-      bookings-card(title="近期礼品兑换" type="gift" :bookings="userBookings.filter(b=>b.type==='gift')" :customer="user")
-      bookings-card(title="近期餐饮消费" type="food" :bookings="userBookings.filter(b=>b.type==='food')" :customer="user")
-    .md-layout-item.md-medium-size-100.md-size-40.mx-auto
-      membership(:customer="user" @updated="getUser" :allow-buy-card="!readonly")
-        template(v-slot:action-buttons)
-          md-button.md-success.md-sm.pull-right(v-if="creatable" @click="save") 创建会员
+
 </template>
 
 <script lang="ts">
@@ -168,7 +128,7 @@ export default class UserProfile extends Vue {
         this.$router.replace(`/user/${user.id}`);
       } else {
         this.$notify({
-          message: "没有匹配手机号的用户，请继续创建用户",
+          message: "没有匹配手机号的职员，请继续创建职员",
           type: "success",
           icon: "add_alert",
           horizontalAlign: "center",
