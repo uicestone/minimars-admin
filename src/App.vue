@@ -22,6 +22,7 @@ export default class App extends Vue {
   pendingRequests = 0;
   configFetched = false;
   async created() {
+    console.log("[App] Created.");
     http.interceptors.request.use(this.requestFullfilled);
     http.interceptors.response.use(
       this.responseFullfilled,
@@ -32,12 +33,29 @@ export default class App extends Vue {
 
     this.$router.beforeResolve(async (to, from, next) => {
       console.log(`[App] Before resolve ${to.path}.`);
-      if (to.path === "/login") next();
-      else {
+
+      if (to.path !== "/login" && !window.localStorage.getItem("token")) {
+        console.log("[App] No token, redirect to login.");
+        return this.$router.push("/login");
+      } else if (to.path === "/login" && window.localStorage.getItem("token")) {
+        console.log("[App] Token exists, redirect to home.");
+        return this.$router.push("/");
+      }
+
+      if (to.path !== "/login") {
         const config = await loadConfig(this.$config);
         this.$config = config;
-        next();
       }
+
+      if (
+        ["/", "/login"].includes(from.path) &&
+        to.path === "/dashboard" &&
+        this.$user.role === "admin"
+      ) {
+        return this.$router.push("/boss-board");
+      }
+
+      next();
     });
 
     this.prepareFaceDetection();
@@ -117,15 +135,7 @@ export default class App extends Vue {
 
   async loadConfig() {
     this.$config = await loadConfig();
-    // console.log(`[App] Config loaded.`);
-    if (
-      this.$router.currentRoute.path === "/" &&
-      window.location.hash === "#/"
-    ) {
-      this.$router.push(
-        this.$user.role === "admin" ? "/boss-board" : "/dashboard"
-      );
-    }
+    console.log(`[App] Config loaded.`);
   }
 }
 </script>
