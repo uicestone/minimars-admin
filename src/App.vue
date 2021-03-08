@@ -137,7 +137,7 @@ export default class App extends Vue {
   left: 0;
   top: 0;
   right: 0;
-  z-index: 2100;
+  z-index: 10000;
 }
 @media (max-width: $screen-sm-min) {
   .md-progress-bar {
