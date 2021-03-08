@@ -18,7 +18,7 @@
               label 日期开始
             md-datepicker.md-layout-item.md-size-date.md-xsmall-size-50(v-model='searchQuery.dateEnd', :md-model-type='String', md-immediately)
               label 日期结束
-            md-field.md-layout-item.md-size-10.md-xsmall-size-50(v-if="$user.role==='admin'")
+            md-field.md-layout-item.md-size-10.md-xsmall-size-50(v-if="!$user.store")
               label 门店
               md-select(v-model='searchQuery.store')
                 md-option(value='') 全部
