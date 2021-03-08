@@ -21,7 +21,7 @@
           <ul class="nav">
             <slot>
               <li :class="{ active: isProfileActive }">
-                <router-link :to="'/user/' + $user.id">
+                <router-link :to="'/staff/' + $user.id">
                   <span class="sidebar-mini"
                     ><md-icon>assignment_ind</md-icon></span
                   >
@@ -58,16 +58,16 @@ export default {
   computed: {
     isProfileActive() {
       return (
-        this.$route.path.match(/\/user\/\w+/) &&
+        this.$route.path.match(/\/staff\/\w+/) &&
         this.$route.params.id === this.$user.id
       );
     }
   },
   methods: {
-    clicked: function(e) {
+    clicked: function (e) {
       e.preventDefault();
     },
-    toggleMenu: function() {
+    toggleMenu: function () {
       this.isClosed = !this.isClosed;
     },
     logout() {
