@@ -1,7 +1,7 @@
 import { VueConstructor } from "vue";
 import { User } from "@/resources/interfaces";
 
-const GlobalLibrariesPlugins = {
+const globalVars = {
   install(Vue: VueConstructor) {
     // global library setup
     Object.defineProperty(Vue.prototype, "$electron", {
@@ -199,4 +199,4 @@ const GlobalLibrariesPlugins = {
   }
 };
 
-export default GlobalLibrariesPlugins;
+export default globalVars;

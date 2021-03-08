@@ -3,7 +3,7 @@ import { VueConstructor } from "vue";
 
 moment.locale("zh-cn");
 
-const CommonFiltersPlugin = {
+const globalFilters = {
   install(Vue: VueConstructor) {
     Vue.filter("date", (value: any, format: string) => {
       if (!value) {
@@ -73,4 +73,4 @@ const CommonFiltersPlugin = {
   }
 };
 
-export default CommonFiltersPlugin;
+export default globalFilters;

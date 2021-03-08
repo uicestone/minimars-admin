@@ -1,22 +1,11 @@
 import Vue from "vue";
-import VueRouter from "vue-router";
 import DashboardPlugin from "./material-dashboard";
-import CommonFiltersPlugin from "./helpers/CommonFiltersPlugin";
-import GlobalLibrariesPlugins from "./helpers/GlobalLibrariesPlugin";
-import VueClipboard from "vue-clipboard2";
-
-// Plugins
 import App from "./App.vue";
 
 // router setup
-import routes from "./routes/routes";
-
+import router from "./routes/router";
 // plugin setup
-Vue.use(VueRouter);
-Vue.use(VueClipboard);
 Vue.use(DashboardPlugin);
-Vue.use(CommonFiltersPlugin);
-Vue.use(GlobalLibrariesPlugins);
 
 (Vue as any).material.locale = {
   startYear: 1900,
@@ -69,19 +58,6 @@ Vue.use(GlobalLibrariesPlugins);
   ],
   firstDayOfAWeek: 1
 };
-
-// configure router
-const router = new VueRouter({
-  routes, // short for routes: routes
-  scrollBehavior: (to) => {
-    if (to.hash) {
-      return { selector: to.hash };
-    } else {
-      return { x: 0, y: 0 };
-    }
-  },
-  linkExactActiveClass: "nav-item active"
-});
 
 new Vue({
   el: "#app",
