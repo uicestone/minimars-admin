@@ -1,7 +1,7 @@
 <template>
   <div class="user">
     <div class="photo">
-      <img :src="$user.avatarUrl || './img/default-avatar.png'" alt="avatar" />
+      <img :src="$user.avatarUrl || '/img/default-avatar.png'" alt="avatar" />
     </div>
     <div class="user-info">
       <a

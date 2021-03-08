@@ -29,22 +29,25 @@ http.interceptors.request.use((request: AxiosRequestConfig) => {
     !["auth/login", "config", "store"].includes(request.url || "") &&
     !window.localStorage.getItem("token")
   ) {
-    window.location.hash = "#/login";
-    return Promise.reject(new Error("No token exists, login required."));
+    console.log(
+      "[Resource] Trying to request auth required api but no token, redirect to login."
+    );
+    window.location.href = "/login";
   }
   return request;
 });
 
 http.interceptors.response.use(
-  res => res,
-  err => {
+  (res) => res,
+  (err) => {
     // console.log("http.interceptors.response", err);
     const { response } = err;
     if (!response) return Promise.reject(err);
     // redirect to login page on any 401 response
-    if (response.status === 401 && window.location.hash !== "#/login") {
-      window.location.hash = "#/login";
+    if (response.status === 401) {
       window.localStorage.removeItem("token");
+      "[Resource] Server auth required, redirect to login.";
+      window.location.href = "/login";
     }
     return Promise.reject(err);
   }
