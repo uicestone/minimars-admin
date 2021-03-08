@@ -1,38 +1,93 @@
 import DashboardLayout from "@/pages/Dashboard/Layout/DashboardLayout.vue";
 import AuthLayout from "@/pages/Dashboard/Pages/AuthLayout.vue";
 
-// Dashboard pages
-import Dashboard from "@/pages/Dashboard/Dashboard.vue";
-import BossBoard from "@/pages/Dashboard/BossBoard.vue";
 import { RouteConfig } from "vue-router";
 
+// Dashboard pages
+const Dashboard = () =>
+  import(/* webpackChunkName: "dashboard" */ "@/pages/Dashboard/Dashboard.vue");
+const BossBoard = () =>
+  import(/* webpackChunkName: "dashboard" */ "@/pages/Dashboard/BossBoard.vue");
 // Pages
-const UserProfile = () => import("@/pages/Dashboard/User/UserProfile.vue");
-const UserList = () => import("@/pages/Dashboard/User/UserList.vue");
-const StaffProfile = () => import("@/pages/Dashboard/User/StaffProfile.vue");
-const StaffList = () => import("@/pages/Dashboard/User/StaffList.vue");
+const UserProfile = () =>
+  import(
+    /* webpackChunkName: "user" */ "@/pages/Dashboard/User/UserProfile.vue"
+  );
+const UserList = () =>
+  import(/* webpackChunkName: "user" */ "@/pages/Dashboard/User/UserList.vue");
+const StaffProfile = () =>
+  import(
+    /* webpackChunkName: "user" */ "@/pages/Dashboard/User/StaffProfile.vue"
+  );
+const StaffList = () =>
+  import(/* webpackChunkName: "user" */ "@/pages/Dashboard/User/StaffList.vue");
 const BookingDetail = () =>
-  import("@/pages/Dashboard/Booking/BookingDetail.vue");
-const BookingList = () => import("@/pages/Dashboard/Booking/BookingList.vue");
+  import(
+    /* webpackChunkName: "booking" */ "@/pages/Dashboard/Booking/BookingDetail.vue"
+  );
+const BookingList = () =>
+  import(
+    /* webpackChunkName: "booking" */ "@/pages/Dashboard/Booking/BookingList.vue"
+  );
 const CardTypeDetail = () =>
-  import("@/pages/Dashboard/CardType/CardTypeDetail.vue");
+  import(
+    /* webpackChunkName: "booking" */ "@/pages/Dashboard/CardType/CardTypeDetail.vue"
+  );
 const CardTypeList = () =>
-  import("@/pages/Dashboard/CardType/CardTypeList.vue");
-const CouponDetail = () => import("@/pages/Dashboard/Coupon/CouponDetail.vue");
-const CouponList = () => import("@/pages/Dashboard/Coupon/CouponList.vue");
-const EventDetail = () => import("@/pages/Dashboard/Event/EventDetail.vue");
-const EventList = () => import("@/pages/Dashboard/Event/EventList.vue");
-const GiftDetail = () => import("@/pages/Dashboard/Gift/GiftDetail.vue");
-const GiftList = () => import("@/pages/Dashboard/Gift/GiftList.vue");
+  import(
+    /* webpackChunkName: "booking" */ "@/pages/Dashboard/CardType/CardTypeList.vue"
+  );
+const CouponDetail = () =>
+  import(
+    /* webpackChunkName: "booking" */ "@/pages/Dashboard/Coupon/CouponDetail.vue"
+  );
+const CouponList = () =>
+  import(
+    /* webpackChunkName: "booking" */ "@/pages/Dashboard/Coupon/CouponList.vue"
+  );
+const EventDetail = () =>
+  import(
+    /* webpackChunkName: "booking" */ "@/pages/Dashboard/Event/EventDetail.vue"
+  );
+const EventList = () =>
+  import(
+    /* webpackChunkName: "booking" */ "@/pages/Dashboard/Event/EventList.vue"
+  );
+const GiftDetail = () =>
+  import(
+    /* webpackChunkName: "booking" */ "@/pages/Dashboard/Gift/GiftDetail.vue"
+  );
+const GiftList = () =>
+  import(
+    /* webpackChunkName: "booking" */ "@/pages/Dashboard/Gift/GiftList.vue"
+  );
 // const Payment = () => import("@/pages/Dashboard/Payment/PaymentDetail.vue");
-const PaymentList = () => import("@/pages/Dashboard/Payment/PaymentList.vue");
-const PostDetail = () => import("@/pages/Dashboard/Post/PostDetail.vue");
-const PostList = () => import("@/pages/Dashboard/Post/PostList.vue");
-const StoreDetail = () => import("@/pages/Dashboard/Store/StoreDetail.vue");
-const StoreList = () => import("@/pages/Dashboard/Store/StoreList.vue");
-const ConfigList = () => import("@/pages/Dashboard/Config/ConfigList.vue");
-const Config = () => import("@/pages/Dashboard/Config/Config.vue");
-const Login = () => import("@/pages/Dashboard/Pages/Login.vue");
+const PaymentList = () =>
+  import(
+    /* webpackChunkName: "payment" */ "@/pages/Dashboard/Payment/PaymentList.vue"
+  );
+const PostDetail = () =>
+  import(
+    /* webpackChunkName: "misc" */ "@/pages/Dashboard/Post/PostDetail.vue"
+  );
+const PostList = () =>
+  import(/* webpackChunkName: "misc" */ "@/pages/Dashboard/Post/PostList.vue");
+const StoreDetail = () =>
+  import(
+    /* webpackChunkName: "misc" */ "@/pages/Dashboard/Store/StoreDetail.vue"
+  );
+const StoreList = () =>
+  import(
+    /* webpackChunkName: "misc" */ "@/pages/Dashboard/Store/StoreList.vue"
+  );
+const ConfigList = () =>
+  import(
+    /* webpackChunkName: "misc" */ "@/pages/Dashboard/Config/ConfigList.vue"
+  );
+const Config = () =>
+  import(/* webpackChunkName: "misc" */ "@/pages/Dashboard/Config/Config.vue");
+const Login = () =>
+  import(/* webpackChunkName: "misc" */ "@/pages/Dashboard/Pages/Login.vue");
 
 const bookingMenu: RouteConfig = {
   path: "/booking",
@@ -333,7 +388,6 @@ const authPages = {
 const routes: RouteConfig[] = [
   {
     path: "/",
-    // redirect: "/dashboard",
     name: "Home"
   },
   bookingMenu,
@@ -350,16 +404,17 @@ const routes: RouteConfig[] = [
   {
     path: "/",
     component: DashboardLayout,
+    redirect: "/dashboard",
     children: [
       {
         path: "dashboard",
         name: "数据统计",
-        components: { default: Dashboard }
+        component: Dashboard
       },
       {
         path: "boss-board",
         name: "Boss Board",
-        components: { default: BossBoard }
+        component: BossBoard
       }
     ]
   }
