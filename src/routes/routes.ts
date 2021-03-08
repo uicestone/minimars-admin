@@ -388,6 +388,7 @@ const authPages = {
 const routes: RouteConfig[] = [
   {
     path: "/",
+    redirect: "/dashboard",
     name: "Home"
   },
   bookingMenu,
