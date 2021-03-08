@@ -17,9 +17,11 @@ async function getHttpData(path: string) {
 
 const loadConfig = async (configLoaded: Config = {}) => {
   const [config, stores, user, cardTypes, coupons] = await Promise.all([
-    configLoaded || getHttpData("config"),
+    !Object.keys(configLoaded).length ? configLoaded : getHttpData("config"),
     configLoaded.stores || getHttpData("store"),
-    configLoaded.user || (localStorage.token && getHttpData("auth/user")),
+    configLoaded.user?.id
+      ? configLoaded.user
+      : localStorage.token && getHttpData("auth/user"),
     configLoaded.cardTypes ||
       (localStorage.token && getHttpData("card-type?limit=false")),
     configLoaded.coupons ||

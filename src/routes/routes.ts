@@ -405,7 +405,6 @@ const routes: RouteConfig[] = [
   {
     path: "/",
     component: DashboardLayout,
-    redirect: "/dashboard",
     children: [
       {
         path: "dashboard",

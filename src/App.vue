@@ -29,10 +29,15 @@ export default class App extends Vue {
       this.responseRejected
     );
 
-    await this.loadConfig();
+    // await this.loadConfig();
 
     this.$router.beforeResolve(async (to, from, next) => {
       console.log(`[App] Before resolve ${to.path}.`);
+
+      if (to.path !== "/login") {
+        const config = await loadConfig(this.$config);
+        this.$config = config;
+      }
 
       if (to.path !== "/login" && !window.localStorage.getItem("token")) {
         console.log("[App] No token, redirect to login.");
@@ -40,11 +45,6 @@ export default class App extends Vue {
       } else if (to.path === "/login" && window.localStorage.getItem("token")) {
         console.log("[App] Token exists, redirect to home.");
         return this.$router.push("/");
-      }
-
-      if (to.path !== "/login") {
-        const config = await loadConfig(this.$config);
-        this.$config = config;
       }
 
       if (

@@ -48,9 +48,6 @@ const globalVars = {
 
     Object.defineProperty(Vue.prototype, "$user", {
       get() {
-        if (!this.$root.config.user) {
-          this.$root.config.user = {};
-        }
         this.$root.config.user.can = can;
         return this.$root.config.user;
       },
