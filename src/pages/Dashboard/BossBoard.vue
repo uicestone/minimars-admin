@@ -33,7 +33,7 @@
       template(slot='footer')
         .stats
           md-icon bookmark_border
-          | 实时，各项收款和
+          | 各项收款和
     chart-card.mt-8.two-card-height(header-animation='false', :chart-data='dailyFlowChart.data', :chart-options='dailyFlowChart.options', chart-type='Line', chart-inside-header, background-color='period')
       md-button.md-simple.md-info.md-just-icon(slot='first-button')
         md-icon refresh
@@ -74,7 +74,7 @@
         template(slot='footer')
           .stats
             md-icon bookmark_border
-            | 实时
+            | 购票订单权责发生收入
       stats-card.mt-8(header-color='food')
         template(slot='header')
           .card-icon
@@ -86,7 +86,7 @@
         template(slot='footer')
           .stats
             md-icon bookmark_border
-            | 实时
+            | 餐饮订单权责发生收入
       stats-card.mt-8(header-color='mall')
         template(slot='header')
           .card-icon
@@ -98,7 +98,7 @@
         template(slot='footer')
           .stats
             md-icon bookmark_border
-            | 实时
+            | 电商订单权责发生收入
     .pr-0.md-layout-item.md-size-50.md-xsmall-size-50
       stats-card(header-color='play')
         template(slot='header')
