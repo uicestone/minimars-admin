@@ -2,9 +2,9 @@
 .md-layout
   .md-layout-item.md-size-100.md-layout.md-alignment-center-right
     .md-layout-item.md-size-30.md-xsmall-size-100.stats-date
-      md-datepicker(v-model='date', :md-model-type='String', md-immediately style="width:140px")
+      md-datepicker(v-model='date', :md-model-type='String', md-immediately  :md-disabled-dates="disabledDates" style="width:140px")
         label 开始日期
-      md-datepicker.ml-2(v-model='dateEnd', :md-model-type='String', md-immediately style="width:140px")
+      md-datepicker.ml-2(v-model='dateEnd', :md-model-type='String', md-immediately  :md-disabled-dates="disabledDates" v-if="$user.role!=='manager'" style="width:140px")
         label 结束日期
     .md-layout-item.md-xsmall-size-100(style='display:flex;justify-content:space-between;width:330px;flex:0')
       md-menu.md-button(v-if="!$user.store")
@@ -12,7 +12,7 @@
         md-menu-content
           md-menu-item(@click="selectStore(false)") 全部门店
           md-menu-item(v-for="store in $stores" :key="store.id" @click="selectStore(store)") {{ store.name }}
-      md-button.md-info(style='flex:0', @click='addDate(-1)')
+      md-button.md-info(style='flex:0', @click='addDate(-1)' :disabled='date<=startAvailableDay')
         span.md-label
           md-icon keyboard_arrow_left
         | 前一天
@@ -267,6 +267,18 @@ export default class Dashboard extends Vue {
     7: "日"
   };
 
+  get startAvailableDay() {
+    if (this.$user.role === "admin") {
+      return "";
+    } else if (this.$user.role === "accountant") {
+      return moment()
+        .subtract(1, "month")
+        .startOf("month")
+        .format("YYYY-MM-DD");
+    }
+    return moment().format("YYYY-MM-DD");
+  }
+
   addDate(add: number) {
     this.date = moment(this.date).add(add, "days").format("YYYY-MM-DD");
     if (this.dateEnd) {
@@ -276,6 +288,17 @@ export default class Dashboard extends Vue {
 
   selectStore(store: Store | null) {
     this.store = store;
+  }
+
+  disabledDates(date: Date) {
+    if (this.$user.role === "admin") return false;
+    else if (this.$user.role === "accountant") {
+      const start = moment().subtract(1, "month").startOf("month").valueOf();
+      return date.valueOf() < start;
+    } else {
+      const start = moment().startOf("day").valueOf();
+      return date.valueOf() < start;
+    }
   }
 
   updateStats() {

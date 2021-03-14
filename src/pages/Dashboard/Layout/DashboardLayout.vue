@@ -10,7 +10,6 @@
       sidebar-item(v-if="$user.can('view-booking')||$user.can('view-gift-booking')", :link="{ name: '礼品兑换', icon: 'card_giftcard', path: '/booking/gift' }")
       sidebar-item(v-if="$user.can('view-booking')||$user.can('view-food-booking')", :link="{ name: '餐饮消费', icon: 'fastfood', path: '/booking/food' }")
       sidebar-item(v-if="$user.can('view-user')", :link="{ name: '客户管理', icon: 'people', path: '/user' }")
-      sidebar-item(v-if="$user.can('view-staff')", :link="{ name: '职员管理', icon: 'manage_accounts', path: '/staff' }")
       sidebar-item(v-if="$user.can('view-payment')", :link="{ name: '支付明细', icon: 'payment', path: '/payment' }")
       sidebar-item(v-if="$user.can('view-card-type')", :link="{ name: '卡券种类', icon: 'card_membership', path: '/card-type' }")
       sidebar-item(v-if="$user.can('view-coupon')", :link="{ name: '优惠管理', icon: 'confirmation_number', path: '/coupon' }")
@@ -18,6 +17,7 @@
       sidebar-item(v-if="$user.can('view-event')", :link="{ name: '活动管理', icon: 'event', path: '/event' }")
       sidebar-item(v-if="$user.can('view-gift')", :link="{ name: '礼品管理', icon: 'card_giftcard', path: '/gift' }")
       sidebar-item(v-if="$user.can('view-store')", :link="{ name: '门店管理', icon: 'store', path: '/store' }")
+      sidebar-item(v-if="$user.can('view-staff')", :link="{ name: '职员管理', icon: 'manage_accounts', path: '/staff' }")
       sidebar-item(v-if="$user.can('view-config')", :link="{ name: '系统配置', icon: 'settings', path: '/config' }")
   .main-panel
     top-navbar

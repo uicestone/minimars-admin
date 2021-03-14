@@ -8,15 +8,15 @@
         h4.title 支付明细
           md-button.md-just-icon.md-simple.md-xs.pull-right(@click='queryData')
             md-icon refresh
-          md-button.md-just-icon.md-simple.md-xs.pull-right(@click='download' v-if='searchQuery.date || searchQuery.dateEnd')
+          md-button.md-just-icon.md-simple.md-xs.pull-right(@click='download' v-if="$user.role!=='manager' && (searchQuery.date || searchQuery.dateEnd)")
             md-icon get_app
           span.pull-right.mr-2 总金额：{{ totalAmount | currency }}
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
           .md-layout.md-layout-item.search-query
-            md-datepicker.md-layout-item.md-size-date.md-xsmall-size-50(v-model='searchQuery.date', :md-model-type='String', md-immediately)
+            md-datepicker.md-layout-item.md-size-date.md-xsmall-size-50(v-if="$user.role!=='manager'" v-model='searchQuery.date', :md-model-type='String', md-immediately :md-disabled-dates="disabledDates")
               label 日期开始
-            md-datepicker.md-layout-item.md-size-date.md-xsmall-size-50(v-model='searchQuery.dateEnd', :md-model-type='String', md-immediately)
+            md-datepicker.md-layout-item.md-size-date.md-xsmall-size-50(v-if="$user.role!=='manager'" v-model='searchQuery.dateEnd', :md-model-type='String', md-immediately :md-disabled-dates="disabledDates")
               label 日期结束
             md-field.md-layout-item.md-size-10.md-xsmall-size-50(v-if="!$user.store")
               label 门店
@@ -101,6 +101,16 @@ export default class PaymentList extends List<Payment> {
       return this.$router.push(`/user/${item.customer.id}`);
     } else {
       return this.$router.push(`/booking/${item.scene}/${attach[1]}`);
+    }
+  }
+  disabledDates(date: Date) {
+    if (this.$user.role === "admin") return false;
+    else if (this.$user.role === "accountant") {
+      const start = moment().subtract(1, "month").startOf("month").valueOf();
+      return date.valueOf() < start;
+    } else {
+      const start = moment().startOf("day").valueOf();
+      return date.valueOf() < start;
     }
   }
   download() {
