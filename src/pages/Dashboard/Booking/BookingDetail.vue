@@ -343,7 +343,7 @@ export default class BookingDetail extends Vue {
   }
 
   get allowChangeAdultsCount() {
-    return !!this.booking.id && !this.booking.card;
+    return !this.booking.id || this.booking.card;
   }
 
   get maxAdultsCount() {
