@@ -93,8 +93,7 @@ const globalVars = {
           // party: "派对",
           event: "活动",
           gift: "礼品",
-          food: "餐饮",
-          card: "购卡"
+          food: "餐饮"
         };
       }
     });
@@ -167,7 +166,9 @@ const globalVars = {
           event: "活动",
           gift: "礼品",
           mall: "电商",
-          card: "购卡",
+          card: "次卡",
+          balance: "充值",
+          period: "时效卡",
           party: "派对"
         };
       }

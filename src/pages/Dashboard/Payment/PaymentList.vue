@@ -30,7 +30,7 @@
             md-field.md-layout-item.md-size-15.md-xsmall-size-50
               label 业务场景
               md-select(v-model='searchQuery.scene' multiple)
-                md-option(v-for="(label, scene) in $bookingTypeNames", :key='scene', :value='scene') {{ label }}
+                md-option(v-for="(label, scene) in $sceneNames", :key='scene', :value='scene') {{ label }}
             md-field.md-layout-item.md-size-15.md-xsmall-size-50
               label 描述
               md-input(v-model="searchQuery.title")
