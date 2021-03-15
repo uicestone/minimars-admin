@@ -43,7 +43,7 @@
               .md-layout-item(style="flex:1;min-width:33%" v-if="['play','event'].includes(booking.type)")
                 md-field
                   label 成人
-                  md-input(v-model='booking.adultsCount', type='number', min='0' :disabled="!!booking.id && !booking.card" :max="!!booking.id && booking.card ? booking.card.freeParentsPerKid * booking.kidsCount : undefined")
+                  md-input(v-model='booking.adultsCount', type='number', min='0' :disabled="!allowChangeAdultsCount" :max="maxAdultsCount")
                   span.md-suffix 位
               .md-layout-item(style="flex:1;min-width:33%" v-if="['play','event'].includes(booking.type)")
                 md-field
@@ -340,6 +340,17 @@ export default class BookingDetail extends Vue {
       // this.booking.price = undefined;
     }
     return isFixed;
+  }
+
+  get allowChangeAdultsCount() {
+    return !!this.booking.id && !this.booking.card;
+  }
+
+  get maxAdultsCount() {
+    if (!this.booking.id || !this.booking.card) return undefined;
+    const max =
+      this.booking.card.freeParentsPerKid * (this.booking.kidsCount || 0);
+    return Math.max(max, this.booking.adultsCount || 0);
   }
 
   async save() {
