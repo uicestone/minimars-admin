@@ -41,10 +41,10 @@ export default class App extends Vue {
 
       if (to.path !== "/login" && !window.localStorage.getItem("token")) {
         console.log("[App] No token, redirect to login.");
-        return this.$router.push("/login");
+        return next({ path: "/login" });
       } else if (to.path === "/login" && window.localStorage.getItem("token")) {
         console.log("[App] Token exists, redirect to home.");
-        return this.$router.push("/");
+        return next({ path: "/" });
       }
 
       if (
@@ -52,7 +52,7 @@ export default class App extends Vue {
         to.path === "/dashboard" &&
         this.$user.role === "admin"
       ) {
-        return this.$router.push("/boss-board");
+        return next({ name: "Boss Board" });
       }
 
       next();

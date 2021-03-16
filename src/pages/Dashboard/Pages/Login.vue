@@ -40,7 +40,7 @@ export default {
         });
         window.localStorage.setItem("token", token);
         this.$user = user;
-        this.$router.push("/");
+        this.$router.push("/").catch(err => console.log(err.message));
       } catch (err) {
         console.error(err.message);
       }
