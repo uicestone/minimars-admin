@@ -157,9 +157,14 @@
     }
 
     // Size variations
-    &.md-lg .md-ripple{
+    &.md-lg{
+      .md-ripple {
         font-size: $mdb-btn-font-size-lg;
         padding: 18px 36px !important;
+      }
+      &.md-round .md-ripple {
+        padding: 18px !important;
+      }
     }
     &.md-lg-n .md-ripple{
       font-size: $mdb-btn-font-size-lg;
@@ -214,6 +219,10 @@
       &.md-xs {
         height: 26px;
       }
+      &.md-lg {
+        min-width: 52px;
+        height: 52px;
+      }
     }
 
     .md-button-content{
@@ -228,6 +237,12 @@
       .md-ripple {
         padding: 12px 10px;
       }
+    }
+
+    &.fixed-corner {
+      position: fixed;
+      right: 10px;
+      bottom: 10px;
     }
 }
 

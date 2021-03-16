@@ -87,7 +87,7 @@
         </md-button>
       </div>
     </editor-menu-bar>
-    <editor-content :editor="editor" :content="value" />
+    <editor-content class="content" :editor="editor" :content="value" />
   </div>
 </template>
 
@@ -206,4 +206,9 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.content {
+  max-height: 100vh;
+  overflow-y: auto;
+}
+</style>

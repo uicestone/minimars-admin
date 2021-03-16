@@ -10,6 +10,7 @@
             h4.title {{ gift.title }}
               span.pull-right(style="display:flex")
                 md-switch.md-primary(v-model="gift.useBalance") 可使用余额
+                md-switch.md-primary(v-model="gift.isProfileCover") 个人中心封面
 
           md-card-content.md-layout
             .md-layout-item.md-small-size-100.md-size-60

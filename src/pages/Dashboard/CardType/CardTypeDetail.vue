@@ -3,6 +3,8 @@
   .md-layout
     .md-layout-item.md-size-66.md-small-size-100.mx-auto
       form(@submit.prevent='save')
+        md-button.md-primary.md-round.md-just-icon.fixed-corner.md-lg(type='submit')
+          md-icon save
         md-card
           md-card-header.md-card-header-icon.md-card-header-primary
             .card-icon
@@ -111,6 +113,22 @@
               md-field
                 label 赠卡代号（空格分隔多个）
                 md-input(v-model='cardType.rewardCardTypes')
+            .md-layout-item.md-size-100(v-if="cardType.type==='balance'" style="display:flex;align-items:center;justify-content:flex-start")
+              span 多种面值-售价组合
+              md-button.md-just-icon.md-round.md-simple(@click="addBalanceGroup")
+                md-icon(style="margin:0;font-size:18px !important") add
+            .md-layout-item.md-size-100.md-layout(v-if="cardType.type==='balance'" v-for="(group,index) in cardType.balancePriceGroups" :key="index")
+              .md-layout-item.md-size-20
+                md-field
+                  label 面值
+                  md-input(type='number', step='0.01', v-model.number='group.balance')
+              .md-layout-item.md-size-20
+                md-field
+                  label 售价
+                  md-input(type='number', step='0.01', v-model.number='group.price')
+              .md-layout-item.md-size-10
+                md-button.md-just-icon.md-round.md-simple(@click="removeBalancePriceGroup(index)")
+                  md-icon delete
             .md-layout-item.md-size-100
                 md-chips.md-primary.shake-on-error(@keypress.native.enter.prevent, v-model='cardType.customerTags', md-placeholder='仅对标签客户显示', md-check-duplicated)
             .md-layout-item.md-size-100
@@ -118,13 +136,19 @@
                 label 内容详情
                 editor(v-model='cardType.content')
             .md-layout-item.md-size-100.text-right
-              md-button.md-raised.md-primary.mt-4(type='submit') 保存
-              md-button.mt-4.ml-2.md-simple.md-danger(type='button', @click='remove', v-if='cardType.id') 删除
+              md-button.mt-4.md-simple.md-danger(type='button', @click='remove', v-if='cardType.id') 删除
     .md-layout-item.md-size-33.md-small-size-100
       md-card
         .md-layout-item.md-size-100.md-xsmall-size-100.pb-2
-          h4.card-title 封面图
+          h4.card-title 默认卡面
           poster(v-model="cardType.posterUrl")
+          h4.card-title(style="display:flex;align-items:center;justify-content:space-between") 更多卡面
+            md-button.md-just-icon.md-simple.md-round(@click="addPoster")
+              md-icon add
+          poster(v-for="(url,index) in cardType.posterUrls" v-model="cardType.posterUrls[index]")
+            template(#buttons)
+              md-button.md-just-icon.md-simple.md-round.md-danger(@click="removePoster(index)")
+                md-icon delete
       md-button.md-block.md-success(v-if="cardType.openForClient" @click="$clipboard('/pages/index/index?cardSell='+cardType.id,'链接')") 点击复制小程序首页跳转链接（购卡）
       md-button.md-block.md-success(v-if="cardType.couponSlug" @click="$clipboard('/pages/index/index?coupon='+cardType.couponSlug,'链接')") 点击复制小程序首页跳转链接（团购）
       md-button.md-block.md-warning(v-if="cardType.couponSlug" @click="$router.push('/post/'+cardType.couponSlug)") 前往团购首页内容详情
@@ -152,7 +176,8 @@ export default class CardTypeDetail extends Vue {
     stores: [],
     freeParentsPerKid: 2,
     maxKids: 2,
-    customerTags: []
+    customerTags: [],
+    posterUrls: []
   };
   async save() {
     this.cardType = await CardTypeResource.save(this.cardType);
@@ -204,6 +229,33 @@ export default class CardTypeDetail extends Vue {
     if (v === false) {
       this.cardType.dayType = null;
     }
+  }
+  addPoster() {
+    this.cardType.posterUrls?.push("");
+  }
+  removePoster(index: number) {
+    this.cardType.posterUrls = this.cardType.posterUrls
+      ?.slice(0, index)
+      .concat(this.cardType.posterUrls.slice(index + 1));
+  }
+  addBalanceGroup() {
+    if (!this.cardType.balancePriceGroups) {
+      this.cardType.balancePriceGroups = [];
+    }
+    this.cardType.balancePriceGroups.push({});
+    this.$set(
+      this.cardType,
+      "balancePriceGroups",
+      this.cardType.balancePriceGroups
+    );
+  }
+  removeBalancePriceGroup(index: number) {
+    if (!this.cardType.balancePriceGroups) {
+      return;
+    }
+    this.cardType.balancePriceGroups = this.cardType.balancePriceGroups
+      .slice(0, index)
+      .concat(this.cardType.balancePriceGroups.slice(index + 1));
   }
   async mounted() {
     if (this.$route.params.id !== "add") {

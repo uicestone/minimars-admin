@@ -100,6 +100,8 @@ export interface CardType extends Model {
   title: string;
   slug: string;
   type: string;
+  posterUrl: string;
+  posterUrls: string[];
   isGift: boolean;
   stores: Populated<Store>[];
   content: string;
@@ -108,6 +110,7 @@ export interface CardType extends Model {
   end: Date;
   dayType?: "onDaysOnly" | "offDaysOnly" | null;
   balance: number;
+  balancePriceGroups: { balance?: number; price?: number }[];
   price: number;
   maxKids: number;
   minKids: number;
@@ -333,6 +336,7 @@ export interface GiftPutBody extends Gift {}
 export interface GiftQuery extends ListQuery {
   keyword?: string;
   store?: string;
+  isCover?: string;
 }
 
 export interface PaymentPostBody extends Payment {}
