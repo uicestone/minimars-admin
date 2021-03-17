@@ -263,6 +263,7 @@ export default class BookingDetail extends Vue {
     return (
       this.booking.id &&
       !["canceled"].includes(this.booking.status as BookingStatus) &&
+      !this.booking.providerData?.provider &&
       (this.$user.role === "admin" ||
         [
           BookingStatus.BOOKED,

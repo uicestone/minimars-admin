@@ -67,6 +67,7 @@ export interface Booking extends Model {
   quantity?: number;
   payments?: Populated<Payment>[];
   remarks?: string;
+  providerData?: Record<string, any>;
 }
 
 export interface Card extends Model {
@@ -94,6 +95,7 @@ export interface Card extends Model {
   discountPrice?: number;
   discountRate?: number;
   fixedPrice?: number;
+  providerData?: Record<string, any>;
 }
 
 export interface CardType extends Model {
