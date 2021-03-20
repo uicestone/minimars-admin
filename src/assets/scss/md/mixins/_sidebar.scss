@@ -1,7 +1,7 @@
 @mixin sidebar-background-color($background-color, $font-color){
     .md-list{
         li{
-            .nav-link{
+            &:not(.active) .nav-link{
               color: $font-color !important;
             }
             i{

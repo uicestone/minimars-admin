@@ -80,7 +80,8 @@ export default {
           "green",
           "orange",
           "danger",
-          "rose"
+          "rose",
+          "primary"
         ];
         return acceptedValues.indexOf(value) !== -1;
       }
@@ -99,7 +100,7 @@ export default {
     },
     logo: {
       type: String,
-      default: "/img/logo-640.png"
+      default: "/img/mlogo-01.png"
     },
     sidebarLinks: {
       type: Array,

@@ -275,6 +275,9 @@
                 .md-ripple i{
                     opacity: 1;
                 }
+                p {
+                  font-weight: normal;
+                }
             }
         }
 
@@ -310,6 +313,7 @@
         display: block;
         position: relative;
         z-index: 4;
+        line-height: 0;
 
         a.logo-mini,
         a.logo-normal{
@@ -372,7 +376,8 @@
               display: flex;
               align-items: center;
               justify-content: center;
-              height: 80px;
+              max-height: 80px;
+              min-height: 30px;
               width: auto;
               // background: $white-color;
               border-radius: 50%;
@@ -516,8 +521,11 @@
         }
     }
 
+    &[data-color="primary"]{
+      @include set-background-color-button($brand-primary);
+    }
     &[data-color="purple"]{
-        @include set-background-color-button($brand-primary);
+        @include set-background-color-button($brand-play);
     }
     &[data-color="azure"]{
         @include set-background-color-button($brand-info);
@@ -584,6 +592,55 @@
 
         .md-ripple .md-ripple-wave {
           background-color: $white-color !important;
+        }
+      }
+
+    }
+
+    &[data-background-color="primary"]{
+      @include sidebar-background-color($brand-primary, $gray-color);
+
+      &:before {
+        display: block;
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        opacity: .45;
+        background: #000;
+      }
+
+      &:after {
+        background-color: $brand-primary;
+        opacity: .8;
+      }
+
+      .logo:after,
+      .user:after {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+
+      .md-icon.md-theme-default.md-icon-font {
+        color: $gray-color !important;
+      }
+
+      .nav li:not(.active):hover > a,
+      .nav li.active > [data-toggle="collapse"],
+      .nav li .dropdown:hover > a {
+        background-color: rgba(255,255,255,.1);
+      }
+
+      .navbar-minimize .md-button {
+        i {
+          color: $gray-color !important;
+          opacity: 1;
+        }
+
+        .md-ripple .md-ripple-wave {
+          background-color: $gray-color !important;
         }
       }
 
