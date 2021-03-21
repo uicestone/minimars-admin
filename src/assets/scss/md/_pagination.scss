@@ -122,4 +122,108 @@
             }
         }
     }
+
+    &.pagination-play{
+        > .page-item.active > a,
+        > .page-item.active > span{
+            &,
+            &:focus,
+            &:hover{
+                background-color: $brand-play;
+                border-color: $brand-play;
+                @include shadow-4dp-color($brand-play);
+            }
+        }
+    }
+
+    &.pagination-food{
+        > .page-item.active > a,
+        > .page-item.active > span{
+            &,
+            &:focus,
+            &:hover{
+                background-color: $brand-food;
+                border-color: $brand-food;
+                @include shadow-4dp-color($brand-food);
+            }
+        }
+    }
+
+    &.pagination-gift{
+        > .page-item.active > a,
+        > .page-item.active > span{
+            &,
+            &:focus,
+            &:hover{
+                background-color: $brand-gift;
+                border-color: $brand-gift;
+                @include shadow-4dp-color($brand-gift);
+            }
+        }
+    }
+
+    &.pagination-mall{
+        > .page-item.active > a,
+        > .page-item.active > span{
+            &,
+            &:focus,
+            &:hover{
+                background-color: $brand-mall;
+                border-color: $brand-mall;
+                @include shadow-4dp-color($brand-mall);
+            }
+        }
+    }
+
+    &.pagination-event{
+        > .page-item.active > a,
+        > .page-item.active > span{
+            &,
+            &:focus,
+            &:hover{
+                background-color: $brand-event;
+                border-color: $brand-event;
+                @include shadow-4dp-color($brand-event);
+            }
+        }
+    }
+
+    &.pagination-balance{
+        > .page-item.active > a,
+        > .page-item.active > span{
+            &,
+            &:focus,
+            &:hover{
+                background-color: $brand-balance;
+                border-color: $brand-balance;
+                @include shadow-4dp-color($brand-balance);
+            }
+        }
+    }
+
+    &.pagination-card{
+        > .page-item.active > a,
+        > .page-item.active > span{
+            &,
+            &:focus,
+            &:hover{
+                background-color: $brand-card;
+                border-color: $brand-card;
+                @include shadow-4dp-color($brand-card);
+            }
+        }
+    }
+
+    &.pagination-period{
+        > .page-item.active > a,
+        > .page-item.active > span{
+            &,
+            &:focus,
+            &:hover{
+                background-color: $brand-period;
+                border-color: $brand-period;
+                @include shadow-4dp-color($brand-period);
+            }
+        }
+    }
 }

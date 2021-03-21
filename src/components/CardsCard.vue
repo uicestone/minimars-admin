@@ -1,6 +1,6 @@
 <template lang="pug">
 md-card.codes-card
-  md-card-header.md-card-header-icon.md-card-header-blue
+  md-card-header.md-card-header-icon.md-card-header-card
     .card-icon
       md-icon card_membership
     h4.title {{ title }}
@@ -20,7 +20,7 @@ md-card.codes-card
           md-button.md-simple.md-danger.md-xs(v-if="$user.role === 'admin' && cardRefundable(card)" @click="refund(card)" style="width:48px!important;height:18px!important;padding:0") 退卡
         md-table-cell(md-label='过期日期' @click.native="changeExpireDate(card)")
           | {{ card.expiresAt | date("YYYY-MM-DD") }}
-          md-badge.md-primary.card-extend(v-if="card.expiresAtWas" md-content="延" md-dense)
+          md-badge.md-cards.card-extend(v-if="card.expiresAtWas" md-content="延" md-dense)
         md-table-cell.nowrap(md-label='剩余次数', v-if="['times','coupon'].includes(card.type)") 剩{{ card.timesLeft }}次
         md-table-cell(md-label='日期区间', v-if="card.type === 'period'")
           | {{ card.start | date("YY-MM-DD") }} -
@@ -181,5 +181,6 @@ export default class CardsCard extends Vue {
   transform: scale(0.8);
   background-color: #1bbbcf !important;
   font-weight: bold;
+  color: #fff;
 }
 </style>

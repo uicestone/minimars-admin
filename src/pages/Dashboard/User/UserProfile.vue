@@ -4,7 +4,7 @@
     .md-layout-item.md-medium-size-100.md-size-60.mx-auto
       form(@submit.prevent='save')
         md-card
-          md-card-header.md-card-header-icon.md-card-header-green
+          md-card-header.md-card-header-icon.md-card-header-card
             .card-icon
               md-icon perm_identity
             h4.title 用户详情
@@ -75,12 +75,12 @@
                   label 备注
                   md-textarea(v-model='user.remarks' :disabled="readonly")
               .md-layout-item.md-size-100
-                md-chips.md-primary.shake-on-error(v-if="$user.role==='admin'" @keypress.native.enter.prevent, v-model='user.tags', md-placeholder='客户内部标签', md-check-duplicated)
-                md-chips.md-primary(v-else v-model='user.tags' md-static)
+                md-chips.md-info.shake-on-error(v-if="$user.role==='admin'" @keypress.native.enter.prevent, v-model='user.tags', md-placeholder='客户内部标签', md-check-duplicated)
+                md-chips.md-info(v-else v-model='user.tags' md-static)
             .md-layout-item.md-size-100.text-right
-              md-button.md-success.mt-4(type='submit' :class="{'md-raised':!user.id,'md-simple':user.id}" :disabled="!userValidated") {{ user.id ? "更新" : "创建" }}
-              md-button.md-primary.mt-4.pull-right(@click="createBooking()" v-if="user.id") 门票预约
-              md-button.md-success.mt-4.mr-1.pull-right(@click="createBooking('food')" v-if="user.id") 吧台消费
+              md-button.md-info.mt-4(type='submit' :class="{'md-raised':!user.id,'md-simple':user.id}" :disabled="!userValidated") {{ user.id ? "更新" : "创建" }}
+              md-button.md-play.mt-4.pull-right(@click="createBooking()" v-if="user.id") 门票预约
+              md-button.md-food.mt-4.mr-1.pull-right(@click="createBooking('food')" v-if="user.id") 吧台消费
       bookings-card(title="近期门票预约" type="play" :bookings="userBookings.filter(b=>b.type==='play')" :customer="user")
       bookings-card(title="近期活动预约" type="event" :bookings="userBookings.filter(b=>b.type==='event')" :customer="user")
       bookings-card(title="近期礼品兑换" type="gift" :bookings="userBookings.filter(b=>b.type==='gift')" :customer="user")
@@ -88,7 +88,7 @@
     .md-layout-item.md-medium-size-100.md-size-40.mx-auto
       membership(:customer="user" @updated="getUser" :allow-buy-card="!readonly")
         template(v-slot:action-buttons)
-          md-button.md-success.md-sm.pull-right(v-if="creatable" @click="save") 创建会员
+          md-button.md-info.md-sm.pull-right(v-if="creatable" @click="save") 创建会员
 </template>
 
 <script lang="ts">

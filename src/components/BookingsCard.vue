@@ -57,11 +57,11 @@ export default class BookingsCard extends Vue {
   get cardHeaderClass() {
     if (!this.type) return "";
     const map = {
-      [Scene.PLAY]: "primary",
-      [Scene.EVENT]: "warning",
-      [Scene.GIFT]: "rose",
-      [Scene.FOOD]: "green",
-      [Scene.PARTY]: "blue",
+      [Scene.PLAY]: "play",
+      [Scene.EVENT]: "event",
+      [Scene.GIFT]: "gift",
+      [Scene.FOOD]: "food",
+      [Scene.PARTY]: "party",
       [Scene.CARD]: ""
     };
     return "md-card-header-" + map[this.type];
@@ -83,11 +83,11 @@ export default class BookingsCard extends Vue {
   get buttonClass() {
     if (!this.type) return "";
     const map = {
-      [Scene.PLAY]: "primary",
-      [Scene.EVENT]: "warning",
-      [Scene.GIFT]: "rose",
-      [Scene.FOOD]: "success",
-      [Scene.PARTY]: "blue",
+      [Scene.PLAY]: "play",
+      [Scene.EVENT]: "event",
+      [Scene.GIFT]: "gift",
+      [Scene.FOOD]: "food",
+      [Scene.PARTY]: "gift",
       [Scene.CARD]: ""
     };
     return "md-" + map[this.type];

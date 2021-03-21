@@ -2,7 +2,7 @@
 .md-layout
   .md-layout-item
     md-card
-      md-card-header.md-card-header-icon.md-card-header-primary
+      md-card-header.md-card-header-icon.md-card-header-danger
         .card-icon
           md-icon payment
         h4.title 支付明细

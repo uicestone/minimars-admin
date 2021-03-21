@@ -22,7 +22,7 @@
     //- .md-layout-item.md-size-10.md-xsmall-size-100
     //-   md-button.md-info(:href="$http.options.root + 'daily-report/' + date", style='width:100%') 下载日报表
   .md-layout-item.md-size-33.md-xsmall-size-100
-    stats-card(header-color='blue')
+    stats-card(header-color='period')
       template(slot='header')
         .card-icon
           md-icon playlist_add_check
@@ -35,7 +35,7 @@
           md-icon bookmark_border
           | 实时，包含各项现金类收款
   .md-layout-item.md-size-33.md-xsmall-size-100
-    stats-card(header-color='green')
+    stats-card(header-color='play')
       template(slot='header')
         .card-icon
           md-icon payment
@@ -48,7 +48,7 @@
           md-icon bookmark_border
           | 实时，包含各平台优惠券核销券值和会员卡核销价值
   .md-layout-item.md-size-33.md-xsmall-size-100
-    stats-card(header-color='rose')
+    stats-card(header-color='card')
       template(slot='header')
         .card-icon
           md-icon store
@@ -60,7 +60,7 @@
           md-icon bookmark_border
           | 实时，包含所有成功付款订单的成人数及儿童数
   .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
-    chart-card(header-animation='false', :chart-data='dailyFlowChart.data', :chart-options='dailyFlowChart.options', chart-type='Line', chart-inside-header, background-color='blue')
+    chart-card(header-animation='false', :chart-data='dailyFlowChart.data', :chart-options='dailyFlowChart.options', chart-type='Line', chart-inside-header, background-color='period')
       md-button.md-simple.md-info.md-just-icon(slot='first-button')
         md-icon refresh
         md-tooltip(md-direction='bottom') Refresh
@@ -76,7 +76,7 @@
           md-icon access_time
           | 实时
   .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
-    chart-card(header-animation='false', :chart-data='dailyCardCouponPaymentChart.data', :chart-options='dailyCardCouponPaymentChart.options', chart-type='Line', chart-inside-header, background-color='green')
+    chart-card(header-animation='false', :chart-data='dailyCardCouponPaymentChart.data', :chart-options='dailyCardCouponPaymentChart.options', chart-type='Line', chart-inside-header, background-color='play')
       md-button.md-simple.md-info.md-just-icon(slot='first-button')
         md-icon refresh
         md-tooltip(md-direction='bottom') Refresh
@@ -92,7 +92,7 @@
           md-icon access_time
           | 实时
   .md-layout-item.md-medium-size-100.md-xsmall-size-100.md-size-33
-    chart-card(header-animation='false', :chart-data='dailyCustomersChart.data', :chart-options='dailyCustomersChart.options', chart-type='Line', chart-inside-header, background-color='rose')
+    chart-card(header-animation='false', :chart-data='dailyCustomersChart.data', :chart-options='dailyCustomersChart.options', chart-type='Line', chart-inside-header, background-color='card')
       md-icon(slot='fixed-button') build
       md-button.md-simple.md-info.md-just-icon(slot='first-button')
         md-icon refresh
@@ -109,7 +109,7 @@
           md-icon access_time
           | 实时
   .md-layout-item.md-size-33.md-xsmall-size-100
-    global-sales-card(header-color='blue')
+    global-sales-card(header-color='period')
       template(slot='header')
         .card-icon
           md-icon language
@@ -122,7 +122,7 @@
                 md-table-cell {{ item.name }}
                 md-table-cell {{ item.amount | currency(0) }}
   .md-layout-item.md-size-33.md-xsmall-size-100
-    global-sales-card(header-color='green')
+    global-sales-card(header-color='play')
       template(slot='header')
         .card-icon
           md-icon language
@@ -135,7 +135,7 @@
                 md-table-cell {{ item.name }}
                 md-table-cell {{ item.amount | currency(0) }}
   .md-layout-item.md-size-33.md-xsmall-size-100
-    global-sales-card(header-color='rose')
+    global-sales-card(header-color='card')
       template(slot='header')
         .card-icon
           md-icon language
@@ -160,7 +160,7 @@
                   span {{ stats.customersByType.card.adultsCount }} /
                   b  {{ stats.customersByType.card.kidsCount }}
   .md-layout-item.md-size-100.md-xsmall-size-100
-    global-sales-card(header-color='primary')
+    global-sales-card(header-color='period')
       template(slot='header')
         .card-icon
           md-icon language

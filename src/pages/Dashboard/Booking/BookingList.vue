@@ -2,19 +2,19 @@
 .md-layout
   .md-layout-item
     md-card
-      md-card-header.md-card-header-icon.md-card-header-primary(v-if='type==="play"')
+      md-card-header.md-card-header-icon.md-card-header-play(v-if='type==="play"')
         .card-icon
           md-icon timer
         h4.title 票务管理
-      md-card-header.md-card-header-icon.md-card-header-warning(v-if='type==="event"')
+      md-card-header.md-card-header-icon.md-card-header-event(v-if='type==="event"')
         .card-icon
           md-icon event
         h4.title 活动预约
-      md-card-header.md-card-header-icon.md-card-header-rose(v-if='type==="gift"')
+      md-card-header.md-card-header-icon.md-card-header-gift(v-if='type==="gift"')
         .card-icon
           md-icon card_giftcard
         h4.title 礼品兑换
-      md-card-header.md-card-header-icon.md-card-header-green(v-if='type==="food"')
+      md-card-header.md-card-header-icon.md-card-header-food(v-if='type==="food"')
         .card-icon
           md-icon fastfood
         h4.title 餐饮消费
@@ -48,13 +48,13 @@
                 md-option(value='') 全部
                 md-option(v-for='coupon in $coupons', :key='coupon.id', :value='coupon.id') {{ coupon.title }}
           .toolbar-actions
-            md-button.md-primary(v-if='type==="play"', @click='showCreate("play")')
+            md-button.md-play(v-if='type==="play"', @click='showCreate("play")')
               | 创建门票预约
-            md-button.md-warning(v-if='type==="event"', @click='showCreate("event")')
+            md-button.md-event(v-if='type==="event"', @click='showCreate("event")')
               | 创建活动预约
-            md-button.md-rose(v-if='type==="gift"', @click='showCreate("gift")')
+            md-button.md-gift(v-if='type==="gift"', @click='showCreate("gift")')
               | 创建礼品兑换
-            md-button.md-success(v-if='type==="food"', @click='showCreate("food")')
+            md-button.md-food(v-if='type==="food"', @click='showCreate("food")')
               | 创建吧台消费
             md-button.md-just-icon.md-simple(@click='queryData')
               md-icon refresh
@@ -94,10 +94,10 @@
       md-card-actions(md-alignment='space-between')
         div
           p.card-category {{ from }} - {{ to }} / {{ total }}
-        pagination.pagination-no-border.pagination-primary(v-if='type==="play"', v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
-        pagination.pagination-no-border.pagination-warning(v-if='type==="event"', v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
-        pagination.pagination-no-border.pagination-rose(v-if='type==="gift"', v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
-        pagination.pagination-no-border.pagination-success(v-if='type==="food"', v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
+        pagination.pagination-no-border.pagination-play(v-if='type==="play"', v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
+        pagination.pagination-no-border.pagination-event(v-if='type==="event"', v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
+        pagination.pagination-no-border.pagination-gift(v-if='type==="gift"', v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
+        pagination.pagination-no-border.pagination-food(v-if='type==="food"', v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
 </template>
 
 <script lang="ts">

@@ -5,7 +5,7 @@
   .button-container(v-if="!disabled")
     md-button.md-danger.md-round.md-simple.md-just-icon(@click='removeImage', v-if='preview || value')
       md-icon close
-    md-button.md-success.md-round.md-fileinput(v-if='!preview && !value')
+    md-button.md-info.md-round.md-fileinput(v-if='!preview && !value')
       | 选择图片
       input(type='file', @change='onFileChange', ref='file-input')
     md-button.md-success.md-round.md-fileinput.md-just-icon.md-simple(v-else)

@@ -11,7 +11,7 @@
               span(@click="$clipboard(booking.id, '订单ID')")
                 span {{ booking.id.substr(-4).toUpperCase() }}
                 md-icon(style="font-size:15px !important") file_copy
-              md-button.pull-right.md-success.md-xs.md-simple(@click="goCustomerDetail" v-if="booking.customer")
+              md-button.pull-right.md-period.md-xs.md-simple(@click="goCustomerDetail" v-if="booking.customer")
                 span 查看客户{{booking.customer.name}}详情
                 md-icon.mini keyboard_arrow_right
               md-button.pull-right.md-info.md-xs.md-simple(v-if="booking.status")
@@ -125,14 +125,14 @@
                 md-button.md-simple.md-danger(@click='remove', v-if='booking.id && $user.can("delete-booking")') 删除
                 md-button.md-simple.md-warning(@click='cancel', v-if="bookingCancelable") 撤销
                 md-button.md-simple.md-success(@click='recover', v-if="booking.status === 'pending_refund' && bookingCancelable") 拒绝撤销
-                md-button.md-primary.md-simple(type='submit' v-if='booking.type==="play" && booking.id') 保存
+                md-button.md-info.md-simple(type='submit' v-if='booking.type==="play" && booking.id') 保存
                 md-button.md-primary.md-raised(type='submit' v-if='booking.type==="play" && !booking.id' :disabled="!bookingValidated") 保存并入场
                 md-button.md-warning.md-raised(@click="checkOut" v-if='booking.type==="play" && booking.status==="in_service"') 出场
                 md-button.md-warning(type='submit' v-if='booking.type==="event"' :class='{"md-simple": booking.id,"md-raised": !booking.id}' :disabled="!bookingValidated") 保存
                 md-button.md-rose(type='submit' v-if='booking.type==="gift"' :class='{"md-simple": booking.id,"md-raised": !booking.id}' :disabled="!bookingValidated") 保存
                 md-button.md-success(type='submit' v-if='booking.type==="food"' :class='{"md-simple": booking.id,"md-raised": !booking.id}' :disabled="!bookingValidated") 保存
                 md-button.md-raised.md-info.ml-2(v-if="bandsPrintable > 0 && ['booked','in_service'].includes(booking.status) && booking.type === 'play' && booking.date<=today" @click="printBands") 打印手环
-                md-button.md-raised.md-rose.ml-2(v-if="['booked','in_service'].includes(booking.status) && booking.type === 'play' && booking.date<=today" @click="showFacesSnapshotModal = true") 拍摄头像
+                md-button.md-raised.md-info.ml-2(v-if="['booked','in_service'].includes(booking.status) && booking.type === 'play' && booking.date<=today" @click="showFacesSnapshotModal = true") 拍摄头像
                 md-button.md-raised.md-warning.ml-2(v-if="booking.status === 'booked' && ['play','event'].includes(booking.type) && booking.date<=today" @click="checkIn") 入场
                 md-button.md-raised.md-rose.ml-2(v-if="booking.status === 'booked' && ['gift'].includes(booking.type)" @click="redeem") 兑换
         md-card.payments-card(v-if="booking.payments.length")
@@ -297,11 +297,11 @@ export default class BookingDetail extends Vue {
   get cardHeaderClass() {
     if (!this.booking.type) return "";
     const map = {
-      [Scene.PLAY]: "primary",
-      [Scene.EVENT]: "warning",
-      [Scene.GIFT]: "rose",
-      [Scene.FOOD]: "green",
-      [Scene.PARTY]: "blue",
+      [Scene.PLAY]: "play",
+      [Scene.EVENT]: "event",
+      [Scene.GIFT]: "gift",
+      [Scene.FOOD]: "food",
+      [Scene.PARTY]: "gift",
       [Scene.CARD]: ""
     };
     return "md-card-header-" + map[this.booking.type];

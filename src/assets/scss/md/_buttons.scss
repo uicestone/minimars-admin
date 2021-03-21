@@ -80,7 +80,13 @@
     &.md-mall{
       @include btn-styles($brand-mall);
     }
-    &.md-card{
+    &.md-event{
+      @include btn-styles($brand-event);
+    }
+    &.md-gift{
+      @include btn-styles($brand-gift);
+    }
+    &.md-cards{
       @include btn-styles($brand-card);
     }
     &.md-balance{
