@@ -3,7 +3,7 @@
   side-bar(:active-color='sidebarBackground', :background-image='sidebarBackgroundImage', :data-background-color='sidebarBackgroundColor')
     user-menu
     template(slot='links')
-      sidebar-item(v-if="$user.can('boss board')", :link="{ name: '数据统计', icon: 'dashboard', path: '/boss-board' }")
+      sidebar-item(v-if="$user.can('BOSSBOARD')", :link="{ name: '数据统计', icon: 'dashboard', path: '/boss-board' }")
       sidebar-item(v-else, :link="{ name: '数据统计', icon: 'dashboard', path: '/dashboard' }")
       sidebar-item(v-if="$user.can('PLAY_BOOKING')", :link="{ name: '票务管理', icon: 'access_time', path: '/booking/play' }")
       sidebar-item(v-if="$user.can('EVENT_BOOKING')", :link="{ name: '活动预约', icon: 'event', path: '/booking/event' }")
