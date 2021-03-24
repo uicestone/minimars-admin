@@ -36,6 +36,38 @@ export enum PaymentGateway {
   UnionPay = "unionpay"
 }
 
+export enum Permission {
+  DEVELOP = "develop",
+  BOSSBOARD = "bossboard",
+  DASHBOARD = "dashboard",
+  PLAY_BOOKING = "play booking",
+  EVENT_BOOKING = "event booking",
+  FOOD_BOOKING = "food booking",
+  GIFT_BOOKING = "gift booking",
+  PARTY_BOOKING = "party booking",
+  BOOKING_ALL_STORE = "booking all store",
+  BOOKING_CREATE = "booking create",
+  BOOKING_CANCEL_REVIEW = "booking cancel review",
+  CARD_SELL_STORE = "card sell store",
+  CARD_SELL_ALL = "card sell all",
+  CUSTOMER = "customer",
+  PAYMENT = "payment",
+  PAYMENT_DOWNLOAD = "payment download",
+  PAYMENT_LAST_WEEK = "payment last week",
+  PAYMENT_LAST_MONTH = "payment last month",
+  CARD_TYPE = "card-type",
+  COUPON = "coupon",
+  POST = "post",
+  EVENT = "event",
+  GIFT = "gift",
+  STORE = "store",
+  STAFF = "staff",
+  ROLE = "role",
+  CONFIG = "config"
+}
+
+export type PermissionKey = keyof typeof Permission;
+
 export interface Model {
   id: string;
   createdAt: Date;
@@ -147,6 +179,7 @@ export interface Config {
   stores?: Store[];
   cardTypes?: CardType[];
   coupons?: Coupon[];
+  roles?: Role[];
 }
 
 export interface ConfigItem extends Model, Record<string, any> {
@@ -211,6 +244,11 @@ export interface Post extends Model {
   end?: null | Date;
 }
 
+export interface Role extends Model {
+  name: string;
+  permissions: Permission[];
+}
+
 export interface Store extends Model {
   name: string;
   address: string;
@@ -227,7 +265,7 @@ export interface Store extends Model {
 }
 
 export interface User extends Model {
-  role: string;
+  role?: Populated<Role>;
   login?: string;
   password?: string;
   name?: string;
@@ -249,6 +287,7 @@ export interface User extends Model {
   cardNo?: string;
   cards: Card[];
   tags: string[];
+  can(...permission: PermissionKey[]): boolean;
 }
 
 export interface AuthLoginPostBody {

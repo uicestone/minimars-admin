@@ -7,7 +7,7 @@
       md-datepicker.ml-2(v-model='dateEnd', :md-model-type='String', md-immediately style="width:140px")
         label 结束日期
     .md-layout-item.md-xsmall-size-100(style='display:flex;justify-content:space-between;width:330px;flex:0')
-      md-menu.md-button(v-if="$user.role==='admin'")
+      md-menu.md-button
         md-button.md-period(md-menu-trigger) {{ store ? store.name : '全部门店' }}
         md-menu-content
           md-menu-item(@click="selectStore(false)") 全部门店

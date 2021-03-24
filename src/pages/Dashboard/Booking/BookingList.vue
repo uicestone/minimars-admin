@@ -30,7 +30,7 @@
               label 状态
               md-select(v-model='searchQuery.status', multiple)
                 md-option(v-for='(name, status) in $bookingStatusNames', :key='status', :value='status') {{ name }}
-            md-field.md-layout-item.md-size-15.md-xsmall-size-100(v-if="$user.role==='admin'")
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100(v-if="$user.can('BOOKING_ALL_STORE')")
               label 门店
               md-select(v-model='searchQuery.store')
                 md-option(value='') 全部
@@ -60,7 +60,7 @@
               md-icon refresh
         md-table.paginated-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='$noop')
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }', @click='showDetail(item)')
-            md-table-cell(md-label='门店', md-sort-by='store' v-if="$user.role==='admin' && !searchQuery.store")
+            md-table-cell(md-label='门店', md-sort-by='store' v-if="$user.can('BOOKING_ALL_STORE') && !searchQuery.store")
               | {{ item.store ? item.store.name : '门店通用' }}
             md-table-cell(md-label='客户', md-sort-by='customer.name', @click.native.stop='goToCustomer(item.customer)', style='min-width:180px')
               span(v-if="item.customer") {{ item.customer.mobile }} {{ item.customer.name }}

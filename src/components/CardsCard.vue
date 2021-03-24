@@ -16,8 +16,8 @@ md-card.codes-card
           span(v-if="card.status!=='valid'") {{ card.status | cardStatusName }}
           md-button.md-normal.md-success.md-xs(v-if="card.status === 'valid'" @click="activate(card)" style="width:48px !important") 激活
           md-button.md-normal.md-danger.md-xs.ml-1(v-if="card.status === 'valid'" @click="$clipboard(card.giftCode, '礼品码')" style="width:48px !important") 转赠
-          md-button.md-simple.md-danger.md-xs(v-if="$user.role === 'admin' && cardRemovable(card)" @click="remove(card)" style="width:48px!important;height:18px!important;padding:0") 删除
-          md-button.md-simple.md-danger.md-xs(v-if="$user.role === 'admin' && cardRefundable(card)" @click="refund(card)" style="width:48px!important;height:18px!important;padding:0") 退卡
+          md-button.md-simple.md-danger.md-xs(v-if="$user.can('CARD_SELL_ALL') && cardRemovable(card)" @click="remove(card)" style="width:48px!important;height:18px!important;padding:0") 删除
+          md-button.md-simple.md-danger.md-xs(v-if="$user.can('CARD_SELL_ALL') && cardRefundable(card)" @click="refund(card)" style="width:48px!important;height:18px!important;padding:0") 退卡
         md-table-cell(md-label='过期日期' @click.native="changeExpireDate(card)")
           | {{ card.expiresAt | date("YYYY-MM-DD") }}
           md-badge.md-cards.card-extend(v-if="card.expiresAtWas" md-content="延" md-dense)
@@ -67,7 +67,7 @@ export default class CardsCard extends Vue {
   }
 
   async remove(card: Card) {
-    if (this.$user.role !== "admin") return;
+    if (!this.$user.can("CARD_SELL_ALL")) return;
     try {
       if (
         !(await confirm(
@@ -86,7 +86,7 @@ export default class CardsCard extends Vue {
   }
 
   async refund(card: Card) {
-    if (this.$user.role !== "admin") return;
+    if (!this.$user.can("CARD_SELL_ALL")) return;
     try {
       if (
         !(await confirm(
@@ -108,7 +108,7 @@ export default class CardsCard extends Vue {
   }
 
   async changeExpireDate(card: Card) {
-    if (this.$user.role !== "admin") return;
+    if (!this.$user.can("CARD_SELL_ALL")) return;
     const expiresAt = await promptInput(
       "更改会员卡过期日期",
       null,

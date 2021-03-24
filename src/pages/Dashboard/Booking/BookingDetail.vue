@@ -28,7 +28,7 @@
             .md-layout-item.md-small-size-50.md-size-25
               md-field
                 label 门店
-                store-select(v-model="booking.store" :disabled='!!booking.id || $user.role !== "admin"')
+                store-select(v-model="booking.store" :disabled='!!booking.id || !$user.can("BOOKING_ALL_STORE")')
             .md-layout-item.md-small-size-100.md-size-100(v-if="booking.type === 'event'")
               md-autocomplete(v-model='eventSearchTerm', :md-options='events', @md-selected='selectEvent' @keypress.enter.native.prevent :disabled='!!booking.id' md-open-on-focus autocomplete="off")
                 label 活动
@@ -264,7 +264,7 @@ export default class BookingDetail extends Vue {
       this.booking.id &&
       !["canceled"].includes(this.booking.status as BookingStatus) &&
       !this.booking.providerData?.provider &&
-      (this.$user.role === "admin" ||
+      (this.$user.can("BOOKING_CANCEL_REVIEW") ||
         [
           BookingStatus.BOOKED,
           BookingStatus.IN_SERVICE,

@@ -4,7 +4,7 @@
     .md-layout-item.md-size-30.md-xsmall-size-100.stats-date
       md-datepicker(v-model='date', :md-model-type='String', md-immediately  :md-disabled-dates="disabledDates" style="width:140px")
         label 开始日期
-      md-datepicker.ml-2(v-model='dateEnd', :md-model-type='String', md-immediately  :md-disabled-dates="disabledDates" v-if="$user.role!=='manager'" style="width:140px")
+      md-datepicker.ml-2(v-model='dateEnd', :md-model-type='String', md-immediately  :md-disabled-dates="disabledDates" v-if="$user.can('PAYMENT')" style="width:140px")
         label 结束日期
     .md-layout-item.md-xsmall-size-100(style='display:flex;justify-content:space-between;width:330px;flex:0')
       md-menu.md-button(v-if="!$user.store")
@@ -268,13 +268,15 @@ export default class Dashboard extends Vue {
   };
 
   get startAvailableDay() {
-    if (this.$user.role === "admin") {
-      return "";
-    } else if (this.$user.role === "accountant") {
+    if (this.$user.can("PAYMENT_LAST_MONTH")) {
       return moment()
         .subtract(1, "month")
         .startOf("month")
         .format("YYYY-MM-DD");
+    } else if (this.$user.can("PAYMENT_LAST_WEEK")) {
+      return moment().subtract(1, "week").startOf("week").format("YYYY-MM-DD");
+    } else if (this.$user.can("PAYMENT")) {
+      return "";
     }
     return moment().format("YYYY-MM-DD");
   }
@@ -291,13 +293,17 @@ export default class Dashboard extends Vue {
   }
 
   disabledDates(date: Date) {
-    if (this.$user.role === "admin") return false;
-    else if (this.$user.role === "accountant") {
+    if (this.$user.can("PAYMENT_LAST_MONTH")) {
       const start = moment().subtract(1, "month").startOf("month").valueOf();
       return date.valueOf() < start;
-    } else {
+    } else if (this.$user.can("PAYMENT_LAST_WEEK")) {
       const start = moment().startOf("day").valueOf();
       return date.valueOf() < start;
+    } else if (this.$user.can("PAYMENT")) {
+      return moment()
+        .subtract(1, "month")
+        .startOf("month")
+        .format("YYYY-MM-DD");
     }
   }
 

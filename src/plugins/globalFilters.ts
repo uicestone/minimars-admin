@@ -57,6 +57,10 @@ const globalFilters = {
       return Vue.prototype.$gatewayNames[gateway];
     });
 
+    Vue.filter("permissionName", (permission: any) => {
+      return Vue.prototype.$permissionNames[permission];
+    });
+
     Vue.filter("couponName", (couponSlug: any) => {
       const coupons = Vue.prototype.$config.coupons;
       if (!coupons) {

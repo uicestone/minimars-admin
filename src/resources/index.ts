@@ -11,7 +11,8 @@ import {
   Post,
   Store,
   ConfigItem,
-  Coupon
+  Coupon,
+  Role
 } from "./interfaces";
 
 export const http = Axios.create({
@@ -78,6 +79,8 @@ export const GiftResource = new Resource<Gift>(http, "gift/{id}");
 export const PaymentResource = new Resource<Payment>(http, "payment/{id}");
 
 export const PostResource = new Resource<Post>(http, "post/{id}");
+
+export const RoleResource = new Resource<Role>(http, "role/{id}");
 
 export const StoreResource = new Resource<Store>(http, "store/{id}");
 

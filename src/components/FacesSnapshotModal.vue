@@ -291,7 +291,7 @@ export default class FacesSnapshotModal extends Vue {
   }
 
   stopStream(nonReception = false) {
-    if (nonReception && this.$user.role === "manager") return;
+    if (nonReception && !this.$user.can("BOOKING_ALL_STORE")) return;
     this.stream?.getTracks().forEach(track => track.stop());
   }
 

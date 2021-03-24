@@ -75,7 +75,7 @@
                   label 备注
                   md-textarea(v-model='user.remarks' :disabled="readonly")
               .md-layout-item.md-size-100
-                md-chips.md-info.shake-on-error(v-if="$user.role==='admin'" @keypress.native.enter.prevent, v-model='user.tags', md-placeholder='客户内部标签', md-check-duplicated)
+                md-chips.md-info.shake-on-error(v-if="$user.can('CUSTOMER')" @keypress.native.enter.prevent, v-model='user.tags', md-placeholder='客户内部标签', md-check-duplicated)
                 md-chips.md-info(v-else v-model='user.tags' md-static)
             .md-layout-item.md-size-100.text-right
               md-button.md-info.mt-4(type='submit' :class="{'md-raised':!user.id,'md-simple':user.id}" :disabled="!userValidated") {{ user.id ? "更新" : "创建" }}
@@ -106,7 +106,7 @@ import { User, Store, Booking } from "@/resources/interfaces";
   }
 })
 export default class UserProfile extends Vue {
-  user: Partial<User> = { tags: [], role: "customer" };
+  user: Partial<User> = { tags: [] };
   userBookings: Booking[] = [];
 
   @Prop({ default: false })
@@ -114,7 +114,7 @@ export default class UserProfile extends Vue {
 
   get readonly() {
     if (
-      this.$user.role !== "admin" &&
+      !this.$user.can("CUSTOMER") &&
       this.user.tags &&
       this.user.tags.includes("pr")
     ) {
@@ -188,10 +188,6 @@ export default class UserProfile extends Vue {
   }
 
   async created() {
-    if (this.$user.role === "manager") {
-      this.user.role = "customer";
-    }
-
     if (!this.add) {
       if (this.$route.params.id === this.$user.id) {
         this.user = this.$user;

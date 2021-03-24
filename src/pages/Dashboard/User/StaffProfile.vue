@@ -15,11 +15,11 @@
             .md-layout-item.md-size-25
               poster.pt-4(v-model="user.avatarUrl" placeholder="/img/placeholder.jpg" circle disabled)
             .md-layout-item.md-size-75.md-layout.md-alignment-vertical
-              .md-layout-item.md-small-size-100.md-size-33(v-if="$user.can('edit-user')")
+              .md-layout-item.md-small-size-100.md-size-33(v-if="1||$user.can('edit-user')")
                 md-field
-                  label 职员类型
+                  label 角色
                   md-select(v-model='user.role', @keydown.enter.prevent :disabled="readonly")
-                    md-option(v-for="(name, role) in $userRoles" :key='role' :value='role' v-if="role!=='customer'") {{ name }}
+                    md-option(v-for="role in $roles" :key='role.id' :value='role') {{ role.name }}
               .md-layout-item.md-small-size-100.md-size-33
                 md-field
                   label 手机号
@@ -65,8 +65,8 @@ import { User, Store, Booking } from "@/resources/interfaces";
     Poster
   }
 })
-export default class UserProfile extends Vue {
-  user: Partial<User> = { tags: [], role: "customer" };
+export default class StaffProfile extends Vue {
+  user: Partial<User> = { tags: [] };
   userBookings: Booking[] = [];
 
   @Prop({ default: false })
@@ -74,7 +74,7 @@ export default class UserProfile extends Vue {
 
   get readonly() {
     if (
-      this.$user.role !== "admin" &&
+      !this.$user.can("STAFF") &&
       this.user.tags &&
       this.user.tags.includes("pr")
     ) {
@@ -143,10 +143,6 @@ export default class UserProfile extends Vue {
   }
 
   async created() {
-    if (this.$user.role === "manager") {
-      this.user.role = "customer";
-    }
-
     if (!this.add) {
       if (this.$route.params.id === this.$user.id) {
         this.user = this.$user;

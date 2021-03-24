@@ -16,6 +16,7 @@ import {
   TinyFaceDetectorOptions,
   loadTinyFaceDetectorModel
 } from "face-api.js";
+import { Config } from "./resources/interfaces";
 
 @Component
 export default class App extends Vue {
@@ -35,8 +36,7 @@ export default class App extends Vue {
       console.log(`[App] Before resolve ${to.path}.`);
 
       if (to.path !== "/login") {
-        const config = await loadConfig(this.$config);
-        this.$config = config;
+        await this.loadConfig(this.$config);
       }
 
       if (to.path !== "/login" && !window.localStorage.getItem("token")) {
@@ -50,15 +50,13 @@ export default class App extends Vue {
       if (
         ["/", "/login"].includes(from.path) &&
         to.path === "/dashboard" &&
-        this.$user.role === "admin"
+        this.$user.can("BOSSBOARD")
       ) {
         return next({ name: "Boss Board" });
       }
 
       next();
     });
-
-    this.prepareFaceDetection();
   }
 
   requestFullfilled(request: AxiosRequestConfig) {
@@ -121,7 +119,7 @@ export default class App extends Vue {
   }
 
   async prepareFaceDetection() {
-    if (this.$user.role !== "manager") return;
+    if (this.$user.can("BOOKING_ALL_STORE")) return;
     await loadTinyFaceDetectorModel("https://cdn.mini-mars.com/face-models/");
     console.log("Model loaded.");
     const prepareImage = document.createElement("img");
@@ -133,9 +131,10 @@ export default class App extends Vue {
     prepareImage.remove();
   }
 
-  async loadConfig() {
-    this.$config = await loadConfig();
+  async loadConfig(configLoaded?: Config) {
+    this.$config = await loadConfig(configLoaded);
     console.log(`[App] Config loaded.`);
+    this.prepareFaceDetection();
   }
 }
 </script>

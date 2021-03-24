@@ -15,16 +15,7 @@
             md-field.md-layout-item.md-size-30.md-xsmall-size-100
               label 筛选角色
               md-select(v-model='searchQuery.role')
-                md-option(v-for="(name, role) in $userRoles", :key='role', :value='role') {{ name }}
-            //- md-field.md-layout-item.md-size-20.md-xsmall-size-100(v-if="searchQuery.role === 'customer'")
-              label 会员类型
-              md-select(v-model='searchQuery.membership', multiple)
-                md-option(value='code') 次卡
-                md-option(value='deposit') 充值
-            //- md-field.md-layout-item.md-size-20.md-xsmall-size-100(v-if="searchQuery.role === 'customer'")
-              label 会员等级
-              md-select(v-model='searchQuery.cardTypes', multiple)
-                md-option(v-for='level in $config.depositLevels', :key='level.slug', :value='level.cardType') {{ level.cardType }}
+                md-option(v-for="role in $roles", :key='role.id', :value='role.id') {{ role.name }}
           .toolbar-actions
             md-button.md-primary(@click='showCreate')
               | 添加职员
@@ -37,7 +28,7 @@
             md-table-cell(md-label='登录名', md-sort-by='login')
               | {{ item.login }}
             md-table-cell(md-label='角色', md-sort-by='role')
-              | {{ item.role | roleName }}
+              | {{ item.role.name }}
             md-table-cell(md-label='手机', md-sort-by='mobile')
               | {{ item.mobile }}
       md-card-actions(md-alignment='space-between')
@@ -53,7 +44,7 @@ import { UserResource } from "@/resources";
 import { User } from "@/resources/interfaces";
 
 @Component
-export default class UserList extends List<User> {
+export default class StaffList extends List<User> {
   name = "user";
   resource = UserResource;
   stats: {
@@ -76,7 +67,7 @@ export default class UserList extends List<User> {
     this.$router.push(`/staff/add`);
   }
   async created() {
-    this.searchQuery = { role: "manager" };
+    this.searchQuery = { role: this.$roles[0].id };
   }
 }
 </script>

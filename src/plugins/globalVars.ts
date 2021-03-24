@@ -1,5 +1,5 @@
 import { VueConstructor } from "vue";
-import { User } from "@/resources/interfaces";
+import { Permission, PermissionKey, User } from "@/resources/interfaces";
 
 const globalVars = {
   install(Vue: VueConstructor) {
@@ -36,14 +36,10 @@ const globalVars = {
       }
     });
 
-    const can = function(this: User, cap: string) {
-      const roleCaps: Record<string, string> = {
-        admin: ".*",
-        manager: "view-(dashboard|booking|user|payment)",
-        eventManager: "view-(event-booking)",
-        accountant: "view-(dashboard|card-type|payment)"
-      };
-      return this.role && cap.match(new RegExp(`^${roleCaps[this.role]}$`));
+    const can = function(this: User, ...permissions: PermissionKey[]) {
+      return permissions.every((permission) =>
+        this.role?.permissions?.includes(Permission[permission])
+      );
     };
 
     Object.defineProperty(Vue.prototype, "$user", {
@@ -59,6 +55,12 @@ const globalVars = {
     Object.defineProperty(Vue.prototype, "$stores", {
       get() {
         return this.$root.config.stores;
+      }
+    });
+
+    Object.defineProperty(Vue.prototype, "$roles", {
+      get() {
+        return this.$root.config.roles;
       }
     });
 
@@ -171,6 +173,40 @@ const globalVars = {
           balance: "充值",
           period: "时效卡",
           party: "派对"
+        };
+      }
+    });
+
+    Object.defineProperty(Vue.prototype, "$permissionNames", {
+      get() {
+        return {
+          develop: "开发",
+          bossboard: "Boss面板",
+          dashboard: "数据统计",
+          "play booking": "票务",
+          "event booking": "活动预约",
+          "food booking": "点餐",
+          "gift booking": "礼品兑换",
+          "party booking": "派对",
+          "booking all store": "全门店票务",
+          "booking create": "录入订单",
+          "booking cancel review": "审核取消订单",
+          "card sell store": "售卡（门店）",
+          "card sell all": "售卡（全部）",
+          customer: "客户",
+          payment: "支付明细",
+          "payment download": "支付明细下载",
+          "payment last week": "支付明细（上周）",
+          "payment last month": "支付明细（上月）",
+          "card-type": "卡片种类",
+          coupon: "优惠管理",
+          post: "内容管理",
+          event: "活动管理",
+          gift: "礼品管理",
+          store: "门店管理",
+          staff: "职员管理",
+          role: "权限管理",
+          config: "系统配置"
         };
       }
     });

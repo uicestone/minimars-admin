@@ -80,6 +80,12 @@ const StoreList = () =>
   import(
     /* webpackChunkName: "misc" */ "@/pages/Dashboard/Store/StoreList.vue"
   );
+const RoleDetail = () =>
+  import(
+    /* webpackChunkName: "misc" */ "@/pages/Dashboard/User/RoleDetail.vue"
+  );
+const RoleList = () =>
+  import(/* webpackChunkName: "misc" */ "@/pages/Dashboard/User/RoleList.vue");
 const ConfigList = () =>
   import(
     /* webpackChunkName: "misc" */ "@/pages/Dashboard/Config/ConfigList.vue"
@@ -372,6 +378,37 @@ const userMenu: RouteConfig = {
   ]
 };
 
+const roleMenu: RouteConfig = {
+  path: "/role",
+  component: DashboardLayout,
+  children: [
+    {
+      path: "/role",
+      name: "角色列表",
+      component: RoleList,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: "/role/add",
+      name: "添加角色",
+      component: RoleDetail,
+      props: {
+        add: true
+      },
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: "/role/:id",
+      name: "角色详情",
+      component: RoleDetail
+    }
+  ]
+};
+
 const authPages = {
   path: "/",
   component: AuthLayout,
@@ -401,6 +438,7 @@ const routes: RouteConfig[] = [
   storeMenu,
   configMenu,
   userMenu,
+  roleMenu,
   authPages,
   {
     path: "/",
