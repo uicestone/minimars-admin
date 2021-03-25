@@ -113,14 +113,14 @@ export default class PaymentList extends List<Payment> {
     }
   }
   disabledDates(date: Date) {
-    if (this.$user.can("PAYMENT_LAST_MONTH")) {
+    if (this.$user.can("PAYMENT_ALL_DATE")) {
+      return false;
+    } else if (this.$user.can("PAYMENT_LAST_MONTH")) {
       const start = moment().subtract(1, "month").startOf("month").valueOf();
       return date.valueOf() < start;
     } else if (this.$user.can("PAYMENT_LAST_WEEK")) {
       const start = moment().subtract(1, "week").startOf("week").valueOf();
       return date.valueOf() < start;
-    } else if (this.$user.can("PAYMENT")) {
-      return false;
     } else {
       const start = moment().startOf("day").valueOf();
       return date.valueOf() < start;

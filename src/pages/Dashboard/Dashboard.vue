@@ -268,15 +268,15 @@ export default class Dashboard extends Vue {
   };
 
   get startAvailableDay() {
-    if (this.$user.can("PAYMENT_LAST_MONTH")) {
+    if (this.$user.can("PAYMENT_ALL_DATE")) {
+      return false;
+    } else if (this.$user.can("PAYMENT_LAST_MONTH")) {
       return moment()
         .subtract(1, "month")
         .startOf("month")
         .format("YYYY-MM-DD");
     } else if (this.$user.can("PAYMENT_LAST_WEEK")) {
       return moment().subtract(1, "week").startOf("week").format("YYYY-MM-DD");
-    } else if (this.$user.can("PAYMENT")) {
-      return "";
     }
     return moment().format("YYYY-MM-DD");
   }
