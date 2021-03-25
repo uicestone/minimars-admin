@@ -198,6 +198,7 @@ const globalVars = {
           "payment download": "支付明细下载",
           "payment last week": "支付明细（上周）",
           "payment last month": "支付明细（上月）",
+          "payment all date": "支付明细（全部日期）",
           "card-type": "卡片种类",
           coupon: "优惠管理",
           post: "内容管理",
