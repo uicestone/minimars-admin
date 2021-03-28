@@ -228,6 +228,8 @@ export interface Payment extends Model {
   paid: boolean;
   title: string;
   attach: string;
+  booking?: string;
+  card?: string;
   gateway: PaymentGateway;
   gatewayData: { [key: string]: any };
   original?: string;

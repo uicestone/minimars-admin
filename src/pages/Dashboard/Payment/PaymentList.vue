@@ -60,7 +60,7 @@
             md-table-cell(md-label='通道', md-sort-by='gateway') {{ item.gateway | paymentGatewayName }}
             md-table-cell(md-label='时间', md-sort-by='createdAt') {{ item.createdAt | date }}
             md-table-cell(md-label='业务场景', @click.native.stop='goToRelatedItem(item)')
-              | {{ item.scene | bookingTypeName }}
+              | {{ item.scene | sceneName }}
               md-icon.mini(style="margin:0") keyboard_arrow_right
       md-card-actions(md-alignment='space-between')
         div
@@ -104,12 +104,11 @@ export default class PaymentList extends List<Payment> {
     this.$router.push(`/user/${customer.id}`);
   }
   goToRelatedItem(item: Payment) {
-    const attach = item.attach.split(" ");
-    if (item.scene === Scene.CARD) {
+    if (item.card) {
       if (!item.customer) return;
       return this.$router.push(`/user/${item.customer.id}`);
     } else {
-      return this.$router.push(`/booking/${item.scene}/${attach[1]}`);
+      return this.$router.push(`/booking/${item.scene}/${item.booking}`);
     }
   }
   disabledDates(date: Date) {

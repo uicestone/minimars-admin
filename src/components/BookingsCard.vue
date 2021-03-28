@@ -11,7 +11,7 @@ md-card.bookings-card
         md-table-cell(md-label='日期')
           | {{ booking.date }} {{ booking.checkInAt }}
         //- md-table-cell(md-label='类型')
-          | {{ booking.type | bookingTypeName }}
+          | {{ booking.type | sceneName }}
         md-table-cell(md-label='礼品' v-if="type==='gift'")
           | {{ booking.gift.title }} ×{{ booking.quantity }}
         md-table-cell(md-label='活动' v-if="type==='event'")

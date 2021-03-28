@@ -17,7 +17,6 @@ declare module "vue/types/vue" {
     $cardTypes: CardType[];
     $coupons: Coupon[];
     $roles: Role[];
-    $bookingTypeNames: any;
     $bookingStatusNames: any;
     $cardTypeNames: any;
     $cardStatusNames: any;

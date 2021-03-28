@@ -27,8 +27,8 @@ const globalFilters = {
       return Vue.prototype.$userRoles[value];
     });
 
-    Vue.filter("bookingTypeName", (value: any) => {
-      return Vue.prototype.$bookingTypeNames[value];
+    Vue.filter("sceneName", (value: any) => {
+      return Vue.prototype.$sceneNames[value];
     });
 
     Vue.filter("bookingStatusName", (value: any) => {
