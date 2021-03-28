@@ -88,22 +88,6 @@ const globalVars = {
       }
     });
 
-    Object.defineProperty(Vue.prototype, "$sceneNames", {
-      get() {
-        return {
-          play: "门票",
-          party: "派对",
-          event: "活动",
-          gift: "礼品",
-          food: "餐饮",
-          mall: "电商",
-          card: "次卡",
-          balance: "充值",
-          period: "时效卡"
-        };
-      }
-    });
-
     Object.defineProperty(Vue.prototype, "$bookingStatusNames", {
       get() {
         return {
