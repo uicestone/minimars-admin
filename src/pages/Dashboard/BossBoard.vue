@@ -87,6 +87,18 @@
           .stats
             md-icon bookmark_border
             | 餐饮收款
+      stats-card.mt-8(header-color='gift')
+        template(slot='header')
+          .card-icon
+            md-icon celebration
+          p.category {{rangeText}}活动销售额
+          h3.title
+            | ¥ 
+            animated-number(:value='partyFlowAmount')
+        template(slot='footer')
+          .stats
+            md-icon bookmark_border
+            | 派对、活动、礼品收款
       stats-card.mt-8(header-color='mall')
         template(slot='header')
           .card-icon
@@ -118,6 +130,16 @@
           p.category {{rangeText}}餐饮订单数
           h3.title
             animated-number(:value='stats.foodBookingsCount')
+        template(slot='footer')
+          .stats
+            md-icon bookmark_border
+            | 实时
+      stats-card.mt-8(header-color='gift')
+        template(slot='header')
+          .card-icon
+            md-icon cake
+          p.category {{rangeText}}活动订单数
+          h3.title -
         template(slot='footer')
           .stats
             md-icon bookmark_border
@@ -248,6 +270,14 @@ export default class BossBoard extends Vue {
       (this.stats.flowAmountByScenes.card || 0) +
       (this.stats.flowAmountByScenes.balance || 0) +
       (this.stats.flowAmountByScenes.period || 0)
+    );
+  }
+
+  get partyFlowAmount() {
+    return (
+      (this.stats.flowAmountByScenes.event || 0) +
+      (this.stats.flowAmountByScenes.party || 0) +
+      (this.stats.flowAmountByScenes.gift || 0)
     );
   }
 
