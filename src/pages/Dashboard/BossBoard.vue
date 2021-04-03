@@ -70,11 +70,11 @@
           p.category {{rangeText}}票务销售额
           h3.title
             | ¥ 
-            animated-number(:value='stats.playAmount')
+            animated-number(:value='playFlowAmount')
         template(slot='footer')
           .stats
             md-icon bookmark_border
-            | 购票订单权责发生收入
+            | 票务收款
       stats-card.mt-8(header-color='food')
         template(slot='header')
           .card-icon
@@ -82,11 +82,11 @@
           p.category {{rangeText}}餐饮销售额
           h3.title
             | ¥ 
-            animated-number(:value='stats.foodAmount')
+            animated-number(:value='stats.flowAmountByScenes.food||0')
         template(slot='footer')
           .stats
             md-icon bookmark_border
-            | 餐饮订单权责发生收入
+            | 餐饮收款
       stats-card.mt-8(header-color='mall')
         template(slot='header')
           .card-icon
@@ -94,11 +94,11 @@
           p.category {{rangeText}}电商销售额
           h3.title
             | ¥ 
-            animated-number(:value='stats.mallAmount')
+            animated-number(:value='stats.flowAmountByScenes.mall||0')
         template(slot='footer')
           .stats
             md-icon bookmark_border
-            | 电商订单权责发生收入
+            | 电商收款
     .pr-0.md-layout-item.md-size-50.md-xsmall-size-50
       stats-card(header-color='play')
         template(slot='header')
@@ -240,6 +240,15 @@ export default class BossBoard extends Vue {
     } else {
       return "区间";
     }
+  }
+
+  get playFlowAmount() {
+    return (
+      (this.stats.flowAmountByScenes.play || 0) +
+      (this.stats.flowAmountByScenes.card || 0) +
+      (this.stats.flowAmountByScenes.balance || 0) +
+      (this.stats.flowAmountByScenes.period || 0)
+    );
   }
 
   get flowAmountBySceneNames() {
