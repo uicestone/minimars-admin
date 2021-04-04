@@ -156,10 +156,6 @@ export default class UserProfile extends Vue {
     this.$router.push(`/booking/${type}/add?customer=${this.user.id}`);
   }
 
-  @Watch("user") onUserUpdate(u: any, pu: any) {
-    console.log("onUserUpdate", JSON.stringify(u), JSON.stringify(pu));
-  }
-
   @Watch("user.mobile") async onUserMobileUpdate() {
     if (!this.user.id && this.user.mobile?.length === 11) {
       const [user] = await UserResource.query({ mobile: this.user.mobile });

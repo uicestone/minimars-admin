@@ -18,8 +18,7 @@
               .md-layout-item.md-small-size-100.md-size-33(v-if="1||$user.can('edit-user')")
                 md-field
                   label 角色
-                  md-select(v-model='user.role', @keydown.enter.prevent :disabled="readonly")
-                    md-option(v-for="role in $roles" :key='role.id' :value='role') {{ role.name }}
+                  object-select(v-model='user.role', :disabled="readonly" :items="$roles")
               .md-layout-item.md-small-size-100.md-size-33
                 md-field
                   label 手机号
@@ -57,12 +56,14 @@ import { Watch, Component, Prop } from "vue-property-decorator";
 import { BookingsCard, Membership, Poster } from "@/components";
 import { BookingResource, UserResource } from "@/resources";
 import { User, Store, Booking } from "@/resources/interfaces";
+import ObjectSelect from "@/components/ObjectSelect.vue";
 
 @Component({
   components: {
     BookingsCard,
     Membership,
-    Poster
+    Poster,
+    ObjectSelect
   }
 })
 export default class StaffProfile extends Vue {
@@ -109,10 +110,6 @@ export default class StaffProfile extends Vue {
 
   createBooking(type = "play") {
     this.$router.push(`/booking/${type}/add?customer=${this.user.id}`);
-  }
-
-  @Watch("user") onUserUpdate(u: any, pu: any) {
-    console.log("onUserUpdate", JSON.stringify(u), JSON.stringify(pu));
   }
 
   @Watch("user.mobile") async onUserMobileUpdate() {
