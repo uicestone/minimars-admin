@@ -63,7 +63,7 @@
                 md-table-cell {{ item.amount | currency(0) }}
   .md-layout-item.md-size-55.md-xsmall-size-100.md-layout
     .pl-0.md-layout-item.md-size-50.md-xsmall-size-50
-      stats-card(header-color='play')
+      stats-card(header-color='period')
         template(slot='header')
           .card-icon
             md-icon credit_score
@@ -75,7 +75,7 @@
           .stats
             md-icon bookmark_border
             | 票务收款
-      stats-card.mt-8(header-color='food')
+      stats-card.mt-8(header-color='period')
         template(slot='header')
           .card-icon
             md-icon fastfood
@@ -87,7 +87,7 @@
           .stats
             md-icon bookmark_border
             | 餐饮收款
-      stats-card.mt-8(header-color='gift')
+      stats-card.mt-8(header-color='period')
         template(slot='header')
           .card-icon
             md-icon celebration
@@ -99,7 +99,7 @@
           .stats
             md-icon bookmark_border
             | 派对、活动、礼品收款
-      stats-card.mt-8(header-color='mall')
+      stats-card.mt-8(header-color='period')
         template(slot='header')
           .card-icon
             md-icon shopping_cart
@@ -112,7 +112,7 @@
             md-icon bookmark_border
             | 电商收款
     .pr-0.md-layout-item.md-size-50.md-xsmall-size-50
-      stats-card(header-color='play')
+      stats-card(header-color='period')
         template(slot='header')
           .card-icon
             md-icon people
@@ -123,7 +123,7 @@
           .stats
             md-icon bookmark_border
             | 实时
-      stats-card.mt-8(header-color='food')
+      stats-card.mt-8(header-color='period')
         template(slot='header')
           .card-icon
             md-icon microwave
@@ -134,7 +134,7 @@
           .stats
             md-icon bookmark_border
             | 实时
-      stats-card.mt-8(header-color='gift')
+      stats-card.mt-8(header-color='period')
         template(slot='header')
           .card-icon
             md-icon cake
@@ -144,7 +144,7 @@
           .stats
             md-icon bookmark_border
             | 实时
-      stats-card.mt-8(header-color='mall')
+      stats-card.mt-8(header-color='period')
         template(slot='header')
           .card-icon
             md-icon local_shipping
