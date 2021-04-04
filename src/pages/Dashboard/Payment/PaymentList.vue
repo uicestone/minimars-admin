@@ -73,7 +73,7 @@ import moment from "moment";
 import Component from "vue-class-component";
 import { PaymentResource } from "@/resources";
 import List from "@/components/List";
-import { Payment, User, Scene } from "@/resources/interfaces";
+import { Payment, User } from "@/resources/interfaces";
 
 @Component
 export default class PaymentList extends List<Payment> {
@@ -85,6 +85,7 @@ export default class PaymentList extends List<Payment> {
     return (
       this.$user.can("PAYMENT_LAST_WEEK") ||
       this.$user.can("PAYMENT_LAST_MONTH") ||
+      this.$user.can("PAYMENT_ALL_DATE") ||
       this.$user.can("BOSSBOARD")
     );
   }

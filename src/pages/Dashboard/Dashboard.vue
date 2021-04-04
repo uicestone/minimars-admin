@@ -269,7 +269,7 @@ export default class Dashboard extends Vue {
 
   get startAvailableDay() {
     if (this.$user.can("PAYMENT_ALL_DATE")) {
-      return false;
+      return NaN;
     } else if (this.$user.can("PAYMENT_LAST_MONTH")) {
       return moment()
         .subtract(1, "month")
@@ -293,7 +293,9 @@ export default class Dashboard extends Vue {
   }
 
   disabledDates(date: Date) {
-    if (this.$user.can("PAYMENT_LAST_MONTH")) {
+    if (this.$user.can("PAYMENT_ALL_DATE")) {
+      return false;
+    } else if (this.$user.can("PAYMENT_LAST_MONTH")) {
       const start = moment().subtract(1, "month").startOf("month").valueOf();
       return date.valueOf() < start;
     } else if (this.$user.can("PAYMENT_LAST_WEEK")) {
