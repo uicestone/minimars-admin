@@ -23,10 +23,6 @@ const globalFilters = {
       return value.toFixed(digits || 0);
     });
 
-    Vue.filter("roleName", (value: any) => {
-      return Vue.prototype.$userRoles[value];
-    });
-
     Vue.filter("sceneName", (value: any) => {
       return Vue.prototype.$sceneNames[value];
     });

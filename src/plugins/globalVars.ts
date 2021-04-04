@@ -76,18 +76,6 @@ const globalVars = {
       }
     });
 
-    Object.defineProperty(Vue.prototype, "$userRoles", {
-      get() {
-        return {
-          admin: "管理员",
-          accountant: "财务",
-          manager: "店员",
-          eventManager: "活动策划",
-          customer: "客户"
-        };
-      }
-    });
-
     Object.defineProperty(Vue.prototype, "$bookingStatusNames", {
       get() {
         return {

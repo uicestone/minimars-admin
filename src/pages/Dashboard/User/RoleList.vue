@@ -23,6 +23,8 @@
             md-table-cell(md-label='权限')
               div
                 span(v-for="p in item.permissions") {{ p | permissionName }}, 
+            md-table-cell(md-label='修改时间', md-sort-by='updatedAt' style="width:50px")
+              | {{ item.updatedAt | date }}
       md-card-actions(md-alignment='space-between')
         div
           p.card-category {{ from }} - {{ to }} / {{ total }}
