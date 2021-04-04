@@ -24,7 +24,7 @@ async function getHttpData(path: string) {
 
 const loadConfig = async (configLoaded: Config = {}) => {
   const [config, stores, user, cardTypes, coupons, roles] = await Promise.all([
-    !Object.keys(configLoaded).length ? configLoaded : getHttpData("config"),
+    Object.keys(configLoaded).length ? configLoaded : getHttpData("config"),
     configLoaded.stores || getHttpData("store"),
     configLoaded.user?.id
       ? configLoaded.user
