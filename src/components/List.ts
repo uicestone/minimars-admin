@@ -55,7 +55,7 @@ export default class List<M extends Model> extends Vue {
       keyof typeof searchQuery
     >) {
       const value = searchQuery[field];
-      if (value instanceof Array) {
+      if (value instanceof Array && value.length) {
         (searchQuery[field] as string) = value.join(",");
       }
     }
