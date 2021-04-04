@@ -152,7 +152,7 @@
       md-button.md-block.md-success(v-if="cardType.openForClient" @click="$clipboard('/pages/index/index?cardSell='+cardType.id,'链接')") 点击复制小程序首页跳转链接（购卡）
       md-button.md-block.md-success(v-if="cardType.couponSlug" @click="$clipboard('/pages/index/index?coupon='+cardType.couponSlug,'链接')") 点击复制小程序首页跳转链接（团购）
       md-button.md-block.md-warning(v-if="cardType.couponSlug" @click="$router.push('/post/'+cardType.couponSlug)") 前往团购首页内容详情
-
+      md-button.md-block.md-primary(@click="$router.push('/card?slug='+cardType.slug)") 查看已发卡券
 </template>
 
 <script lang="ts">
@@ -259,7 +259,9 @@ export default class CardTypeDetail extends Vue {
   }
   async mounted() {
     if (this.$route.params.id !== "add") {
-      this.cardType = await CardTypeResource.get({ id: this.$route.params.id });
+      this.cardType = await CardTypeResource.get({
+        id: encodeURIComponent(this.$route.params.id)
+      });
     }
   }
 }

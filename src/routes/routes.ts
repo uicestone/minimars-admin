@@ -37,6 +37,10 @@ const CardTypeList = () =>
   import(
     /* webpackChunkName: "booking" */ "@/pages/Dashboard/CardType/CardTypeList.vue"
   );
+const CardList = () =>
+  import(
+    /* webpackChunkName: "booking" */ "@/pages/Dashboard/Card/CardList.vue"
+  );
 const CouponDetail = () =>
   import(
     /* webpackChunkName: "booking" */ "@/pages/Dashboard/Coupon/CouponDetail.vue"
@@ -151,6 +155,22 @@ const bookingMenu: RouteConfig = {
       path: ":type/:id",
       name: "预约详情",
       component: BookingDetail
+    }
+  ]
+};
+
+const cardMenu: RouteConfig = {
+  path: "/card",
+  component: DashboardLayout,
+  redirect: "/card/index",
+  children: [
+    {
+      path: "index",
+      name: "卡券明细",
+      component: CardList,
+      meta: {
+        keepAlive: true
+      }
     }
   ]
 };
@@ -429,6 +449,7 @@ const routes: RouteConfig[] = [
     name: "Home"
   },
   bookingMenu,
+  cardMenu,
   cardTypeMenu,
   couponMenu,
   eventMenu,

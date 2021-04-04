@@ -167,6 +167,7 @@ const globalVars = {
           "booking all store": "全门店票务",
           "booking create": "录入订单",
           "booking cancel review": "审核取消订单",
+          card: "卡券管理",
           "card sell store": "售卡（门店）",
           "card sell all": "售卡（全部）",
           customer: "客户",
