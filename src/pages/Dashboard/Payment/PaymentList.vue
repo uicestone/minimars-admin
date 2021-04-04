@@ -139,7 +139,7 @@ export default class PaymentList extends List<Payment> {
   created() {
     this.searchQuery = {
       date: moment().format("YYYY-MM-DD"),
-      scene: ["play", "event", "gift", "food"],
+      scene: ["play", "event", "gift", "party", "food"],
       paid: true,
       gateway: []
     };

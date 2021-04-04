@@ -8,6 +8,7 @@
       sidebar-item(v-if="$user.can('PLAY_BOOKING')", :link="{ name: '票务管理', icon: 'access_time', path: '/booking/play' }")
       sidebar-item(v-if="$user.can('EVENT_BOOKING')", :link="{ name: '活动预约', icon: 'event', path: '/booking/event' }")
       sidebar-item(v-if="$user.can('GIFT_BOOKING')", :link="{ name: '礼品兑换', icon: 'card_giftcard', path: '/booking/gift' }")
+      sidebar-item(v-if="$user.can('PARTY_BOOKING')", :link="{ name: '派对消费', icon: 'cake', path: '/booking/party' }")
       sidebar-item(v-if="$user.can('FOOD_BOOKING')", :link="{ name: '餐饮消费', icon: 'fastfood', path: '/booking/food' }")
       sidebar-item(v-if="$user.can('CUSTOMER')", :link="{ name: '客户管理', icon: 'people', path: '/user' }")
       sidebar-item(v-if="$user.can('PAYMENT')", :link="{ name: '支付明细', icon: 'payment', path: '/payment' }")

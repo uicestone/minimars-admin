@@ -14,6 +14,10 @@
         .card-icon
           md-icon card_giftcard
         h4.title 礼品兑换
+      md-card-header.md-card-header-icon.md-card-header-gift(v-if='type==="party"')
+        .card-icon
+          md-icon cake
+        h4.title 派对消费
       md-card-header.md-card-header-icon.md-card-header-food(v-if='type==="food"')
         .card-icon
           md-icon fastfood
@@ -54,8 +58,10 @@
               | 创建活动预约
             md-button.md-gift(v-if='type==="gift"', @click='showCreate("gift")')
               | 创建礼品兑换
+            md-button.md-gift(v-if='type==="party"', @click='showCreate("party")')
+              | 创建派对消费
             md-button.md-food(v-if='type==="food"', @click='showCreate("food")')
-              | 创建吧台消费
+              | 创建餐饮消费
             md-button.md-just-icon.md-simple(@click='queryData')
               md-icon refresh
         md-table.paginated-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='$noop')
@@ -94,10 +100,7 @@
       md-card-actions(md-alignment='space-between')
         div
           p.card-category {{ from }} - {{ to }} / {{ total }}
-        pagination.pagination-no-border.pagination-play(v-if='type==="play"', v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
-        pagination.pagination-no-border.pagination-event(v-if='type==="event"', v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
-        pagination.pagination-no-border.pagination-gift(v-if='type==="gift"', v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
-        pagination.pagination-no-border.pagination-food(v-if='type==="food"', v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
+        pagination.pagination-no-border(:class="'pagination-'+type" v-model='pagination.currentPage', :per-page='pagination.perPage', :total='total')
 </template>
 
 <script lang="ts">
