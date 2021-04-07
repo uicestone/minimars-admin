@@ -59,7 +59,7 @@
               md-icon.mini keyboard_arrow_right
             md-table-cell(md-label='次数', md-sort-by='times') {{ item.times ? (item.times > 0 ? -item.times : `+${-item.times}`) : '-' }}
             md-table-cell(md-label='金额', md-sort-by='amount') {{ item.amount | currency }}
-            md-table-cell(md-label='完成', md-sort-by='paid') {{ item.paid ? "是" : "否" }}
+            md-table-cell(md-label='完成', md-sort-by='paid' v-if="searchQuery.paid===''") {{ item.paid ? "是" : "否" }}
             md-table-cell(md-label='描述', md-sort-by='title', style='min-width:25em') {{ item.title }}
             md-table-cell(md-label='通道', md-sort-by='gateway') {{ item.gateway | paymentGatewayName }}
             md-table-cell(md-label='时间', md-sort-by='createdAt') {{ item.createdAt | date }}
