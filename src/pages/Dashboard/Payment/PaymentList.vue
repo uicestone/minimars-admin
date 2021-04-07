@@ -10,7 +10,7 @@
             md-icon refresh
           md-button.md-just-icon.md-simple.md-xs.pull-right(@click='download' v-if="$user.can('PAYMENT_DOWNLOAD') && (searchQuery.date || searchQuery.dateEnd)")
             md-icon get_app
-          span.pull-right.mr-2 总金额：{{ totalAmount | currency }}
+          span.pull-right.mr-2 总收入：{{ totalAmount | currency }}
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
           .md-layout.md-layout-item.search-query
@@ -53,7 +53,7 @@
               md-input(v-model="searchQuery.amount")
         md-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='$noop')
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }' @click="$clipboard(item.id, '支付ID')")
-            md-table-cell(md-label='客户', md-sort-by='customer.name', @click.native.stop='goToCustomer(item.customer)', style='min-width:100px') {{ item.customer ? item.customer.name : "-" }}
+            md-table-cell(md-label='客户', md-sort-by='customer', @click.native.stop='goToCustomer(item.customer)', style='min-width:100px') {{ item.customer ? item.customer.name : "-" }}
               span(v-if='item.customer && item.customer.mobile')
                 | {{ item.customer.mobile.substr(-4) }}
               md-icon.mini keyboard_arrow_right
