@@ -143,7 +143,7 @@
             h4.title 收款
           md-card-content.md-layout
             md-table
-              md-table-row(v-for='payment in booking.payments', :key='payment.id')
+              md-table-row(v-for='payment in booking.payments', :key='payment.id' @click="$clipboard(payment.id, '支付ID')")
                 md-table-cell(md-label='描述', md-sort-by='title', style='width:35%') {{ payment.title }}
                 md-table-cell(md-label='通道', md-sort-by='gateway')
                   | {{ payment.gateway | paymentGatewayName }}
