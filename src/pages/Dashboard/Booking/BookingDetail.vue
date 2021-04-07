@@ -848,11 +848,10 @@ export default class BookingDetail extends Vue {
   }
 
   async beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext) {
-    console.log("beforeRouteEnter", to);
+    if (!to.params.id) return next();
     const booking = (await BookingResource.get({
       id: to.params.id
     })) as Booking;
-    console.log("booking fetched", booking.customer?.mobile);
     next(vm => {
       const page = vm as BookingDetail;
       console.log("assign booking");
