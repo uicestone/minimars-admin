@@ -193,6 +193,7 @@ import {
   CardStatus
 } from "@/resources/interfaces";
 import { Membership, StoreSelect, FacesSnapshotModal } from "@/components";
+import { Route, NavigationGuardNext } from "vue-router";
 
 @Component({
   components: {
@@ -202,7 +203,7 @@ import { Membership, StoreSelect, FacesSnapshotModal } from "@/components";
   }
 })
 export default class BookingDetail extends Vue {
-  booking: Partial<Booking> = {};
+  booking: Partial<Booking> = { id: "", payments: [] };
   price: number | null = null;
   priceInPoints: number | null = null;
   priceUpdating = false;
@@ -523,6 +524,7 @@ export default class BookingDetail extends Vue {
   }
 
   async updateBookingPrice() {
+    if (this.booking.id) return;
     if (
       this.booking.type &&
       [Scene.PLAY, Scene.EVENT, Scene.PARTY].includes(this.booking.type) &&
@@ -845,25 +847,40 @@ export default class BookingDetail extends Vue {
     }
   }
 
-  async created() {
-    this.booking = {
-      id: "",
-      customer: null,
-      card: null,
-      coupon: null,
-      event: null,
-      gift: null,
-      type: (this.$route.params.type as Scene) || Scene.PLAY,
-      status: BookingStatus.PENDING,
-      date: moment().format("YYYY-MM-DD"),
-      checkInAt: moment().format("HH:mm:ss"),
-      adultsCount: undefined,
-      kidsCount: undefined,
-      quantity: undefined,
-      bandsPrinted: 0,
-      store: this.$user.store,
-      payments: []
-    };
+  async beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext) {
+    console.log("beforeRouteEnter", to);
+    const booking = (await BookingResource.get({
+      id: to.params.id
+    })) as Booking;
+    console.log("booking fetched", booking.customer?.mobile);
+    next(vm => {
+      const page = vm as BookingDetail;
+      console.log("assign booking");
+      page.booking = booking;
+    });
+  }
+
+  async mounted() {
+    if (!this.booking.id) {
+      this.booking = {
+        id: "",
+        customer: null,
+        card: null,
+        coupon: null,
+        event: null,
+        gift: null,
+        type: (this.$route.params.type as Scene) || Scene.PLAY,
+        status: BookingStatus.PENDING,
+        date: moment().format("YYYY-MM-DD"),
+        checkInAt: moment().format("HH:mm:ss"),
+        adultsCount: undefined,
+        kidsCount: undefined,
+        quantity: undefined,
+        bandsPrinted: 0,
+        store: this.$user.store,
+        payments: []
+      };
+    }
     if (
       this.booking.type &&
       [Scene.PARTY, Scene.PLAY, Scene.EVENT].includes(this.booking.type)
@@ -893,7 +910,7 @@ export default class BookingDetail extends Vue {
       }
       // this.updateBookingPrice();
     } else {
-      this.booking = await BookingResource.get({ id: this.$route.params.id });
+      // this.booking = await BookingResource.get({ id: this.$route.params.id });
       if (this.booking.event) this.eventSearchTerm = this.booking.event.title;
       if (this.booking.gift) this.giftSearchTerm = this.booking.gift.title;
     }

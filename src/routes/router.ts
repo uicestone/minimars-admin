@@ -1,8 +1,15 @@
 import Vue from "vue";
+import Component from "vue-class-component";
 import VueRouter from "vue-router";
 import routes from "./routes";
 
 Vue.use(VueRouter);
+
+Component.registerHooks([
+  "beforeRouteEnter",
+  "beforeRouteUpdate",
+  "beforeRouteLeave"
+]);
 
 // configure router
 const router = new VueRouter({
