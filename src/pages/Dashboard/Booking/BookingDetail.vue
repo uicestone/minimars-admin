@@ -389,11 +389,24 @@ export default class BookingDetail extends Vue {
       return;
     }
 
-    this.booking = await BookingResource.save(this.booking, {
-      paymentGateway,
-      customerKeyword: this.customerSearchTerm,
-      useBalance: this.useBalance
-    });
+    this.booking = await BookingResource.save(
+      {
+        ...this.booking,
+        // @ts-ignore
+        store: this.booking.store?.id,
+        // @ts-ignore
+        customer: this.booking.customer?.id,
+        // @ts-ignore
+        card: this.booking.card?.id,
+        // @ts-ignore
+        coupon: this.booking.coupon?.id
+      },
+      {
+        paymentGateway,
+        customerKeyword: this.customerSearchTerm,
+        useBalance: this.useBalance
+      }
+    );
 
     this.$notify({
       message: "保存成功",
