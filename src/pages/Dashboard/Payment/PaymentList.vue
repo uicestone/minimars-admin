@@ -27,26 +27,30 @@
               label 支付方式
               md-select(v-model='searchQuery.gateway', multiple)
                 md-option(v-for='(name, gateway) in $gatewayNames', :key='gateway', :value='gateway') {{ name }}
-            md-field.md-layout-item.md-size-15.md-xsmall-size-50
+            md-field.md-layout-item.md-size-10.md-xsmall-size-50
               label 业务场景
               md-select(v-model='searchQuery.scene' multiple)
                 md-option(v-for="(label, scene) in $sceneNames", :key='scene', :value='scene') {{ label }}
-            md-field.md-layout-item.md-size-15.md-xsmall-size-50
-              label 描述
-              md-input(v-model="searchQuery.title")
-            md-field.md-layout-item.md-size-10.md-xsmall-size-50
-              label 金额
-              md-input(v-model="searchQuery.amount")
-            md-field.md-layout-item.md-size-5.md-xsmall-size-50
+            //- md-field.md-layout-item.md-size-5.md-xsmall-size-50
               label 收/退
               md-select(v-model='searchQuery.direction')
-                md-option(value='') 全部
                 md-option(v-for="(name, direction) in { payment: '收款', refund: '退款' }", :key='direction', :value='direction') {{ name }}
             md-field.md-layout-item.md-size-5.md-xsmall-size-50
               label 完成
               md-select(v-model='searchQuery.paid')
                 md-option(value='') 全部
                 md-option(v-for="(name, paid) in { true: '是', false: '否' }", :key='paid', :value='paid') {{ name }}
+            md-field.md-layout-item.md-size-10.md-xsmall-size-50
+              label 退款状态
+              md-select(v-model='searchQuery.refunded')
+                md-option(value='') 全部
+                md-option(v-for="(name, refunded) in { true: '已全额退款', false: '无退款' }", :key='refunded', :value='refunded') {{ name }}
+            md-field.md-layout-item.md-size-15.md-xsmall-size-50.mr-2
+              label 描述
+              md-input(v-model="searchQuery.title")
+            md-field.md-layout-item.md-size-10.md-xsmall-size-50
+              label 金额
+              md-input(v-model="searchQuery.amount")
         md-table.table-striped.table-hover(:value='queriedData', :md-sort.sync='currentSort', :md-sort-order.sync='currentSortOrder', :md-sort-fn='$noop')
           md-table-row(slot='md-table-row', md-selectable='single', slot-scope='{ item }')
             md-table-cell(md-label='客户', md-sort-by='customer.name', @click.native.stop='goToCustomer(item.customer)', style='min-width:100px') {{ item.customer ? item.customer.name : "-" }}
@@ -140,9 +144,11 @@ export default class PaymentList extends List<Payment> {
   created() {
     this.searchQuery = {
       date: moment().format("YYYY-MM-DD"),
-      scene: ["play", "event", "gift", "party", "food"],
+      scene: [],
       paid: true,
+      refunded: false,
       gateway: []
+      // direction: "payment"
     };
     if (this.$route.query.customer) {
       this.searchQuery.customer = this.$route.query.customer;

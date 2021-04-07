@@ -145,7 +145,7 @@
           h4.card-title(style="display:flex;align-items:center;justify-content:space-between") 更多卡面
             md-button.md-just-icon.md-simple.md-round(@click="addPoster")
               md-icon add
-          poster(v-for="(url,index) in cardType.posterUrls" v-model="cardType.posterUrls[index]")
+          poster(v-for="(url,index) in cardType.posterUrls" :key="url" v-model="cardType.posterUrls[index]")
             template(#buttons)
               md-button.md-just-icon.md-simple.md-round.md-danger(@click="removePoster(index)")
                 md-icon delete
