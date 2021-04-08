@@ -12,7 +12,7 @@
       sidebar-item(v-if="$user.can('FOOD_BOOKING')", :link="{ name: '餐饮消费', icon: 'fastfood', path: '/booking/food' }")
       sidebar-item(v-if="$user.can('CUSTOMER')", :link="{ name: '客户管理', icon: 'people', path: '/user' }")
       sidebar-item(v-if="$user.can('PAYMENT')", :link="{ name: '支付明细', icon: 'payment', path: '/payment' }")
-      sidebar-item(v-if="$user.can('CARD')", :link="{ name: '卡券管理', icon: 'confirmation_number', path: '/card' }")
+      sidebar-item(v-if="$user.can('CARD')", :link="{ name: '卡券管理', icon: 'confirmation_number', path: '/card/index' }")
       sidebar-item(v-if="$user.can('CARD_TYPE')", :link="{ name: '卡券种类', icon: 'card_membership', path: '/card-type' }")
       sidebar-item(v-if="$user.can('COUPON')", :link="{ name: '优惠管理', icon: 'confirmation_number', path: '/coupon' }")
       sidebar-item(v-if="$user.can('POST')", :link="{ name: '内容管理', icon: 'chrome_reader_mode', path: '/post' }")
