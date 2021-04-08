@@ -86,3 +86,9 @@ h2.title{
 .text-gray{
     color: $gray-color !important;
 }
+.text-normal{
+    font-size: $font-size-base;
+}
+.text-small{
+    font-size: $font-size-small;
+}

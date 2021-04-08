@@ -42,7 +42,7 @@ const globalFilters = {
     Vue.filter(
       "currency",
       (value: any, precision: number = 2, lazyPrecision: boolean = false) => {
-        if (value === undefined || value === null) return "-";
+        if (value === undefined || value === null || isNaN(value)) return "-";
         let fixed = (+value).toFixed(precision);
         if (lazyPrecision) fixed = (+fixed).toString();
         return "¥ " + fixed;

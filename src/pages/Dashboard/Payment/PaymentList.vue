@@ -10,7 +10,14 @@
             md-icon refresh
           md-button.md-just-icon.md-simple.md-xs.pull-right(@click='download' v-if="$user.can('PAYMENT_DOWNLOAD') && (searchQuery.date || searchQuery.dateEnd)")
             md-icon get_app
-          span.pull-right.mr-2 总收入：{{ totalAmount | currency }}
+          span.pull-right.mr-2.text-normal.text-right(style="text-align:right")
+            b 合计：
+            | 收款 {{ totalAmount.assets | currency }} /
+            | 核销 {{ totalAmount.debt | currency }} /
+            | 收入 {{ totalAmount.revenue | currency }}
+            br
+            | 次数 {{ totalAmount.times | currency }} /
+            | 余额 {{ totalAmount.balance | currency }}
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
           .md-layout.md-layout-item.search-query
@@ -83,7 +90,13 @@ import { Payment, User } from "@/resources/interfaces";
 export default class PaymentList extends List<Payment> {
   name = "payment";
   resource = PaymentResource;
-  totalAmount: number | null = null;
+  totalAmount: {
+    assets: number;
+    debt: number;
+    revenue: number;
+    balance: number;
+    times: number;
+  } = { assets: NaN, debt: NaN, revenue: NaN, balance: NaN, times: NaN };
 
   get showDateRange() {
     return (
@@ -99,7 +112,14 @@ export default class PaymentList extends List<Payment> {
       this
     );
     if (!queriedData) return;
-    this.totalAmount = Number(queriedData.$headers["total-amount"]);
+    const [assets, debt, revenue, balance, times] = queriedData.$headers[
+      "total-amount"
+    ].split(",") as number[];
+    this.totalAmount.assets = assets;
+    this.totalAmount.debt = debt;
+    this.totalAmount.revenue = revenue;
+    this.totalAmount.balance = balance;
+    this.totalAmount.times = times;
     return queriedData;
   }
   showCreate() {
