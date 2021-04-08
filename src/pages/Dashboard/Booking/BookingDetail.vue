@@ -892,16 +892,16 @@ export default class BookingDetail extends Vue {
         store: this.$user.store,
         payments: []
       };
-    }
-    if (
-      this.booking.type &&
-      [Scene.PARTY, Scene.PLAY, Scene.EVENT].includes(this.booking.type)
-    ) {
-      this.booking.kidsCount = 1;
-      this.booking.adultsCount = 1;
-    }
-    if (this.booking.type === Scene.GIFT) {
-      this.booking.quantity = 1;
+      if (
+        this.booking.type &&
+        [Scene.PARTY, Scene.PLAY, Scene.EVENT].includes(this.booking.type)
+      ) {
+        this.booking.kidsCount = 1;
+        this.booking.adultsCount = 1;
+      }
+      if (this.booking.type === Scene.GIFT) {
+        this.booking.quantity = 1;
+      }
     }
 
     if (this.add) {
