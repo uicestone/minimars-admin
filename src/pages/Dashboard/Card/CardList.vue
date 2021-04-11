@@ -54,7 +54,7 @@
               | {{item.createdAt|date('YYYY-MM-DD')}}
             md-table-cell(md-label='过期日期')
               | {{item.expiresAt|date('YYYY-MM-DD')}}
-            md-table-cell(md-label='客户')
+            md-table-cell(md-label='客户' md-sort-by="customer")
               router-link(:to="'/user/'+item.customer") {{ item.customer.substr(-4).toUpperCase() }}
       md-card-actions(md-alignment='space-between')
         div
