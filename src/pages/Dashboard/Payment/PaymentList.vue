@@ -166,7 +166,6 @@ export default class PaymentList extends List<Payment> {
       date: moment().format("YYYY-MM-DD"),
       scene: [],
       paid: true,
-      refunded: false,
       gateway: []
       // direction: "payment"
     };
