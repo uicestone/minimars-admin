@@ -62,14 +62,34 @@
                 md-field
                   label 星座
                   md-input(v-model='user.constellation'  :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-50
+              .md-layout-item.md-small-size-100.md-size-33
                 md-field
                   label 余额
                   md-input(:value='user.balance | round(2)' disabled)
-              .md-layout-item.md-small-size-100.md-size-50
+              .md-layout-item.md-small-size-100.md-size-33
+                md-field
+                  label 其中赠送余额
+                  md-input(:value='user.balanceReward | round(2)' disabled)
+              .md-layout-item.md-small-size-100.md-size-33
                 md-field
                   label 积分
-                  md-input(:value='user.points | round(2)' disabled)
+                  md-input(:value='user.points | round(0)' disabled)
+              .md-layout-item.md-small-size-100.md-size-25
+                md-field
+                  label 首次入场日期
+                  md-input(:value='user.firstPlayDate' disabled)
+              .md-layout-item.md-small-size-100.md-size-25
+                md-field
+                  label 首次入场门店
+                  md-input(:value='storeName(user.firstPlayStore)' disabled)
+              .md-layout-item.md-small-size-100.md-size-25
+                md-field
+                  label 注册日期
+                  md-input(:value='user.createdAt|date("YYYY-MM-DD")' disabled)
+              .md-layout-item.md-small-size-100.md-size-25
+                md-field
+                  label 注册方式
+                  md-input(:value="'-'" disabled)
               .md-layout-item.md-size-100
                 md-field
                   label 备注
@@ -154,6 +174,10 @@ export default class UserProfile extends Vue {
 
   createBooking(type = "play") {
     this.$router.push(`/booking/${type}/add?customer=${this.user.id}`);
+  }
+
+  storeName(storeId: string) {
+    return this.$stores.find(s => s.id === storeId)?.name || "-";
   }
 
   @Watch("user.mobile") async onUserMobileUpdate() {
