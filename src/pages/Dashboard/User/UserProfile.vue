@@ -76,20 +76,20 @@
                   md-input(:value='user.points | round(0)' disabled)
               .md-layout-item.md-small-size-100.md-size-25
                 md-field
-                  label 首次入场日期
-                  md-input(:value='user.firstPlayDate' disabled)
-              .md-layout-item.md-small-size-100.md-size-25
-                md-field
-                  label 首次入场门店
-                  md-input(:value='storeName(user.firstPlayStore)' disabled)
-              .md-layout-item.md-small-size-100.md-size-25
-                md-field
                   label 注册日期
                   md-input(:value='user.createdAt|date("YYYY-MM-DD")' disabled)
               .md-layout-item.md-small-size-100.md-size-25
                 md-field
                   label 注册方式
                   md-input(:value="'-'" disabled)
+              .md-layout-item.md-small-size-100.md-size-25(v-if="user.firstPlayDate")
+                md-field
+                  label 首次入场日期
+                  md-input(:value='user.firstPlayDate' disabled)
+              .md-layout-item.md-small-size-100.md-size-25(v-if="user.firstPlayStore")
+                md-field
+                  label 首次入场门店
+                  md-input(:value='storeName(user.firstPlayStore)' disabled)
               .md-layout-item.md-size-100
                 md-field
                   label 备注
