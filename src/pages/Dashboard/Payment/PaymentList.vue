@@ -16,7 +16,7 @@
             | 核销 {{ totalAmount.debt | currency }} /
             | 收入 {{ totalAmount.revenue | currency }}
             br
-            | 次数 {{ totalAmount.times | currency(0) }} /
+            | 次数 {{ totalAmount.times }} /
             | 余额 {{ totalAmount.balance | currency }}
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
