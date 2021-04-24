@@ -64,7 +64,9 @@
               span(v-if='item.customer && item.customer.mobile')
                 | {{ item.customer.mobile.substr(-4) }}
               md-icon.mini keyboard_arrow_right
-            md-table-cell(md-label='次数', md-sort-by='times') {{ item.times ? (item.times > 0 ? `+${item.times}` : item.times) : '-' }}
+            md-table-cell(md-label='次数', md-sort-by='times')
+              span(v-if="$user.can('DEVELOP') && item.card") {{item.card.substr(-2).toUpperCase()}} 
+              | {{ item.times ? (item.times > 0 ? `+${item.times}` : item.times) : '-' }}
             md-table-cell(md-label='金额', md-sort-by='amount')
               div(v-if="item.amount || (item.amount===0&&!item.amountInPoints)") {{ item.amount | currency }}
               div(v-if="item.amountInPoints!==undefined") {{ item.amountInPoints }} 积分

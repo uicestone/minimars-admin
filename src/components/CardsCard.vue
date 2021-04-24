@@ -21,7 +21,9 @@ md-card.codes-card
         md-table-cell(md-label='过期日期' @click.native="changeExpireDate(card)")
           | {{ card.expiresAt | date("YYYY-MM-DD") }}
           md-badge.md-cards.card-extend(v-if="card.expiresAtWas" md-content="延" md-dense)
-        md-table-cell.nowrap(md-label='剩余次数', v-if="['times','coupon'].includes(card.type)") 剩{{ card.timesLeft }}次
+        md-table-cell.nowrap(md-label='剩余次数', v-if="['times','coupon'].includes(card.type)")
+          span(v-if="$user.can('DEVELOP')") {{card.timesLeft}}/{{card.times}}
+          span(v-else) 剩{{ card.timesLeft }}次
         md-table-cell(md-label='日期区间', v-if="card.type === 'period'")
           | {{ card.start | date("YY-MM-DD") }} -
           br
