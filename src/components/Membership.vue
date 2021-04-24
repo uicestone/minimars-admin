@@ -8,10 +8,10 @@
         md-menu-content
           md-menu-item(v-for='cardType in $cardTypes', v-if="$user.can('CARD_SELL_ALL')||cardType.openForReception", :key='cardType.id', @click='createCard(cardType)') {{ cardType.title }}
           md-menu-item(@click="receiveGiftCard") 接收礼品卡
-  payments-card(:payments="paymentItems" :pay="pay")
+  payments-card(:payments="paymentItems" :pay="pay" title="购卡记录")
     template(v-slot:title-tools)
       slot(name="action-buttons")
-        md-button.md-danger.md-sm.pull-right.md-simple(md-menu-trigger @click="$router.push('/payment?customer='+customer.id)") 全部明细
+        md-button.md-danger.md-sm.pull-right.md-simple(md-menu-trigger @click="$router.push('/payment?customer='+customer.id)") 全部支付明细
 </template>
 
 <script lang="ts">
@@ -25,7 +25,8 @@ import {
   Payment,
   Card,
   User,
-  CardStatus
+  CardStatus,
+  Scene
 } from "@/resources/interfaces";
 
 @Component({
@@ -57,7 +58,7 @@ export default class Membership extends Vue {
     if (!this.customer.id) return;
     this.paymentItems = await PaymentResource.query({
       customer: this.customer.id,
-      attach: "card "
+      scene: [Scene.CARD, Scene.BALANCE, Scene.PERIOD].join(",")
     });
   }
 

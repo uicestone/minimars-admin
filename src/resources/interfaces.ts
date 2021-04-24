@@ -230,7 +230,6 @@ export interface Payment extends Model {
   amountInPoints?: number;
   paid: boolean;
   title: string;
-  attach: string;
   booking?: string;
   card?: string;
   gateway: PaymentGateway;
@@ -394,7 +393,6 @@ export interface PaymentQuery extends ListQuery {
   date?: string;
   paid?: "false";
   customer?: string;
-  attach?: string;
   gateway?: PaymentGateway;
   direction?: "payment" | "refund";
 }
