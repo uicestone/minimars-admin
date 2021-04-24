@@ -56,15 +56,7 @@ export default class BookingsCard extends Vue {
 
   get cardHeaderClass() {
     if (!this.type) return "";
-    const map = {
-      [Scene.PLAY]: "play",
-      [Scene.EVENT]: "event",
-      [Scene.GIFT]: "gift",
-      [Scene.FOOD]: "food",
-      [Scene.PARTY]: "party",
-      [Scene.CARD]: ""
-    };
-    return "md-card-header-" + map[this.type];
+    return "md-card-header-" + this.type;
   }
 
   get cardHeaderIcon() {
@@ -74,23 +66,17 @@ export default class BookingsCard extends Vue {
       [Scene.EVENT]: "event",
       [Scene.GIFT]: "card_giftcard",
       [Scene.FOOD]: "fastfood",
-      [Scene.PARTY]: "",
-      [Scene.CARD]: ""
+      [Scene.PARTY]: "party",
+      [Scene.CARD]: "card",
+      [Scene.BALANCE]: "balance",
+      [Scene.PERIOD]: "period"
     };
     return map[this.type];
   }
 
   get buttonClass() {
     if (!this.type) return "";
-    const map = {
-      [Scene.PLAY]: "play",
-      [Scene.EVENT]: "event",
-      [Scene.GIFT]: "gift",
-      [Scene.FOOD]: "food",
-      [Scene.PARTY]: "gift",
-      [Scene.CARD]: ""
-    };
-    return "md-" + map[this.type];
+    return "md-" + this.type;
   }
 
   async mounted() {

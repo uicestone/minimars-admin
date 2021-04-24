@@ -298,15 +298,7 @@ export default class BookingDetail extends Vue {
 
   get cardHeaderClass() {
     if (!this.booking.type) return "";
-    const map = {
-      [Scene.PLAY]: "play",
-      [Scene.EVENT]: "event",
-      [Scene.GIFT]: "gift",
-      [Scene.FOOD]: "food",
-      [Scene.PARTY]: "gift",
-      [Scene.CARD]: ""
-    };
-    return "md-card-header-" + map[this.booking.type];
+    return "md-card-header-" + this.booking.type;
   }
 
   get cardHeaderIcon() {
@@ -317,7 +309,9 @@ export default class BookingDetail extends Vue {
       [Scene.GIFT]: "card_giftcard",
       [Scene.FOOD]: "fastfood",
       [Scene.PARTY]: "cake",
-      [Scene.CARD]: ""
+      [Scene.CARD]: "",
+      [Scene.BALANCE]: "",
+      [Scene.PERIOD]: ""
     };
     return map[this.booking.type];
   }
@@ -330,7 +324,9 @@ export default class BookingDetail extends Vue {
       [Scene.GIFT]: "礼品兑换",
       [Scene.FOOD]: "餐饮消费",
       [Scene.PARTY]: "派对",
-      [Scene.CARD]: ""
+      [Scene.CARD]: "",
+      [Scene.BALANCE]: "",
+      [Scene.PERIOD]: ""
     };
     return map[this.booking.type];
   }
