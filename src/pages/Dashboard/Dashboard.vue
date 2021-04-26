@@ -1,10 +1,10 @@
 <template lang="pug">
 .md-layout
-  .md-layout-item.md-size-100.md-layout.md-alignment-center-right
+  .md-layout-item.md-size-100.md-layout.md-alignment-center-right(v-if="$user.can('PAYMENT_LAST_WEEK')||$user.can('PAYMENT_LAST_MONTH')||$user.can('PAYMENT_ALL_DATE')")
     .md-layout-item.md-size-30.md-xsmall-size-100.stats-date
       md-datepicker(v-model='date', :md-model-type='String', md-immediately  :md-disabled-dates="disabledDates" style="width:140px")
         label 开始日期
-      md-datepicker.ml-2(v-model='dateEnd', :md-model-type='String', md-immediately  :md-disabled-dates="disabledDates" v-if="$user.can('PAYMENT')" style="width:140px")
+      md-datepicker.ml-2(v-model='dateEnd', :md-model-type='String', md-immediately  :md-disabled-dates="disabledDates" style="width:140px")
         label 结束日期
     .md-layout-item.md-xsmall-size-100(style='display:flex;justify-content:space-between;width:330px;flex:0')
       md-menu.md-button(v-if="!$user.store")
@@ -320,8 +320,9 @@ export default class Dashboard extends Vue {
     if (this.dateEnd) {
       url += `/${this.dateEnd}`;
     }
+    url += "?popBookingCardCoupon=true";
     if (this.store) {
-      url += `?store=${this.store.id}`;
+      url += `&store=${this.store.id}`;
     }
     this.queryStartTimeout = window.setTimeout(async () => {
       this.stats = (await http.get(url)).data;

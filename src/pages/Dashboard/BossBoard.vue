@@ -74,7 +74,7 @@
         template(slot='footer')
           .stats
             md-icon bookmark_border
-            | 票务收款
+            | 售票、售卡
       stats-card.mt-8(header-color='period')
         template(slot='header')
           .card-icon
@@ -86,7 +86,7 @@
         template(slot='footer')
           .stats
             md-icon bookmark_border
-            | 餐饮收款
+            | 餐饮
       stats-card.mt-8(header-color='period')
         template(slot='header')
           .card-icon
@@ -98,7 +98,7 @@
         template(slot='footer')
           .stats
             md-icon bookmark_border
-            | 派对、活动、礼品收款
+            | 派对、活动、礼品
       stats-card.mt-8(header-color='period')
         template(slot='header')
           .card-icon
@@ -110,7 +110,7 @@
         template(slot='footer')
           .stats
             md-icon bookmark_border
-            | 电商收款
+            | 电商（含电商售卡）
     .pr-0.md-layout-item.md-size-50.md-xsmall-size-50
       stats-card(header-color='period')
         template(slot='header')
@@ -122,7 +122,6 @@
         template(slot='footer')
           .stats
             md-icon bookmark_border
-            | 实时
       stats-card.mt-8(header-color='period')
         template(slot='header')
           .card-icon
@@ -133,7 +132,6 @@
         template(slot='footer')
           .stats
             md-icon bookmark_border
-            | 实时
       stats-card.mt-8(header-color='period')
         template(slot='header')
           .card-icon
@@ -143,7 +141,6 @@
         template(slot='footer')
           .stats
             md-icon bookmark_border
-            | 实时
       stats-card.mt-8(header-color='period')
         template(slot='header')
           .card-icon
@@ -154,7 +151,6 @@
         template(slot='footer')
           .stats
             md-icon bookmark_border
-            | 实时
     .md-layout-item.md-size-100.px-0(style="display:flex;justify-content:center")
       doughnut-chart(:chart-data="sceneFlowPieChart.data" style="min-height:300px")
 </template>
