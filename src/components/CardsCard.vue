@@ -22,7 +22,7 @@ md-card.codes-card
           | {{ card.expiresAt | date("YYYY-MM-DD") }}
           md-badge.md-cards.card-extend(v-if="card.expiresAtWas" md-content="延" md-dense)
         md-table-cell.nowrap(md-label='剩余次数', v-if="['times','coupon'].includes(card.type)")
-          span(v-if="$user.can('DEVELOP')") {{card.timesLeft}}/{{card.times}}
+          span(v-if="$user.can('DEVELOP')" @click.stop="$router.push(`/payment?card=${card.id}`)") {{card.timesLeft}}/{{card.times}}
           span(v-else) 剩{{ card.timesLeft }}次
         md-table-cell(md-label='日期区间', v-if="card.type === 'period'")
           | {{ card.start | date("YY-MM-DD") }} -
@@ -157,7 +157,7 @@ export default class CardsCard extends Vue {
       if (["coupon", "partner", "period", "balance"].includes(card.type)) {
         return true;
       }
-      if (card.type === "times" && card.times === card.timesLeft) {
+      if (card.type === "times" && card.timesLeft > 0) {
         return true;
       }
     }

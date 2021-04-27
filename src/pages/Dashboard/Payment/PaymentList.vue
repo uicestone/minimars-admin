@@ -65,7 +65,7 @@
                 | {{ item.customer.mobile.substr(-4) }}
               md-icon.mini keyboard_arrow_right
             md-table-cell(md-label='次数', md-sort-by='times')
-              span(v-if="$user.can('DEVELOP') && item.card") {{item.card.substr(-2).toUpperCase()}} 
+              span(v-if="$user.can('DEVELOP') && item.card" @click.stop="$router.push(`/payment?card=${item.card}`)") {{item.card.substr(-2).toUpperCase()}} 
               | {{ item.times ? (item.times > 0 ? `+${item.times}` : item.times) : '-' }}
             md-table-cell(md-label='金额', md-sort-by='amount')
               div(v-if="item.amount || (item.amount===0&&!item.amountInPoints)") {{ item.amount | currency }}
@@ -171,12 +171,14 @@ export default class PaymentList extends List<Payment> {
       scene: [],
       paid: true,
       gateway: []
-      // direction: "payment"
     };
     if (this.$route.query.customer) {
       this.searchQuery.customer = this.$route.query.customer;
       this.searchQuery.date = undefined;
-      this.searchQuery.scene = [];
+    }
+    if (this.$route.query.card) {
+      this.searchQuery.card = this.$route.query.card;
+      this.searchQuery.date = undefined;
     }
     if (this.$user.store) {
       this.searchQuery.store = this.$user.store.id;
