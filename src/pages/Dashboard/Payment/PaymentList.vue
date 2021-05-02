@@ -133,11 +133,10 @@ export default class PaymentList extends List<Payment> {
     this.$router.push(`/user/${customer.id}`);
   }
   goToRelatedItem(item: Payment) {
-    if (item.card) {
-      if (!item.customer) return;
-      return this.$router.push(`/user/${item.customer.id}`);
-    } else {
+    if (item.booking) {
       return this.$router.push(`/booking/${item.scene}/${item.booking}`);
+    } else if (item.customer) {
+      return this.$router.push(`/user/${item.customer.id}`);
     }
   }
   disabledDates(date: Date) {
