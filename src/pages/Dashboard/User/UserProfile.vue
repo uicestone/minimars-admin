@@ -90,6 +90,22 @@
                 md-field
                   label 首次入场门店
                   md-input(:value='storeName(user.firstPlayStore)' disabled)
+              .md-layout-item.md-small-size-100.md-size-25
+                md-field
+                  label 微信小程序
+                  md-input(:value="user.openid?'已激活':'未激活'" disabled)
+              .md-layout-item.md-small-size-100.md-size-25
+                md-field
+                  label 微信公众号
+                  md-input(:value="user.openidMp?'已关注':'未关注'" disabled)
+              .md-layout-item.md-small-size-100.md-size-25
+                md-field
+                  label ZOOJOO
+                  md-input(:value="user.youzanId?'已激活':'未激活'" disabled)
+              .md-layout-item.md-small-size-100.md-size-25
+                md-field
+                  label 银豹餐饮
+                  md-input(:value="user.pospalId?'已激活':'未激活'" disabled)
               .md-layout-item.md-size-100
                 md-field
                   label 备注
