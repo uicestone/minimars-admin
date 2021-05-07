@@ -63,10 +63,10 @@
                 label 金额
                 span.md-prefix ¥
                 md-input(v-model='booking.price', type='number', min='0', step='0.01', :disabled='!!booking.id || isBookingPriceFixed')
-              .md-layout-item(v-if="booking.type==='gift'", style="flex:1;min-width:33%")
-                md-field
-                  label 数量
-                  md-input(v-model='booking.quantity', type='number', min='1', :disabled='!!booking.id')
+            .md-layout-item(v-if="booking.type==='gift'")
+              md-field
+                label 数量
+                md-input(v-model='booking.quantity', type='number', min='1', :disabled='!!booking.id')
             .md-layout-item.md-layout.md-small-size-100.md-size-50.p-0.md-layout-nowrap
               .md-layout-item(style="min-width:33%")
                 md-datepicker(v-model='booking.date', :md-model-type='String', md-immediately, v-if='!booking.id')
