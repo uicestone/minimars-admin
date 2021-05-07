@@ -80,8 +80,8 @@
                   md-input(:value='user.createdAt|date("YYYY-MM-DD")' disabled)
               .md-layout-item.md-small-size-100.md-size-25
                 md-field
-                  label 注册方式
-                  md-input(:value="'-'" disabled)
+                  label 注册渠道
+                  md-input(:value="user.registeredAt || '-'" disabled)
               .md-layout-item.md-small-size-100.md-size-25(v-if="user.firstPlayDate")
                 md-field
                   label 首次入场日期
