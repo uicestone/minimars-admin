@@ -32,13 +32,13 @@
             md-table-cell(md-label='卡号', md-sort-by='cardNo')
               | {{ item.cardNo }}
             md-table-cell(md-label='余额', md-sort-by='balanceDeposit')
-              div(v-if='item.balance')
-                | {{ item.balanceDeposit }} 赠{{ item.balanceReward }}
-              div(v-if='item.codeAmount') 券值：{{ item.codeAmount }}
-              div(v-if='!item.balance && !item.codeAmount')
-                | -
+              | {{ item.balance || '-' }}
+            md-table-cell(md-label='积分', md-sort-by='points')
+              | {{ item.points }}
             md-table-cell(md-label='注册时间', md-sort-by='createdAt')
               | {{ item.createdAt | date }}
+            md-table-cell(md-label='注册渠道', md-sort-by='registeredAt')
+              | {{ item.registeredAt }}
       md-card-actions(md-alignment='space-between')
         div
           p.card-category {{ from }} - {{ to }} / {{ total }}
