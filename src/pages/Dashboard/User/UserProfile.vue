@@ -119,6 +119,7 @@
               md-button.md-food.mt-4.mr-1.pull-right(@click="createBooking('food')" v-if="user.id") 吧台消费
       bookings-card(title="近期门票预约" type="play" :bookings="userBookings.filter(b=>b.type==='play')" :customer="user")
       bookings-card(title="近期活动预约" type="event" :bookings="userBookings.filter(b=>b.type==='event')" :customer="user")
+      bookings-card(title="近期电商订单" type="mall" :bookings="userBookings.filter(b=>b.type==='mall')" :customer="user")
       bookings-card(title="近期礼品兑换" type="gift" :bookings="userBookings.filter(b=>b.type==='gift')" :customer="user")
       bookings-card(title="近期餐饮消费" type="food" :bookings="userBookings.filter(b=>b.type==='food')" :customer="user")
     .md-layout-item.md-medium-size-100.md-size-40.mx-auto

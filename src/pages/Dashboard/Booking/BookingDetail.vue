@@ -17,6 +17,9 @@
               md-button.pull-right.md-info.md-xs.md-simple(v-if="booking.status")
                 md-icon.mini alt_route
                 span {{ booking.status | bookingStatusName }}
+              md-button.pull-right.md-info.md-xs.md-simple(v-if="booking.createdAt")
+                md-icon.mini timer
+                span {{ booking.createdAt | date('Y/M/D H:m') }}
               md-button.pull-right.md-danger.md-xs.md-simple(v-if="!booking.id" @click="destroy")
                 span 清空
                 md-icon.mini close
@@ -25,7 +28,7 @@
               md-field
                 label 客户
                 md-input(v-model='customerSearchTerm' :disabled="!!booking.id")
-            .md-layout-item.md-small-size-50.md-size-25
+            .md-layout-item.md-small-size-50.md-size-25(v-if="booking.type !=='mall'||booking.store")
               md-field
                 label 门店
                 store-select(v-model="booking.store" :disabled='!!booking.id || !$user.can("BOOKING_ALL_STORE")')
@@ -39,32 +42,27 @@
                 label 礼品
                 template(slot='md-autocomplete-item', slot-scope='{ item }')
                   | {{ item.title }}（库存 {{ item.quantity }}）
-            .md-layout-item.md-layout.md-small-size-100.md-size-50.p-0(style="flex-wrap:nowrap")
-              .md-layout-item(style="flex:1;min-width:33%" v-if="['play','event'].includes(booking.type)")
+            .md-layout-item.md-layout.md-small-size-100.md-size-50.p-0(style="flex-wrap:nowrap" v-if="['play','event'].includes(booking.type)")
+              .md-layout-item(style="flex:1;min-width:33%")
                 md-field
                   label 成人
                   md-input(v-model='booking.adultsCount', type='number', min='0' :disabled="!allowChangeAdultsCount" :max="maxAdultsCount")
                   span.md-suffix 位
-              .md-layout-item(style="flex:1;min-width:33%" v-if="['play','event'].includes(booking.type)")
+              .md-layout-item(style="flex:1;min-width:33%")
                 md-field
                   label 儿童
                   md-input(v-model='booking.kidsCount', type='number', min='0' :disabled="!!booking.id")
                   span.md-suffix 位
-              .md-layout-item(style="flex:1;min-width:33%" v-if="['play','event'].includes(booking.type)")
+              .md-layout-item(style="flex:1;min-width:33%")
                 md-field.md-has-value
                   label 已打印手环
                   md-input(v-model='booking.bandsPrinted', type='number', min='0' disabled)
                   span.md-suffix 条
-              .md-layout-item(style="flex:1;min-width:33%" v-if="['food','party'].includes(booking.type)")
-                md-field
-                  label 金额
-                  span.md-prefix ¥
-                  md-input(v-model='booking.price', type='number', min='0', step='0.01', :disabled='!!booking.id || isBookingPriceFixed')
-              //- .md-layout-item(v-if="booking.type==='play'", style="flex:1;min-width:33%")
-                md-field
-                  label 袜子
-                  md-input(v-model='booking.socksCount', type='number', min='0')
-                  span.md-suffix 双
+            .md-layout-item(style="flex:1;min-width:33%" v-if="['food','party'].includes(booking.type)")
+              md-field
+                label 金额
+                span.md-prefix ¥
+                md-input(v-model='booking.price', type='number', min='0', step='0.01', :disabled='!!booking.id || isBookingPriceFixed')
               .md-layout-item(v-if="booking.type==='gift'", style="flex:1;min-width:33%")
                 md-field
                   label 数量
@@ -80,13 +78,13 @@
                 md-field
                   label(v-if='["play","party","event"].includes(booking.type)') 入场时间
                   label(v-if='["gift"].includes(booking.type)') 领取时间
-                  label(v-if='["food"].includes(booking.type)') 消费时间
+                  label(v-if='["food", "mall"].includes(booking.type)') 消费时间
                   md-input(v-model='booking.checkInAt', :disabled='!!booking.id')
               .md-layout-item(v-if='booking.checkOutAt' style="min-width:33%")
                 md-field
                   label 出场时间
                   md-input(v-model='booking.checkOutAt' disabled)
-            .md-layout-item.md-small-size-100
+            .md-layout-item.md-size-100
               md-field
                 label 备注
                 md-textarea.no-padding(v-model='booking.remarks')
@@ -262,6 +260,7 @@ export default class BookingDetail extends Vue {
   }
 
   get bookingCancelable() {
+    if (this.$user.can("DEVELOP")) return true;
     return (
       this.booking.id &&
       !["canceled"].includes(this.booking.status as BookingStatus) &&
@@ -309,6 +308,7 @@ export default class BookingDetail extends Vue {
       [Scene.GIFT]: "card_giftcard",
       [Scene.FOOD]: "fastfood",
       [Scene.PARTY]: "cake",
+      [Scene.MALL]: "shopping_cart",
       [Scene.CARD]: "",
       [Scene.BALANCE]: "",
       [Scene.PERIOD]: ""
@@ -324,6 +324,7 @@ export default class BookingDetail extends Vue {
       [Scene.GIFT]: "礼品兑换",
       [Scene.FOOD]: "餐饮消费",
       [Scene.PARTY]: "派对",
+      [Scene.MALL]: "商城",
       [Scene.CARD]: "",
       [Scene.BALANCE]: "",
       [Scene.PERIOD]: ""

@@ -10,6 +10,10 @@
         .card-icon
           md-icon event
         h4.title 活动预约
+      md-card-header.md-card-header-icon.md-card-header-mall(v-if='type==="mall"')
+        .card-icon
+          md-icon shopping_cart
+        h4.title 在线商城
       md-card-header.md-card-header-icon.md-card-header-gift(v-if='type==="gift"')
         .card-icon
           md-icon card_giftcard
@@ -91,7 +95,7 @@
               | {{ item.kidsCount }}
             md-table-cell(md-label='收款', md-sort-by='price')
               | {{ item.amountPaid | currency(2, true) }}
-            md-table-cell(md-label='优惠/会员卡', md-sort-by='coupon' v-if="searchQuery.type === 'play' || ['card', 'coupon'].includes(searchQuery.paymentType)")
+            md-table-cell(md-label='优惠/会员卡', v-if="['play','food'].includes(searchQuery.type) || ['card', 'coupon'].includes(searchQuery.paymentType)")
               span(v-if='item.coupon') {{ item.coupon.title }}
               span(v-else-if='item.card') {{ item.card.title }}
               span(v-else) -

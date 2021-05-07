@@ -61,9 +61,10 @@
             h4.title 报名记录
           md-card-content.md-layout
             md-table
-              md-table-row(v-for='booking in bookings', :key='booking.id')
+              md-table-row(v-for='booking in bookings', :key='booking.id' @click="$router.push('/booking/event/'+booking.id)")
                 md-table-cell(md-label='客户', md-sort-by='customer')
                   | {{ booking.customer.name }}
+                  span(@click.stop="$clipboard(booking.customer.mobile, '手机号')") {{ booking.customer.mobile }}
                 md-table-cell(md-label='人数', md-sort-by='kidsCount')
                   | {{ booking.kidsCount }}
                 md-table-cell(md-label='时间', md-sort-by='checkInAt')

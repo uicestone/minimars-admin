@@ -69,7 +69,8 @@ export default class BookingsCard extends Vue {
       [Scene.PARTY]: "party",
       [Scene.CARD]: "card",
       [Scene.BALANCE]: "balance",
-      [Scene.PERIOD]: "period"
+      [Scene.PERIOD]: "period",
+      [Scene.MALL]: "shopping_cart"
     };
     return map[this.type];
   }

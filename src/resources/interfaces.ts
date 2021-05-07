@@ -15,7 +15,8 @@ export enum Scene {
   FOOD = "food",
   CARD = "card",
   BALANCE = "balance",
-  PERIOD = "period"
+  PERIOD = "period",
+  MALL = "mall"
 }
 
 export enum CardStatus {
