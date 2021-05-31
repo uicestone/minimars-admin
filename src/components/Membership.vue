@@ -75,8 +75,10 @@ export default class Membership extends Vue {
       {
         dianping: "点评POS",
         shouqianba: "收钱吧",
+        mallpos: "商场POS",
         cash: "现金",
         pos: "银行卡",
+        agency: "三方代收",
         pr: "市场公关"
       },
       "确定购买"
