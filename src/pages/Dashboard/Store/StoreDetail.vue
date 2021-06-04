@@ -25,6 +25,18 @@
               md-field
                 label 电话
                 md-input(v-model='store.phone')
+            .md-layout-item.md-size-33
+              md-field
+                label 儿童票价
+                md-input(v-model='store.kidFullDayPrice')
+            .md-layout-item.md-size-33
+              md-field
+                label 每儿童免费陪同成人
+                md-input(v-model='store.freeParentsPerKid')
+            .md-layout-item.md-size-33
+              md-field
+                label 额外成人票价
+                md-input(v-model='store.extraParentFullDayPrice')
             .md-layout-item.md-size-100
               h4 每日限流
               .md-layout-item.md-size-100.md-layout

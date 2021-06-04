@@ -237,7 +237,8 @@ export default class BookingDetail extends Vue {
       this.booking.event?.id,
       this.booking.gift?.id,
       this.booking.quantity,
-      this.booking.price
+      this.booking.price,
+      this.booking.store?.id
     ].join();
   }
 
@@ -261,7 +262,7 @@ export default class BookingDetail extends Vue {
   }
 
   get bookingCancelable() {
-    if (this.$user.can("DEVELOP")) return true;
+    if (this.booking.id && this.$user.can("DEVELOP")) return true;
     return (
       this.booking.id &&
       !["canceled"].includes(this.booking.status as BookingStatus) &&
