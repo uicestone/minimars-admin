@@ -171,7 +171,7 @@
             md-table.md-layout-item(:value='stats.couponsCount')
               md-table-row(slot='md-table-row', slot-scope='{ item, index }')
                 md-table-cell {{ item.name }}
-                md-table-cell {{ item.kidsCount }}
+                md-table-cell {{ item.kidsPerCoupon ? item.kidsCount : item.adultsCount }}
                 md-table-cell {{ item.amount | currency(0) }}
             md-table.md-layout-item(:value='cardBalanceByTypes')
               md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 3 == 0")
