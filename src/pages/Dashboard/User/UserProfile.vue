@@ -17,15 +17,15 @@
               .pt-4.pb-1.text-center 儿童照片：
               poster(v-model="user.childPhotoUrl" placeholder="/img/image_placeholder.jpg" :disabled="readonly")
             .md-layout-item.md-size-75.md-layout.md-alignment-vertical
-              .md-layout-item.md-small-size-100.md-size-33
+              .md-layout-item.md-small-size-100.md-size-30
                 md-field
                   label 手机号
                   md-input(v-model='user.mobile', type='text' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-33
+              .md-layout-item.md-small-size-100.md-size-25
                 md-field
                   label 会员姓名
                   md-input(v-model='user.name' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-33
+              .md-layout-item.md-small-size-100.md-size-20
                 md-field
                   label 孩子姓名
                   md-input(v-model='user.childName' :disabled="readonly")
@@ -36,15 +36,14 @@
                     md-option(value='男') 男
                     md-option(value='女') 女
                     md-option(value='未知') 未知
-              .md-layout-item.md-small-size-100.md-size-25
-                md-field
+              .md-layout-item.md-small-size-100.md-size-40
+                md-datepicker(v-model='user.childBirthday', :md-model-type="String", md-immediately, :disabled="readonly")
                   label 孩子生日
-                  md-input(v-model='user.childBirthday', type='text' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-25
+              .md-layout-item.md-small-size-100.md-size-30
                 md-field
                   label 卡号
                   md-input(v-model='user.cardNo' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-25
+              .md-layout-item.md-small-size-100.md-size-30
                 md-field
                   label 门店
                   md-select(v-model='user.store' :disabled="readonly")
