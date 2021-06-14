@@ -90,17 +90,22 @@ export default class CardsCard extends Vue {
   async refund(card: Card) {
     if (!this.$user.can("CARD_SELL_ALL")) return;
     try {
-      if (
-        !(await confirm(
-          "确认对这张卡进行退款",
-          `即将对该客户进行退款 ${card.title}，本操作不可恢复`,
-          null,
-          "error"
-        ))
-      )
-        return;
+      const refundAmount = await promptInput(
+        "确认对这张卡进行退款",
+        `即将对该客户进行退款 ${card.title}，本操作不可恢复，请输入退款金额：`,
+        null,
+        "error",
+        "number",
+        card.price,
+        v => {
+          if (v > card.price) return "退款金额不能超过销售金额";
+          if (v < 0) return "无效退款金额";
+        }
+      );
+
+      if (refundAmount === undefined) return;
       await CardResource.update(
-        { id: card.id },
+        { id: card.id, refundAmount },
         { status: CardStatus.CANCELED }
       );
       this.$emit("updated");
