@@ -6,7 +6,10 @@
       md-menu.pull-right(v-if="cardItems && allowBuyCard")
         md-button.md-cards.md-sm(md-menu-trigger) 购卡
         md-menu-content
-          md-menu-item(v-for='cardType in $cardTypes', v-if="$user.can('CARD_SELL_ALL')||cardType.openForReception", :key='cardType.id', @click='createCard(cardType)') {{ cardType.title }}
+          md-field.mx-auto(style="width:90%")
+            label 筛选
+            md-input(v-model="filterCardTypeTerm")
+          md-menu-item(v-for='cardType in filteredCardTypes', v-if="$user.can('CARD_SELL_ALL')||cardType.openForReception", :key='cardType.id', @click='createCard(cardType)') {{ cardType.title }}
           md-menu-item(@click="receiveGiftCard") 接收礼品卡
   payments-card(:payments="paymentItems" :pay="pay" title="购卡记录")
     template(v-slot:title-tools)
@@ -53,6 +56,17 @@ export default class Membership extends Vue {
 
   // @Prop({ default: () => [] })
   paymentItems: Payment[] | null = null;
+
+  filterCardTypeTerm = "";
+
+  get filteredCardTypes() {
+    if (!this.filterCardTypeTerm) return this.$cardTypes;
+    return this.$cardTypes.filter(
+      ct =>
+        ct.slug.includes(this.filterCardTypeTerm) ||
+        ct.title.includes(this.filterCardTypeTerm)
+    );
+  }
 
   async getCardPayments() {
     if (!this.customer.id) return;
