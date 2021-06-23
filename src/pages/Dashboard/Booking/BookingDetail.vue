@@ -92,7 +92,7 @@
               div.pb-2.bb(v-if="!booking.id")
                 md-button.md-lg-n.mr-1(:class="{'md-warning':usingCoupon(coupon)}" v-for='coupon in availableCoupons', :key='coupon.id', :value='coupon.id', @click='useCoupon(coupon)')
                   span {{ coupon.title }}
-                  span.ml-1(v-if="coupon.priceThirdParty")  {{ coupon.priceThirdParty }}
+                  span.ml-1(v-if="coupon.priceThirdParty")  {{ coupon.priceThirdParty | round }}
               div.pb-2.bb(v-else-if="booking.coupon")
                 md-button.md-lg-n.md-warning
                   | {{ booking.coupon.title }}
