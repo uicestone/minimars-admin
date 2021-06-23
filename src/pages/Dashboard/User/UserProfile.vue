@@ -12,96 +12,96 @@
                 span {{ user.id.substr(-4).toUpperCase() }}
                 md-icon(style="font-size:15px !important") file_copy
           md-card-content.md-layout
-            .md-layout-item.md-size-25
+            .md-layout-item.md-size-25.md-xsmall-size-100
               poster.pt-4(v-model="user.avatarUrl" placeholder="/img/placeholder.jpg" circle disabled)
               .pt-4.pb-1.text-center 儿童照片：
               poster(v-model="user.childPhotoUrl" placeholder="/img/image_placeholder.jpg" :disabled="readonly")
-            .md-layout-item.md-size-75.md-layout.md-alignment-vertical
-              .md-layout-item.md-small-size-100.md-size-30
+            .md-layout-item.md-size-75.md-xsmall-size-100.md-layout.md-alignment-vertical
+              .md-layout-item.md-xsmall-size-50.md-size-30
                 md-field
                   label 手机号
                   md-input(v-model='user.mobile', type='text' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-25
+              .md-layout-item.md-xsmall-size-50.md-size-25
                 md-field
                   label 会员姓名
                   md-input(v-model='user.name' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-20
+              .md-layout-item.md-xsmall-size-50.md-size-20
                 md-field
                   label 孩子姓名
                   md-input(v-model='user.childName' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-25
+              .md-layout-item.md-xsmall-size-50.md-size-25
                 md-field
                   label 孩子性别
                   md-select(v-model='user.childGender', @keydown.enter.prevent :disabled="readonly")
                     md-option(value='男') 男
                     md-option(value='女') 女
                     md-option(value='未知') 未知
-              .md-layout-item.md-small-size-100.md-size-40
+              .md-layout-item.md-xsmall-size-100.md-size-40
                 md-datepicker(v-model='user.childBirthday', :md-model-type="String", md-immediately, :disabled="readonly")
                   label 孩子生日
-              .md-layout-item.md-small-size-100.md-size-30
+              .md-layout-item.md-xsmall-size-50.md-size-30
                 md-field
                   label 卡号
                   md-input(v-model='user.cardNo' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-30
+              .md-layout-item.md-xsmall-size-50.md-size-30
                 md-field
                   label 门店
                   md-select(v-model='user.store' :disabled="readonly")
                     md-option 不绑定门店
                     md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
-              .md-layout-item.md-small-size-100.md-size-33
+              .md-layout-item.md-xsmall-size-50.md-size-33
                 md-field
                   label 身份证号
                   md-input(v-model='user.idCardNo' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-33
+              .md-layout-item.md-xsmall-size-50.md-size-33
                 md-field
                   label 地区
                   md-input(v-model='user.region' :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-33
+              .md-layout-item.md-xsmall-size-50.md-size-33
                 md-field
                   label 星座
                   md-input(v-model='user.constellation'  :disabled="readonly")
-              .md-layout-item.md-small-size-100.md-size-33
+              .md-layout-item.md-xsmall-size-50.md-size-33
                 md-field
                   label 余额
                   md-input(:value='user.balance | round(2)' disabled)
-              .md-layout-item.md-small-size-100.md-size-33
+              .md-layout-item.md-xsmall-size-50.md-size-33
                 md-field
                   label 其中赠送余额
                   md-input(:value='user.balanceReward | round(2)' disabled)
-              .md-layout-item.md-small-size-100.md-size-33
+              .md-layout-item.md-xsmall-size-50.md-size-33
                 md-field
                   label 积分
                   md-input(:value='user.points | round(0)' disabled)
-              .md-layout-item.md-small-size-100.md-size-25
+              .md-layout-item.md-xsmall-size-50.md-size-25
                 md-field
                   label 注册日期
                   md-input(:value='user.createdAt|date("YYYY-MM-DD")' disabled)
-              .md-layout-item.md-small-size-100.md-size-25
+              .md-layout-item.md-xsmall-size-50.md-size-25
                 md-field
                   label 注册渠道
                   md-input(:value="user.registeredAt || '-'" disabled)
-              .md-layout-item.md-small-size-100.md-size-25(v-if="user.firstPlayDate")
+              .md-layout-item.md-xsmall-size-50.md-size-25(v-if="user.firstPlayDate")
                 md-field
                   label 首次入场日期
                   md-input(:value='user.firstPlayDate' disabled)
-              .md-layout-item.md-small-size-100.md-size-25(v-if="user.firstPlayStore")
+              .md-layout-item.md-xsmall-size-50.md-size-25(v-if="user.firstPlayStore")
                 md-field
                   label 首次入场门店
                   md-input(:value='storeName(user.firstPlayStore)' disabled)
-              .md-layout-item.md-small-size-100.md-size-25
+              .md-layout-item.md-xsmall-size-50.md-size-25
                 md-field
                   label 微信小程序
                   md-input(:value="user.openid?'已激活':'未激活'" disabled)
-              .md-layout-item.md-small-size-100.md-size-25
+              .md-layout-item.md-xsmall-size-50.md-size-25
                 md-field
                   label 微信公众号
                   md-input(:value="user.openidMp?'已关注':'未关注'" disabled)
-              .md-layout-item.md-small-size-100.md-size-25
+              .md-layout-item.md-xsmall-size-50.md-size-25
                 md-field
                   label ZOOJOO
                   md-input(:value="user.youzanId?'已激活':'未激活'" disabled)
-              .md-layout-item.md-small-size-100.md-size-25
+              .md-layout-item.md-xsmall-size-50.md-size-25
                 md-field
                   label 银豹餐饮
                   md-input(:value="user.pospalId?'已激活':'未激活'" disabled)
