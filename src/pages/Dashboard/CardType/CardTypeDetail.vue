@@ -14,6 +14,7 @@
                 md-switch.md-primary(v-model="cardType.openForReception") 前台购买
                 md-switch.md-primary(v-model="cardType.isGift") 可转赠
                 md-switch.md-primary(v-model="cardType.openForClient") 客户端购买
+                md-switch.md-primary(v-model="cardType.isContract") 协议合作
           md-card-content.md-layout
             .md-layout-item.md-size-30.md-xsmall-size-100
               md-field
