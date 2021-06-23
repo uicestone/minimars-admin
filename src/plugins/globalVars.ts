@@ -172,6 +172,7 @@ const globalVars = {
           card: "卡券管理",
           "card sell store": "售卡（门店）",
           "card sell all": "售卡（全部）",
+          "card issue survey": "发券（满意度调查）",
           customer: "客户",
           payment: "支付明细",
           "payment download": "支付明细下载",

@@ -15,7 +15,7 @@
             md-field.md-layout-item.md-size-30.md-xsmall-size-100
               label 筛选角色
               md-select(v-model='searchQuery.role')
-                md-option(v-for="role in $roles", :key='role.id', :value='role.id') {{ role.name }}
+                md-option(v-for="role in [{id:'staff',name:'全部'},...$roles]", :key='role.id', :value='role.id') {{ role.name }}
           .toolbar-actions
             md-button.md-primary(@click='showCreate')
               | 添加职员
@@ -29,8 +29,8 @@
               | {{ item.login }}
             md-table-cell(md-label='角色', md-sort-by='role')
               | {{ item.role.name }}
-            md-table-cell(md-label='手机', md-sort-by='mobile')
-              | {{ item.mobile }}
+            md-table-cell(md-label='门店', md-sort-by='store')
+              span(v-if="item.store") {{ item.store.name }}
       md-card-actions(md-alignment='space-between')
         div
           p.card-category {{ from }} - {{ to }} / {{ total }}
@@ -67,7 +67,7 @@ export default class StaffList extends List<User> {
     this.$router.push(`/staff/add`);
   }
   async created() {
-    this.searchQuery = { role: this.$roles[0].id };
+    this.searchQuery = { role: "staff" };
   }
 }
 </script>

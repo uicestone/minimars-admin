@@ -9,6 +9,11 @@
       md-card-content.paginated-table
         .md-toolbar.md-table-toolbar.md-transparent.md-theme-default.md-elevation-0.md-layout.mb-2
           .md-layout
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100(v-if="$user.can('BOOKING_ALL_STORE')")
+              label 门店
+              md-select(v-model='searchQuery.store')
+                md-option(value='') 全部
+                md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
           .toolbar-actions
             md-button.md-primary(@click='showCreate')
               | 添加活动
