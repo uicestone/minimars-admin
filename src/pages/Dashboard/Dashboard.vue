@@ -145,20 +145,35 @@
           .md-layout-item.md-size-100
             md-table
               md-table-row(slot='md-table-row')
-                md-table-cell 门市散客
+                md-table-cell 次卡和时效卡
                 md-table-cell 
-                  span {{ stats.customersByType.guest.adultsCount }} /
-                  b  {{ stats.customersByType.guest.kidsCount }}
+                  span {{ stats.customersByType.card.adultsCount }} /
+                  b  {{ stats.customersByType.card.kidsCount }}
               md-table-row(slot='md-table-row')
-                md-table-cell 平台优惠
+                md-table-cell 余额
+                md-table-cell 
+                  span {{ stats.customersByType.balance.adultsCount }} /
+                  b  {{ stats.customersByType.balance.kidsCount }}
+              md-table-row(slot='md-table-row')
+                md-table-cell 平台
                 md-table-cell 
                   span {{ stats.customersByType.coupon.adultsCount }} /
                   b  {{ stats.customersByType.coupon.kidsCount }}
               md-table-row(slot='md-table-row')
-                md-table-cell 购卡会员
+                md-table-cell 散客
                 md-table-cell 
-                  span {{ stats.customersByType.card.adultsCount }} /
-                  b  {{ stats.customersByType.card.kidsCount }}
+                  span {{ stats.customersByType.guest.adultsCount }} /
+                  b  {{ stats.customersByType.guest.kidsCount }}
+              md-table-row(slot='md-table-row')
+                md-table-cell 协议
+                md-table-cell 
+                  span {{ stats.customersByType.contract.adultsCount }} /
+                  b  {{ stats.customersByType.contract.kidsCount }}
+              md-table-row(slot='md-table-row')
+                md-table-cell 其他
+                md-table-cell 
+                  span {{ stats.customersByType.other.adultsCount }} /
+                  b  {{ stats.customersByType.other.kidsCount }}
   .md-layout-item.md-size-100.md-xsmall-size-100
     global-sales-card(header-color='period')
       template(slot='header')
@@ -231,7 +246,7 @@ export default class Dashboard extends Vue {
     cardsCount: [];
     balanceCount: {};
     customersByType: Record<
-      "card" | "coupon" | "guest",
+      "card" | "coupon" | "guest" | "balance" | "contract" | "other",
       { adultsCount: number; kidsCount: number }
     >;
     dailyCustomers: {
@@ -256,7 +271,10 @@ export default class Dashboard extends Vue {
     customersByType: {
       card: { adultsCount: 0, kidsCount: 0 },
       coupon: { adultsCount: 0, kidsCount: 0 },
-      guest: { adultsCount: 0, kidsCount: 0 }
+      guest: { adultsCount: 0, kidsCount: 0 },
+      balance: { adultsCount: 0, kidsCount: 0 },
+      contract: { adultsCount: 0, kidsCount: 0 },
+      other: { adultsCount: 0, kidsCount: 0 }
     },
     dailyCustomers: [],
     dailyFlowAmount: [],
