@@ -10,7 +10,8 @@ md-card.codes-card
   md-card-content.md-layout
     md-table.table-full-width
       md-table-row(v-for='card in cards', :key='card.id', v-if="showInvalid || (!['canceled','expired'].includes(card.status))", :class="{ 'table-warning': card.status === 'pending', 'table-muted': ['expired', 'canceled'].includes(card.status) }")
-        md-table-cell(md-label='卡名' @click.native="$clipboard(card.id,'卡ID')") {{ card.title }}
+        md-table-cell.text-right(md-label='卡名' @click.native="$clipboard(card.id,'卡ID')") {{ card.title }}
+          md-badge.md-cards.card-extend(v-if="card.isRenewTimes" md-content="续" md-dense)
         md-table-cell(md-label='门店') {{ cardStoreName(card) }}
         md-table-cell(md-label='状态' style="text-align:center" :style="{'min-width':card.status == 'valid'?'125px':0}")
           span(v-if="card.status!=='valid'") {{ card.status | cardStatusName }}
