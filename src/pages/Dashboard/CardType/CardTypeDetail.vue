@@ -1,9 +1,9 @@
 <template lang="pug">
 .content
   .md-layout
-    .md-layout-item.md-size-66.md-small-size-100.mx-auto
+    .md-layout-item.md-size-66.md-xsmall-size-100.mx-auto
       form(@submit.prevent='save')
-        md-button.md-primary.md-round.md-just-icon.fixed-corner.md-lg(type='submit')
+        md-button.md-primary.md-round.md-just-icon.fixed-corner.md-lg(type='submit' :disabled="!valid")
           md-icon save
         md-card
           md-card-header.md-card-header-icon.md-card-header-primary
@@ -15,60 +15,33 @@
                 md-switch.md-primary(v-model="cardType.isGift") 可转赠
                 md-switch.md-primary(v-model="cardType.openForClient") 客户端购买
           md-card-content.md-layout
-            .md-layout-item.md-size-20.md-xsmall-size-100
+            .md-layout-item.md-size-30.md-xsmall-size-100
               md-field
-                label 名称
+                label 名称*
                 md-input(v-model='cardType.title')
             .md-layout-item.md-size-15.md-xsmall-size-50
-              md-field(md-clearable)
-                label 库存
-                md-input(type="number" min="0" v-model='cardType.quantity')
-            .md-layout-item.md-size-15.md-xsmall-size-50
               md-field
-                label 限购
-                md-input(type="number" min="0" v-model='cardType.maxPerCustomer')
-            .md-layout-item.md-size-15.md-xsmall-size-50
-              md-field
-                label 代号
+                label 代号*
                 md-input(v-model='cardType.slug')
-            .md-layout-item.md-size-15.md-xsmall-size-50
+            .md-layout-item.md-size-20.md-xsmall-size-100
               md-field
-                label 团购代号
-                md-input(v-model='cardType.couponSlug')
-            .md-layout-item.md-small-size-100.md-size-20
+                label 售价*
+                md-input(type='number', step='0.01', v-model.number='cardType.price')
+            .md-layout-item.md-size-35.md-xsmall-size-100
               md-field
                 label 门店
                 store-select(v-model='cardType.stores' :multiple="true")
-            .md-layout-item.md-small-size-100.md-size-20
-              md-field
-                label 类型
-                md-select(v-model='cardType.type', @keydown.enter.prevent)
-                  md-option(v-for='(name, type) in $cardTypeNames', :key='type', :value='type') {{ name }}
-            .md-layout-item.md-small-size-100.md-size-20
-              md-field
-                label 售价
-                md-input(type='number', step='0.01', v-model='cardType.price')
-            .md-layout-item.md-small-size-100.md-size-20
+            .md-layout-item.md-size-15.md-xsmall-size-100
               md-field
                 label 有效时长
-                md-input(type='number', step='1', v-model='cardType.expiresInDays')
+                md-input(type='number', step='1', v-model.number='cardType.expiresInDays')
                 span.md-suffix 天
-            .md-layout-item.md-small-size-100.md-size-20(v-if="['times', 'period'].includes(cardType.type)")
-              md-field
-                label 单次最多儿童数
-                md-input(type='number', v-model='cardType.maxKids')
-            .md-layout-item.md-small-size-100.md-size-20(v-if="['times'].includes(cardType.type)")
-              md-field
-                label 单次最少儿童数
-                md-input(type='number', v-model='cardType.minKids')
-            .md-layout-item.md-small-size-100.md-size-20(v-if="['times', 'period'].includes(cardType.type)")
-              md-field
-                label 每儿童免费陪同成人
-                md-input(type='number', v-model='cardType.freeParentsPerKid')
-            .md-layout-item(v-if="['times', 'coupon'].includes(cardType.type)")
-              md-field
-                label 次数
-                md-input(type='number', v-model='cardType.times')
+            .md-layout-item.md-size-25.md-xsmall-size-100
+              md-datepicker(placeholder='开始日期', v-model='cardType.start', :md-model-type='Date', md-immediately)
+                label 有效期起
+            .md-layout-item.md-size-25.md-xsmall-size-100
+              md-datepicker(placeholder='截止日期', v-model='cardType.end', :md-model-type='Date', md-immediately)
+                label 有效期止
             .md-layout-item
               md-field
                 label 节假日限制
@@ -76,7 +49,46 @@
                   md-option 不限
                   md-option(value='onDaysOnly') 仅限法定工作日
                   md-option(value='offDaysOnly') 仅限法定节假日
-            .md-layout-item(v-if="['partner'].includes(cardType.type)")
+            .md-layout-item.md-size-15.md-xsmall-size-50
+              md-field
+                label 库存
+                md-input(type="number" min="0" v-model.number='cardType.quantity')
+            .md-layout-item.md-size-15.md-xsmall-size-50
+              md-field
+                label 限购
+                md-input(type="number" min="0" v-model.number='cardType.maxPerCustomer')
+            .md-layout-item.md-size-15.md-xsmall-size-50
+              md-field
+                label 团购代号
+                md-input(v-model='cardType.couponSlug')
+            .md-layout-item.md-size-30.md-xsmall-size-100
+              md-field
+                label 赠卡代号（空格分隔多个）
+                md-input(v-model='cardType.rewardCardTypes')
+            .md-layout-item.md-size-100.mt-4.mx-auto
+              p 类型相关
+            .md-layout-item.md-size-20.md-xsmall-size-100
+              md-field
+                label 类型*
+                md-select(v-model='cardType.type', @keydown.enter.prevent)
+                  md-option(v-for='(name, type) in $cardTypeNames', :key='type', :value='type') {{ name }}
+            .md-layout-item.md-size-20.md-xsmall-size-100(v-if="['times', 'coupon'].includes(cardType.type)")
+              md-field
+                label 次数*
+                md-input(type='number', v-model.number='cardType.times')
+            .md-layout-item.md-size-20.md-xsmall-size-100(v-if="['times', 'period'].includes(cardType.type)")
+              md-field
+                label 单次最多儿童数
+                md-input(type='number', v-model.number='cardType.maxKids')
+            .md-layout-item.md-size-20.md-xsmall-size-100(v-if="['times'].includes(cardType.type)")
+              md-field
+                label 单次最少儿童数
+                md-input(type='number', v-model.number='cardType.minKids')
+            .md-layout-item.md-size-20.md-xsmall-size-100(v-if="['times', 'period'].includes(cardType.type)")
+              md-field
+                label 每儿童免费陪同
+                md-input(type='number', v-model.number='cardType.freeParentsPerKid')
+            .md-layout-item.md-size-20.md-xsmall-size-100(v-if="['partner'].includes(cardType.type)")
               md-field
                 label 品牌链接
                 md-input(v-model='cardType.partnerUrl')
@@ -84,35 +96,25 @@
               md-field
                 label 满
                 span.md-prefix ¥
-                md-input(type='number', v-model='cardType.overPrice')
+                md-input(type='number', v-model.number='cardType.overPrice')
             .md-layout-item.md-size-15.md-xsmall-size-25(v-if="['coupon'].includes(cardType.type)")
               md-field
                 label 减
                 span.md-prefix ¥
-                md-input(type='number', v-model='cardType.discountPrice')
+                md-input(type='number', v-model.number='cardType.discountPrice')
             .md-layout-item.md-size-15.md-xsmall-size-25(v-if="['coupon'].includes(cardType.type)")
               md-field
                 label 折
-                md-input(type='number', step="0.01", min="0.01", max="0.99", v-model='cardType.discountRate')
+                md-input(type='number', step="0.01", min="0.01", max="0.99", v-model.number='cardType.discountRate')
             .md-layout-item.md-size-15.md-xsmall-size-25(v-if="['coupon'].includes(cardType.type)")
               md-field
                 label 价
                 span.md-prefix ¥
-                md-input(type='number', step="0.01", v-model='cardType.fixedPrice')
-            .md-layout-item(v-if="cardType.type === 'balance'")
+                md-input(type='number', step="0.01", v-model.number='cardType.fixedPrice')
+            .md-layout-item.md-size-15.md-xsmall-size-25(v-if="cardType.type === 'balance'")
               md-field
-                label 面值
-                md-input(type='number', step='0.01', v-model='cardType.balance')
-            .md-layout-item(v-if="['period', 'coupon', 'times'].includes(cardType.type)")
-              md-datepicker(placeholder='开始日期', v-model='cardType.start', :md-model-type='Date', md-immediately)
-                label 开始日期
-            .md-layout-item(v-if="['period', 'coupon', 'times'].includes(cardType.type)")
-              md-datepicker(placeholder='截止日期', v-model='cardType.end', :md-model-type='Date', md-immediately)
-                label 截止日期
-            .md-layout-item
-              md-field
-                label 赠卡代号（空格分隔多个）
-                md-input(v-model='cardType.rewardCardTypes')
+                label 面值*
+                md-input(type='number', step='0.01', v-model.number='cardType.balance')
             .md-layout-item.md-size-100(v-if="cardType.type==='balance'" style="display:flex;align-items:center;justify-content:flex-start")
               span 多种面值-售价组合
               md-button.md-just-icon.md-round.md-simple(@click="addBalanceGroup")
@@ -137,7 +139,7 @@
                 editor(v-model='cardType.content')
             .md-layout-item.md-size-100.text-right
               md-button.mt-4.md-simple.md-danger(type='button', @click='remove', v-if='cardType.id') 删除
-    .md-layout-item.md-size-33.md-small-size-100
+    .md-layout-item.md-size-33.md-xsmall-size-100
       md-card
         .md-layout-item.md-size-100.md-xsmall-size-100.pb-2
           h4.card-title 默认卡面
@@ -174,11 +176,29 @@ export default class CardTypeDetail extends Vue {
   cardType: Partial<CardType> = {
     id: "",
     stores: [],
-    freeParentsPerKid: 2,
-    maxKids: 2,
     customerTags: [],
     posterUrls: []
   };
+  typeRelatedProperties: Array<keyof CardType> = [
+    "times",
+    "balance",
+    "balancePriceGroups",
+    "maxKids",
+    "minKids",
+    "freeParentsPerKid",
+    "overPrice",
+    "discountPrice",
+    "discountRate",
+    "fixedPrice",
+    "partnerUrl"
+  ];
+  get valid() {
+    return (
+      this.cardType.title &&
+      this.cardType.slug &&
+      this.cardType.price !== undefined
+    );
+  }
   async save() {
     this.cardType = await CardTypeResource.save(this.cardType);
 
@@ -209,10 +229,9 @@ export default class CardTypeDetail extends Vue {
   }
   @Watch("cardType.type") onCardTypeTypeUpdate(type: string, typeWas: string) {
     if (typeWas && type && type !== typeWas) {
-      delete this.cardType.start;
-      delete this.cardType.end;
-      delete this.cardType.balance;
-      delete this.cardType.times;
+      for (const k of this.typeRelatedProperties) {
+        delete this.cardType[k];
+      }
     }
   }
   @Watch("cardType.start") onCardTypeStartUpdate(v: Date | string) {

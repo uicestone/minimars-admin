@@ -160,6 +160,8 @@ export interface CardType extends Model {
   overPrice?: number;
   discountPrice?: number;
   discountRate?: number;
+  fixedPrice?: number;
+  partnerUrl?: string;
 }
 
 export interface Coupon extends Model {
