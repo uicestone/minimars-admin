@@ -12,7 +12,7 @@
             md-field.md-layout-item.md-size-20.md-xsmall-size-100
               label 名称
               md-input(v-model='searchQuery.title')
-            md-field.md-layout-item.md-size-20.md-xsmall-size-100
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100
               label 类型
               md-select(v-model='searchQuery.type')
                 md-option(value="") 全部
@@ -22,15 +22,21 @@
               md-select(v-model='searchQuery.stores')
                 md-option(value='') 全部
                 md-option(v-for='store in $stores', :key='store.id', :value='store.id') {{ store.name }}
-            md-field.md-layout-item.md-size-20.md-xsmall-size-100
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100
               label 前台开放
               md-select(v-model='searchQuery.openForReception')
                 md-option(value="") 全部
                 md-option(:value="true") 是
                 md-option(:value="false") 否
-            md-field.md-layout-item.md-size-20.md-xsmall-size-100
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100
               label 客户端开放
               md-select(v-model='searchQuery.openForClient')
+                md-option(value="") 全部
+                md-option(:value="true") 是
+                md-option(:value="false") 否
+            md-field.md-layout-item.md-size-15.md-xsmall-size-100
+              label 是否协议合作
+              md-select(v-model='searchQuery.isContract')
                 md-option(value="") 全部
                 md-option(:value="true") 是
                 md-option(:value="false") 否
