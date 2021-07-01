@@ -125,6 +125,7 @@ const globalVars = {
           pos: "银行卡",
           cash: "现金",
           card: "会员卡",
+          contract: "合作卡",
           mall: "在线商城",
           coupon: "团购优惠券",
           balance: "账户余额",
