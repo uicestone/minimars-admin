@@ -175,19 +175,62 @@
                   span {{ stats.customersByType.other.adultsCount }} /
                   b  {{ stats.customersByType.other.kidsCount }}
   .md-layout-item.md-size-100.md-xsmall-size-100
-    global-sales-card(header-color='period')
+    global-sales-card(header-color='gift')
       template(slot='header')
         .card-icon
           md-icon language
-        h4.title {{rangeText}}核销卡券分类汇总
+        h4.title {{rangeText}}核销三方平台券
       template(slot='content')
         .md-layout
           .md-layout-item.md-size-100.md-layout
             md-table.md-layout-item(:value='stats.couponsCount')
-              md-table-row(slot='md-table-row', slot-scope='{ item, index }')
+              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 3 == 0")
                 md-table-cell {{ item.name }}
                 md-table-cell {{ item.kidsPerCoupon ? item.kidsCount : item.adultsCount }}
                 md-table-cell {{ item.amount | currency(0) }}
+            md-table.md-layout-item(:value='stats.couponsCount')
+              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 3 == 1")
+                md-table-cell {{ item.name }}
+                md-table-cell {{ item.kidsPerCoupon ? item.kidsCount : item.adultsCount }}
+                md-table-cell {{ item.amount | currency(0) }}
+            md-table.md-layout-item(:value='stats.couponsCount')
+              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 3 == 2")
+                md-table-cell {{ item.name }}
+                md-table-cell {{ item.kidsPerCoupon ? item.kidsCount : item.adultsCount }}
+                md-table-cell {{ item.amount | currency(0) }}
+  .md-layout-item.md-size-100.md-xsmall-size-100
+    global-sales-card(header-color='period')
+      template(slot='header')
+        .card-icon
+          md-icon language
+        h4.title {{rangeText}}核销合作卡
+      template(slot='content')
+        .md-layout
+          .md-layout-item.md-size-100.md-layout
+            md-table.md-layout-item(:value='stats.cardsCount.filter(i=>i.isContract)')
+              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 3 == 0")
+                md-table-cell {{ item.name }}
+                md-table-cell {{ item.kidsCount }}
+                md-table-cell {{ item.amount | currency(0) }}
+            md-table.md-layout-item(:value='stats.cardsCount.filter(i=>i.isContract)')
+              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 3 == 1")
+                md-table-cell {{ item.name }}
+                md-table-cell {{ item.kidsCount }}
+                md-table-cell {{ item.amount | currency(0) }}
+            md-table.md-layout-item(:value='stats.cardsCount.filter(i=>i.isContract)')
+              md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 3 == 2")
+                md-table-cell {{ item.name }}
+                md-table-cell {{ item.kidsCount }}
+                md-table-cell {{ item.amount | currency(0) }}
+  .md-layout-item.md-size-100.md-xsmall-size-100
+    global-sales-card(header-color='balance')
+      template(slot='header')
+        .card-icon
+          md-icon language
+        h4.title {{rangeText}}核销会员卡
+      template(slot='content')
+        .md-layout
+          .md-layout-item.md-size-100.md-layout
             md-table.md-layout-item(:value='cardBalanceByTypes')
               md-table-row(slot='md-table-row', slot-scope='{ item, index }' v-show="index % 3 == 0")
                 md-table-cell {{ item.name }}
@@ -243,7 +286,13 @@ export default class Dashboard extends Vue {
     flowAmountByGateways: Record<string, number>;
     flowAmountByScenes: Record<string, number>;
     couponsCount: [];
-    cardsCount: [];
+    cardsCount: {
+      adultsCount: number;
+      kidsCount: number;
+      name: string;
+      isContract: boolean;
+      amount: number;
+    }[];
     balanceCount: {};
     customersByType: Record<
       "card" | "coupon" | "guest" | "balance" | "contract" | "other",
@@ -476,7 +525,10 @@ export default class Dashboard extends Vue {
   }
 
   get cardBalanceByTypes() {
-    return [...this.stats.cardsCount, this.stats.balanceCount];
+    return [
+      ...this.stats.cardsCount.filter(i => !i.isContract),
+      this.stats.balanceCount
+    ];
   }
 
   created() {
