@@ -72,7 +72,7 @@ export default class Membership extends Vue {
     if (!this.customer.id) return;
     this.paymentItems = await PaymentResource.query({
       customer: this.customer.id,
-      scene: [Scene.CARD, Scene.BALANCE, Scene.PERIOD].join(",")
+      scene: [Scene.CARD, Scene.BALANCE, Scene.PERIOD, Scene.MALL].join(",")
     });
   }
 
