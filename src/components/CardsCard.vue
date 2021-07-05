@@ -158,7 +158,7 @@ export default class CardsCard extends Vue {
 
   cardRefundable(card: Card) {
     if (!card.payments || !card.payments.some(p => p.paid)) return false;
-    if (card.providerData?.provider) return false;
+    if (card.providerData?.provider) return !!this.$user.can("DEVELOP");
     if (card.status === CardStatus.ACTIVATED) {
       if (["coupon", "partner", "period", "balance"].includes(card.type)) {
         return true;
