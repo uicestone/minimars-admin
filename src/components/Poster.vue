@@ -1,7 +1,7 @@
 <template lang="pug">
 .file-input.mx-auto(:class='{"img-circle":circle}' style='display:block')
   .image-container.mx-auto
-    img(:src="value || preview || placeholder")
+    img(:src="value || preview || placeholder" :style="{height}")
   .button-container(v-if="!disabled")
     md-button.md-danger.md-round.md-simple.md-just-icon(@click='removeImage', v-if='preview || value')
       md-icon close
@@ -24,6 +24,7 @@ import { http } from "@/resources";
   name: "poster",
   props: {
     value: String,
+    height: String,
     circle: { default: false, type: Boolean },
     placeholder: { default: "/img/image_placeholder.jpg", type: String },
     disabled: { default: false, type: Boolean }
@@ -70,5 +71,8 @@ export default class Poster extends Vue {
 <style lang="scss" scoped>
 .file-input.img-circle .button-container {
   flex-direction: row;
+}
+.md-card img {
+  object-fit: cover;
 }
 </style>

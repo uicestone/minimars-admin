@@ -145,6 +145,8 @@
         .md-layout-item.md-size-100.md-xsmall-size-100.pb-2
           h4.card-title 默认卡面
           poster(v-model="cardType.posterUrl")
+          h4.card-title 默认卡面（扁）
+          poster(v-model="cardType.posterDenseUrl" height="7vw")
           h4.card-title(style="display:flex;align-items:center;justify-content:space-between") 更多卡面
             md-button.md-just-icon.md-simple.md-round(@click="addPoster")
               md-icon add
